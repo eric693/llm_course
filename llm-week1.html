@@ -1,0 +1,1344 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Week 1 - Python 與數據處理基礎 | LLM 與 AI/ML 課程</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft JhengHei', Arial, sans-serif;
+            background: #f8f9fa;
+            color: #1a1a1a;
+            line-height: 1.7;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .nav {
+            background: white;
+            padding: 16px 28px;
+            border-radius: 8px;
+            margin-bottom: 32px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            border: 1px solid #e0e0e0;
+        }
+
+        .nav a {
+            color: #3498db;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 8px 16px;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+        }
+
+        .nav a:hover {
+            background: #ecf0f1;
+            color: #2980b9;
+        }
+
+        .nav span {
+            color: #6c757d;
+            font-weight: 500;
+        }
+
+        header {
+            background: linear-gradient(to right, #2c3e50, #34495e);
+            color: white;
+            padding: 56px 40px;
+            border-radius: 8px;
+            margin-bottom: 32px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            border-bottom: 3px solid #3498db;
+        }
+
+        header h1 {
+            font-size: 2.2em;
+            margin-bottom: 12px;
+            font-weight: 700;
+        }
+
+        header .subtitle {
+            font-size: 1.05em;
+            opacity: 0.9;
+            font-weight: 400;
+        }
+
+        .content {
+            background: white;
+            border-radius: 8px;
+            padding: 48px;
+            margin-bottom: 32px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            border: 1px solid #e0e0e0;
+        }
+
+        .content h2 {
+            color: #1a1a1a;
+            font-size: 1.9em;
+            margin-bottom: 24px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #3498db;
+            font-weight: 700;
+        }
+
+        .content h3 {
+            color: #2c3e50;
+            font-size: 1.5em;
+            margin: 36px 0 16px 0;
+            font-weight: 600;
+        }
+
+        .content h4 {
+            color: #34495e;
+            font-size: 1.2em;
+            margin: 24px 0 12px 0;
+            font-weight: 600;
+        }
+
+        .content p {
+            margin-bottom: 16px;
+            line-height: 1.8;
+            color: #4a4a4a;
+        }
+
+        pre[class*="language-"] {
+            margin: 24px 0;
+            border-radius: 6px;
+            border: 1px solid #d0d7de;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+        }
+
+        code[class*="language-"] {
+            font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
+            font-size: 0.92em;
+            line-height: 1.6;
+        }
+
+        .note-box {
+            background: #e3f2fd;
+            border-left: 4px solid #2196f3;
+            padding: 20px 24px;
+            margin: 24px 0;
+            border-radius: 4px;
+        }
+
+        .note-box h4 {
+            color: #1565c0;
+            margin-top: 0;
+            margin-bottom: 12px;
+            font-size: 1.1em;
+        }
+
+        .warning-box {
+            background: #fff3e0;
+            border-left: 4px solid #ff9800;
+            padding: 20px 24px;
+            margin: 24px 0;
+            border-radius: 4px;
+        }
+
+        .warning-box h4 {
+            color: #e65100;
+            margin-top: 0;
+            margin-bottom: 12px;
+            font-size: 1.1em;
+        }
+
+        .tip-box {
+            background: #f1f8e9;
+            border-left: 4px solid #8bc34a;
+            padding: 20px 24px;
+            margin: 24px 0;
+            border-radius: 4px;
+        }
+
+        .tip-box h4 {
+            color: #558b2f;
+            margin-top: 0;
+            margin-bottom: 12px;
+            font-size: 1.1em;
+        }
+
+        .concept-box {
+            background: #f3e5f5;
+            border-left: 4px solid #9c27b0;
+            padding: 20px 24px;
+            margin: 24px 0;
+            border-radius: 4px;
+        }
+
+        .concept-box h4 {
+            color: #6a1b9a;
+            margin-top: 0;
+            margin-bottom: 12px;
+            font-size: 1.1em;
+        }
+
+        .exercise-section {
+            background: #fafafa;
+            border: 1px solid #e0e0e0;
+            padding: 32px;
+            margin: 32px 0;
+            border-radius: 8px;
+        }
+
+        .exercise-section h3 {
+            color: #2c3e50;
+            margin-top: 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 24px 0;
+            background: white;
+        }
+
+        table th,
+        table td {
+            padding: 14px 16px;
+            text-align: left;
+            border: 1px solid #dee2e6;
+        }
+
+        table th {
+            background: #2c3e50;
+            color: white;
+            font-weight: 600;
+        }
+
+        table tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+
+        ul, ol {
+            margin-left: 28px;
+            margin-top: 12px;
+            margin-bottom: 16px;
+        }
+
+        li {
+            margin: 10px 0;
+            line-height: 1.7;
+            color: #4a4a4a;
+        }
+
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 48px;
+            gap: 16px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 28px;
+            background: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            border: none;
+        }
+
+        .btn:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
+        }
+
+        .btn-secondary {
+            background: #95a5a6;
+        }
+
+        .btn-secondary:hover {
+            background: #7f8c8d;
+            box-shadow: 0 4px 12px rgba(149, 165, 166, 0.3);
+        }
+
+        .highlight {
+            background: #fff9c4;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-weight: 500;
+        }
+
+        footer {
+            text-align: center;
+            padding: 32px 0;
+            color: #6c757d;
+            margin-top: 48px;
+            border-top: 1px solid #dee2e6;
+        }
+
+        footer p {
+            margin: 8px 0;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 12px;
+            }
+
+            .content {
+                padding: 24px 20px;
+            }
+
+            header {
+                padding: 32px 24px;
+            }
+
+            header h1 {
+                font-size: 1.8em;
+            }
+
+            .nav-buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="nav">
+            <a href="index.html">回首頁</a>
+            <span>Week 1 / 16</span>
+            <a href="llm-week2.html">Week 2</a>
+        </div>
+
+        <header>
+            <h1>Week 1 - Python 與數據處理基礎</h1>
+            <div class="subtitle">掌握 NumPy、Pandas、Matplotlib 等資料科學核心工具</div>
+        </header>
+
+        <div class="content">
+            <h2>本週學習內容</h2>
+            <ul>
+                <li>NumPy 陣列運算與向量化操作</li>
+                <li>Pandas 資料處理與分析</li>
+                <li>Matplotlib/Seaborn 資料視覺化</li>
+                <li>Jupyter Notebook 使用技巧</li>
+                <li>探索性資料分析（EDA）實戰</li>
+            </ul>
+
+            <div class="concept-box">
+                <h4>為什麼這週很重要？</h4>
+                <p>資料處理是 AI/ML 的基礎。在深入學習模型之前，我們需要：</p>
+                <ul>
+                    <li><strong>理解資料結構</strong> - NumPy 陣列是深度學習張量的基礎</li>
+                    <li><strong>數據清理能力</strong> - 80% 的 ML 工作是在處理數據</li>
+                    <li><strong>視覺化技能</strong> - 快速理解數據特徵和分佈</li>
+                    <li><strong>分析思維</strong> - 培養資料驅動的問題解決能力</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="content">
+            <h2>1. NumPy 基礎</h2>
+            
+            <h3>什麼是 NumPy？</h3>
+            <p><span class="highlight">NumPy</span>（Numerical Python）是 Python 科學計算的基礎套件，提供高效能的多維陣列物件和各種數學運算函數。</p>
+
+            <div class="note-box">
+                <h4>為什麼使用 NumPy？</h4>
+                <ul>
+                    <li><strong>效能優異</strong> - 比 Python 原生 list 快 10-100 倍</li>
+                    <li><strong>向量化運算</strong> - 避免使用迴圈，程式碼更簡潔</li>
+                    <li><strong>豐富的函數庫</strong> - 線性代數、統計、隨機數等</li>
+                    <li><strong>廣泛支援</strong> - 幾乎所有科學計算套件都基於 NumPy</li>
+                </ul>
+            </div>
+
+            <h3>安裝與匯入</h3>
+            <pre><code class="language-python"># 安裝 NumPy
+# !pip install numpy
+
+# 匯入 NumPy（慣例使用 np 別名）
+import numpy as np
+
+# 檢查版本
+print(np.__version__)
+</code></pre>
+
+            <h3>建立陣列</h3>
+            <pre><code class="language-python"># 從 Python list 建立陣列
+arr1 = np.array([1, 2, 3, 4, 5])
+print(arr1)
+print(type(arr1))  # <class 'numpy.ndarray'>
+
+# 建立二維陣列（矩陣）
+arr2 = np.array([[1, 2, 3], 
+                 [4, 5, 6]])
+print(arr2)
+print(arr2.shape)  # (2, 3) - 2列3行
+
+# 建立特殊陣列
+zeros = np.zeros((3, 4))        # 3x4 全零陣列
+ones = np.ones((2, 3))          # 2x3 全一陣列
+identity = np.eye(4)            # 4x4 單位矩陣
+random_arr = np.random.rand(3, 3)  # 3x3 隨機陣列 [0,1)
+
+# 建立數列
+arange_arr = np.arange(0, 10, 2)  # [0, 2, 4, 6, 8]
+linspace_arr = np.linspace(0, 1, 5)  # [0, 0.25, 0.5, 0.75, 1]
+
+print("Zeros:\n", zeros)
+print("\nOnes:\n", ones)
+print("\nRandom:\n", random_arr)
+</code></pre>
+
+            <h3>陣列屬性</h3>
+            <pre><code class="language-python">arr = np.array([[1, 2, 3, 4],
+                [5, 6, 7, 8],
+                [9, 10, 11, 12]])
+
+# 重要屬性
+print("形狀:", arr.shape)      # (3, 4)
+print("維度:", arr.ndim)       # 2
+print("大小:", arr.size)       # 12（總元素數）
+print("資料型態:", arr.dtype)  # int64 或 int32
+
+# 改變形狀（不改變資料）
+reshaped = arr.reshape(4, 3)
+print("\n重塑後:\n", reshaped)
+
+# 展平成一維
+flattened = arr.flatten()
+print("\n展平:", flattened)
+</code></pre>
+
+            <h3>陣列索引與切片</h3>
+            <pre><code class="language-python">arr = np.array([[1, 2, 3, 4],
+                [5, 6, 7, 8],
+                [9, 10, 11, 12]])
+
+# 基本索引（從 0 開始）
+print("第一個元素:", arr[0, 0])    # 1
+print("最後一個元素:", arr[-1, -1]) # 12
+
+# 切片
+print("第一列:", arr[0, :])         # [1 2 3 4]
+print("第一行:", arr[:, 0])         # [1 5 9]
+print("子矩陣:\n", arr[0:2, 1:3])   # [[2 3]
+                                      #  [6 7]]
+
+# 布林索引
+print("大於 5 的元素:", arr[arr > 5])
+# [6  7  8  9 10 11 12]
+
+# 花式索引
+indices = [0, 2]
+print("第 0 和第 2 列:\n", arr[indices])
+</code></pre>
+
+            <h3>向量化運算</h3>
+            <pre><code class="language-python"># 元素級運算（不需要迴圈）
+a = np.array([1, 2, 3, 4])
+b = np.array([10, 20, 30, 40])
+
+print("加法:", a + b)           # [11 22 33 44]
+print("乘法:", a * b)           # [10 40 90 160]
+print("次方:", a ** 2)          # [1 4 9 16]
+print("平方根:", np.sqrt(a))    # [1. 1.41... 1.73... 2.]
+
+# 廣播機制（Broadcasting）
+arr = np.array([[1, 2, 3],
+                [4, 5, 6]])
+print("每個元素加 10:\n", arr + 10)
+print("每個元素乘以 2:\n", arr * 2)
+
+# 矩陣運算
+A = np.array([[1, 2], [3, 4]])
+B = np.array([[5, 6], [7, 8]])
+
+print("矩陣乘法:\n", np.dot(A, B))
+# 或使用 @ 運算符
+print("矩陣乘法:\n", A @ B)
+</code></pre>
+
+            <h3>常用數學函數</h3>
+            <pre><code class="language-python">arr = np.array([1, 2, 3, 4, 5])
+
+# 統計函數
+print("平均值:", np.mean(arr))      # 3.0
+print("中位數:", np.median(arr))    # 3.0
+print("標準差:", np.std(arr))       # 1.4142...
+print("總和:", np.sum(arr))         # 15
+print("最大值:", np.max(arr))       # 5
+print("最小值:", np.min(arr))       # 1
+
+# 數學函數
+print("指數:", np.exp(arr))
+print("對數:", np.log(arr))
+print("正弦:", np.sin(arr))
+print("餘弦:", np.cos(arr))
+
+# 矩陣運算
+matrix = np.array([[1, 2], [3, 4]])
+print("轉置:\n", matrix.T)
+print("行列式:", np.linalg.det(matrix))
+print("反矩陣:\n", np.linalg.inv(matrix))
+</code></pre>
+
+            <div class="tip-box">
+                <h4>向量化的重要性</h4>
+                <pre><code class="language-python"># 不好的做法（使用迴圈）
+import time
+
+arr = np.random.rand(1000000)
+start = time.time()
+result = []
+for x in arr:
+    result.append(x ** 2)
+print(f"迴圈耗時: {time.time() - start:.4f} 秒")
+
+# 好的做法（向量化）
+start = time.time()
+result = arr ** 2
+print(f"向量化耗時: {time.time() - start:.4f} 秒")
+
+# 向量化通常快 50-100 倍
+</code></pre>
+            </div>
+        </div>
+
+        <div class="content">
+            <h2>2. Pandas 資料處理</h2>
+            
+            <h3>什麼是 Pandas？</h3>
+            <p><span class="highlight">Pandas</span> 是強大的資料分析工具，提供 DataFrame 和 Series 兩種核心資料結構，讓資料處理變得簡單直觀。</p>
+
+            <div class="note-box">
+                <h4>Pandas 的核心概念</h4>
+                <ul>
+                    <li><strong>Series</strong> - 一維標籤陣列（類似帶標籤的 list）</li>
+                    <li><strong>DataFrame</strong> - 二維表格資料（類似 Excel 表格或 SQL 資料表）</li>
+                    <li><strong>Index</strong> - 行和列的標籤</li>
+                </ul>
+            </div>
+
+            <h3>安裝與匯入</h3>
+            <pre><code class="language-python"># 安裝
+# !pip install pandas
+
+import pandas as pd
+import numpy as np
+
+# 檢查版本
+print(pd.__version__)
+</code></pre>
+
+            <h3>建立 DataFrame</h3>
+            <pre><code class="language-python"># 從字典建立
+data = {
+    'name': ['Alice', 'Bob', 'Charlie', 'David'],
+    'age': [25, 30, 35, 28],
+    'city': ['台北', '台中', '高雄', '台南'],
+    'salary': [50000, 60000, 55000, 58000]
+}
+df = pd.DataFrame(data)
+print(df)
+print("\n")
+
+# 從列表建立
+data_list = [
+    ['Alice', 25, '台北', 50000],
+    ['Bob', 30, '台中', 60000],
+    ['Charlie', 35, '高雄', 55000]
+]
+df2 = pd.DataFrame(data_list, 
+                   columns=['name', 'age', 'city', 'salary'])
+print(df2)
+
+# 從 NumPy 陣列建立
+arr = np.random.randint(0, 100, size=(5, 3))
+df3 = pd.DataFrame(arr, columns=['A', 'B', 'C'])
+print("\nNumPy 陣列 DataFrame:\n", df3)
+</code></pre>
+
+            <h3>讀取資料</h3>
+            <pre><code class="language-python"># 讀取 CSV 檔案
+df = pd.read_csv('data.csv')
+
+# 讀取 Excel
+df = pd.read_excel('data.xlsx', sheet_name='Sheet1')
+
+# 讀取 JSON
+df = pd.read_json('data.json')
+
+# 從 URL 讀取
+url = 'https://example.com/data.csv'
+df = pd.read_csv(url)
+
+# 常用參數
+df = pd.read_csv('data.csv',
+                 encoding='utf-8',      # 編碼
+                 sep=',',               # 分隔符
+                 header=0,              # 標題行
+                 index_col=0,           # 索引列
+                 na_values=['NA', ''])  # 缺失值標記
+</code></pre>
+
+            <h3>資料探索</h3>
+            <pre><code class="language-python"># 建立範例資料
+df = pd.DataFrame({
+    'name': ['Alice', 'Bob', 'Charlie', 'David', 'Eve'],
+    'age': [25, 30, 35, 28, 32],
+    'salary': [50000, 60000, 55000, 58000, 62000],
+    'department': ['IT', 'HR', 'IT', 'Finance', 'HR']
+})
+
+# 快速查看
+print(df.head())       # 前 5 筆
+print(df.tail(3))      # 後 3 筆
+print(df.sample(2))    # 隨機 2 筆
+
+# 基本資訊
+print(df.info())       # 資料型態、非空值數量
+print(df.describe())   # 數值型欄位的統計摘要
+print(df.shape)        # (列數, 行數)
+print(df.columns)      # 欄位名稱
+print(df.dtypes)       # 各欄位資料型態
+
+# 查看唯一值
+print(df['department'].unique())
+print(df['department'].value_counts())
+</code></pre>
+
+            <h3>資料選取與篩選</h3>
+            <pre><code class="language-python"># 選取單一欄位（回傳 Series）
+ages = df['age']
+print(ages)
+
+# 選取多個欄位（回傳 DataFrame）
+subset = df[['name', 'salary']]
+print(subset)
+
+# 使用 loc（標籤索引）
+print(df.loc[0])              # 第一列
+print(df.loc[0:2, 'name'])    # 前三列的 name 欄位
+
+# 使用 iloc（位置索引）
+print(df.iloc[0])             # 第一列
+print(df.iloc[0:3, 0:2])      # 前三列、前兩行
+
+# 條件篩選
+high_salary = df[df['salary'] > 55000]
+print("\n高薪員工:\n", high_salary)
+
+# 多重條件
+it_high_salary = df[(df['department'] == 'IT') & 
+                    (df['salary'] > 50000)]
+print("\nIT 部門高薪員工:\n", it_high_salary)
+
+# 使用 isin
+hr_finance = df[df['department'].isin(['HR', 'Finance'])]
+print("\nHR 或 Finance:\n", hr_finance)
+</code></pre>
+
+            <h3>資料處理</h3>
+            <pre><code class="language-python"># 新增欄位
+df['bonus'] = df['salary'] * 0.1
+df['total_comp'] = df['salary'] + df['bonus']
+
+# 刪除欄位
+df = df.drop('bonus', axis=1)  # axis=1 表示欄位
+# 或
+df = df.drop(columns=['bonus'])
+
+# 刪除列
+df = df.drop(0, axis=0)  # 刪除第一列
+# 或
+df = df.drop(index=[0, 1])
+
+# 重新命名
+df = df.rename(columns={'name': '姓名', 'age': '年齡'})
+
+# 排序
+df_sorted = df.sort_values('salary', ascending=False)
+print("\n依薪資降序:\n", df_sorted)
+
+# 多重排序
+df_sorted2 = df.sort_values(['department', 'salary'], 
+                            ascending=[True, False])
+</code></pre>
+
+            <h3>處理缺失值</h3>
+            <pre><code class="language-python"># 建立含缺失值的資料
+df = pd.DataFrame({
+    'A': [1, 2, np.nan, 4],
+    'B': [5, np.nan, 7, 8],
+    'C': [9, 10, 11, 12]
+})
+
+# 檢查缺失值
+print(df.isnull())           # 回傳布林 DataFrame
+print(df.isnull().sum())     # 每欄缺失值數量
+
+# 刪除缺失值
+df_dropped = df.dropna()                    # 刪除任何含缺失值的列
+df_dropped_col = df.dropna(axis=1)          # 刪除任何含缺失值的欄
+df_dropped_any = df.dropna(how='any')       # 任一欄位為空就刪除
+df_dropped_all = df.dropna(how='all')       # 所有欄位都為空才刪除
+
+# 填補缺失值
+df_filled = df.fillna(0)                    # 用 0 填補
+df_filled_mean = df.fillna(df.mean())       # 用平均值填補
+df_filled_forward = df.fillna(method='ffill')  # 向前填補
+df_filled_backward = df.fillna(method='bfill') # 向後填補
+
+print("\n填補後:\n", df_filled_mean)
+</code></pre>
+
+            <h3>分組聚合</h3>
+            <pre><code class="language-python">df = pd.DataFrame({
+    'department': ['IT', 'HR', 'IT', 'Finance', 'HR', 'IT'],
+    'name': ['Alice', 'Bob', 'Charlie', 'David', 'Eve', 'Frank'],
+    'salary': [50000, 60000, 55000, 58000, 62000, 53000]
+})
+
+# 分組統計
+grouped = df.groupby('department')['salary'].mean()
+print("各部門平均薪資:\n", grouped)
+
+# 多重聚合
+agg_result = df.groupby('department')['salary'].agg(['mean', 'min', 'max', 'count'])
+print("\n詳細統計:\n", agg_result)
+
+# 多欄位分組
+df['level'] = ['Junior', 'Senior', 'Junior', 'Senior', 'Senior', 'Junior']
+multi_group = df.groupby(['department', 'level'])['salary'].mean()
+print("\n多欄位分組:\n", multi_group)
+</code></pre>
+
+            <div class="tip-box">
+                <h4>Pandas 速查表</h4>
+                <table>
+                    <tr>
+                        <th>操作</th>
+                        <th>語法</th>
+                    </tr>
+                    <tr>
+                        <td>選取欄位</td>
+                        <td><code>df['column']</code> 或 <code>df.column</code></td>
+                    </tr>
+                    <tr>
+                        <td>篩選列</td>
+                        <td><code>df[df['column'] > value]</code></td>
+                    </tr>
+                    <tr>
+                        <td>排序</td>
+                        <td><code>df.sort_values('column')</code></td>
+                    </tr>
+                    <tr>
+                        <td>分組</td>
+                        <td><code>df.groupby('column').mean()</code></td>
+                    </tr>
+                    <tr>
+                        <td>缺失值</td>
+                        <td><code>df.isnull()</code>, <code>df.fillna()</code></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <div class="content">
+            <h2>3. Matplotlib 資料視覺化</h2>
+            
+            <h3>什麼是 Matplotlib？</h3>
+            <p><span class="highlight">Matplotlib</span> 是 Python 最流行的繪圖庫，可以創建各種靜態、動態、互動式的視覺化圖表。</p>
+
+            <h3>安裝與匯入</h3>
+            <pre><code class="language-python"># 安裝
+# !pip install matplotlib
+
+import matplotlib.pyplot as plt
+import numpy as np
+
+# Jupyter Notebook 中顯示圖表
+%matplotlib inline
+</code></pre>
+
+            <h3>基本繪圖</h3>
+            <pre><code class="language-python"># 折線圖
+x = np.linspace(0, 10, 100)
+y = np.sin(x)
+
+plt.figure(figsize=(10, 6))
+plt.plot(x, y, label='sin(x)', color='blue', linewidth=2)
+plt.plot(x, np.cos(x), label='cos(x)', color='red', linewidth=2, linestyle='--')
+
+plt.title('三角函數圖', fontsize=16)
+plt.xlabel('X 軸', fontsize=12)
+plt.ylabel('Y 軸', fontsize=12)
+plt.legend()
+plt.grid(True, alpha=0.3)
+plt.show()
+</code></pre>
+
+            <h3>常見圖表類型</h3>
+            <pre><code class="language-python"># 準備資料
+np.random.seed(42)
+data1 = np.random.randn(1000)
+data2 = np.random.randn(1000) + 2
+
+# 建立子圖
+fig, axes = plt.subplots(2, 2, figsize=(12, 10))
+
+# 1. 散點圖
+axes[0, 0].scatter(data1, data2, alpha=0.5)
+axes[0, 0].set_title('散點圖')
+axes[0, 0].set_xlabel('X')
+axes[0, 0].set_ylabel('Y')
+
+# 2. 長條圖
+categories = ['A', 'B', 'C', 'D']
+values = [23, 45, 56, 78]
+axes[0, 1].bar(categories, values, color='skyblue')
+axes[0, 1].set_title('長條圖')
+axes[0, 1].set_ylabel('數值')
+
+# 3. 直方圖
+axes[1, 0].hist(data1, bins=30, alpha=0.7, color='green', edgecolor='black')
+axes[1, 0].set_title('直方圖')
+axes[1, 0].set_xlabel('值')
+axes[1, 0].set_ylabel('頻率')
+
+# 4. 圓餅圖
+sizes = [15, 30, 45, 10]
+labels = ['A', 'B', 'C', 'D']
+axes[1, 1].pie(sizes, labels=labels, autopct='%1.1f%%', startangle=90)
+axes[1, 1].set_title('圓餅圖')
+
+plt.tight_layout()
+plt.show()
+</code></pre>
+
+            <h3>進階樣式設定</h3>
+            <pre><code class="language-python"># 使用樣式
+plt.style.use('seaborn-v0_8')  # 或 'ggplot', 'fivethirtyeight'
+
+# 自訂顏色和樣式
+fig, ax = plt.subplots(figsize=(10, 6))
+
+x = np.linspace(0, 10, 100)
+ax.plot(x, np.sin(x), 'b-', linewidth=2, label='sin(x)')
+ax.plot(x, np.cos(x), 'r--', linewidth=2, label='cos(x)')
+ax.plot(x, np.sin(x) * np.cos(x), 'g:', linewidth=3, label='sin(x)cos(x)')
+
+ax.set_title('進階樣式範例', fontsize=18, fontweight='bold')
+ax.set_xlabel('X 軸', fontsize=14)
+ax.set_ylabel('Y 軸', fontsize=14)
+ax.legend(loc='upper right', fontsize=12)
+ax.grid(True, linestyle=':', alpha=0.6)
+ax.set_xlim([0, 10])
+ax.set_ylim([-1.5, 1.5])
+
+plt.show()
+</code></pre>
+
+            <h3>整合 Pandas 繪圖</h3>
+            <pre><code class="language-python">import pandas as pd
+
+# 建立範例資料
+df = pd.DataFrame({
+    'date': pd.date_range('2024-01-01', periods=100),
+    'sales': np.random.randint(1000, 5000, 100),
+    'costs': np.random.randint(500, 3000, 100)
+})
+
+df['profit'] = df['sales'] - df['costs']
+
+# Pandas 內建繪圖
+df.set_index('date')[['sales', 'costs', 'profit']].plot(
+    figsize=(12, 6),
+    title='銷售趨勢分析',
+    ylabel='金額 (元)'
+)
+plt.grid(True, alpha=0.3)
+plt.show()
+
+# 長條圖
+df[['sales', 'costs']].iloc[:10].plot(
+    kind='bar',
+    figsize=(12, 6),
+    title='前 10 天銷售與成本比較'
+)
+plt.xticks(rotation=45)
+plt.show()
+</code></pre>
+
+            <div class="note-box">
+                <h4>Seaborn - 更美觀的統計圖表</h4>
+                <pre><code class="language-python"># 安裝 Seaborn
+# !pip install seaborn
+
+import seaborn as sns
+
+# 設定樣式
+sns.set_style("whitegrid")
+
+# 範例資料
+tips = sns.load_dataset("tips")
+
+# 散點圖矩陣
+sns.pairplot(tips, hue="time")
+plt.show()
+
+# 熱力圖
+corr = tips.corr()
+plt.figure(figsize=(8, 6))
+sns.heatmap(corr, annot=True, cmap='coolwarm', center=0)
+plt.title('相關性熱力圖')
+plt.show()
+</code></pre>
+            </div>
+        </div>
+
+        <div class="content">
+            <h2>4. 探索性資料分析（EDA）實戰</h2>
+            
+            <h3>什麼是 EDA？</h3>
+            <p><span class="highlight">探索性資料分析</span>（Exploratory Data Analysis, EDA）是在建模之前理解數據特徵、發現模式、檢測異常的過程。</p>
+
+            <div class="concept-box">
+                <h4>EDA 的核心步驟</h4>
+                <ol>
+                    <li><strong>資料載入與概覽</strong> - 了解資料結構和基本資訊</li>
+                    <li><strong>資料清理</strong> - 處理缺失值、異常值、重複資料</li>
+                    <li><strong>單變量分析</strong> - 分析每個變數的分佈和特徵</li>
+                    <li><strong>雙變量分析</strong> - 探索變數間的關係</li>
+                    <li><strong>多變量分析</strong> - 發現複雜的模式和相關性</li>
+                    <li><strong>特徵工程</strong> - 創建新特徵以提升模型性能</li>
+                </ol>
+            </div>
+
+            <h3>完整 EDA 範例</h3>
+            <pre><code class="language-python">import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# 設定顯示選項
+pd.set_option('display.max_columns', None)
+sns.set_style("whitegrid")
+
+# 1. 資料載入
+# 使用 Titanic 資料集作為範例
+df = sns.load_dataset('titanic')
+
+print("=" * 50)
+print("資料集基本資訊")
+print("=" * 50)
+print(f"資料形狀: {df.shape}")
+print(f"\n前 5 筆資料:")
+print(df.head())
+
+# 2. 資料概覽
+print("\n資料型態與缺失值:")
+print(df.info())
+
+print("\n數值欄位統計:")
+print(df.describe())
+
+print("\n類別欄位統計:")
+print(df.describe(include='object'))
+
+# 3. 缺失值分析
+missing = df.isnull().sum()
+missing_pct = 100 * df.isnull().sum() / len(df)
+missing_table = pd.DataFrame({
+    '缺失數量': missing,
+    '缺失百分比': missing_pct
+})
+print("\n缺失值統計:")
+print(missing_table[missing_table['缺失數量'] > 0])
+
+# 視覺化缺失值
+plt.figure(figsize=(10, 6))
+sns.heatmap(df.isnull(), cbar=False, yticklabels=False, cmap='viridis')
+plt.title('缺失值分佈圖')
+plt.show()
+
+# 4. 單變量分析
+# 數值變數分佈
+numerical_cols = df.select_dtypes(include=[np.number]).columns
+
+fig, axes = plt.subplots(2, 3, figsize=(15, 10))
+axes = axes.ravel()
+
+for idx, col in enumerate(numerical_cols[:6]):
+    axes[idx].hist(df[col].dropna(), bins=30, edgecolor='black')
+    axes[idx].set_title(f'{col} 分佈')
+    axes[idx].set_xlabel(col)
+    axes[idx].set_ylabel('頻率')
+
+plt.tight_layout()
+plt.show()
+
+# 類別變數分佈
+categorical_cols = df.select_dtypes(include=['object']).columns
+
+fig, axes = plt.subplots(2, 2, figsize=(12, 10))
+axes = axes.ravel()
+
+for idx, col in enumerate(categorical_cols[:4]):
+    value_counts = df[col].value_counts()
+    axes[idx].bar(range(len(value_counts)), value_counts.values)
+    axes[idx].set_xticks(range(len(value_counts)))
+    axes[idx].set_xticklabels(value_counts.index, rotation=45)
+    axes[idx].set_title(f'{col} 分佈')
+    axes[idx].set_ylabel('數量')
+
+plt.tight_layout()
+plt.show()
+
+# 5. 雙變量分析
+# 相關性分析
+plt.figure(figsize=(10, 8))
+correlation = df[numerical_cols].corr()
+sns.heatmap(correlation, annot=True, cmap='coolwarm', center=0, 
+            square=True, linewidths=1)
+plt.title('特徵相關性熱力圖')
+plt.show()
+
+# 散點圖矩陣
+sns.pairplot(df[['age', 'fare', 'survived']], hue='survived')
+plt.show()
+
+# 6. 目標變數分析
+if 'survived' in df.columns:
+    # 存活率
+    survival_rate = df['survived'].value_counts(normalize=True)
+    print("\n存活率:")
+    print(survival_rate)
+    
+    # 按不同特徵的存活率
+    fig, axes = plt.subplots(1, 3, figsize=(15, 5))
+    
+    # 按性別
+    df.groupby('sex')['survived'].mean().plot(kind='bar', ax=axes[0])
+    axes[0].set_title('按性別的存活率')
+    axes[0].set_ylabel('存活率')
+    
+    # 按艙等
+    df.groupby('pclass')['survived'].mean().plot(kind='bar', ax=axes[1])
+    axes[1].set_title('按艙等的存活率')
+    axes[1].set_ylabel('存活率')
+    
+    # 按年齡組
+    df['age_group'] = pd.cut(df['age'], bins=[0, 18, 35, 60, 100], 
+                             labels=['兒童', '青年', '中年', '老年'])
+    df.groupby('age_group')['survived'].mean().plot(kind='bar', ax=axes[2])
+    axes[2].set_title('按年齡組的存活率')
+    axes[2].set_ylabel('存活率')
+    
+    plt.tight_layout()
+    plt.show()
+
+# 7. 異常值檢測
+# 使用箱型圖
+plt.figure(figsize=(12, 6))
+df[numerical_cols].boxplot()
+plt.xticks(rotation=45)
+plt.title('數值特徵箱型圖')
+plt.show()
+
+# 8. 特徵工程範例
+# 創建新特徵
+df['family_size'] = df['sibsp'] + df['parch'] + 1
+df['is_alone'] = (df['family_size'] == 1).astype(int)
+
+print("\n新特徵:")
+print(df[['family_size', 'is_alone']].head())
+
+# 分析新特徵
+plt.figure(figsize=(12, 5))
+
+plt.subplot(1, 2, 1)
+df['family_size'].value_counts().sort_index().plot(kind='bar')
+plt.title('家庭規模分佈')
+plt.xlabel('家庭人數')
+plt.ylabel('數量')
+
+plt.subplot(1, 2, 2)
+df.groupby('family_size')['survived'].mean().plot(kind='bar')
+plt.title('家庭規模與存活率')
+plt.xlabel('家庭人數')
+plt.ylabel('存活率')
+
+plt.tight_layout()
+plt.show()
+
+print("\n" + "=" * 50)
+print("EDA 完成")
+print("=" * 50)
+</code></pre>
+
+            <div class="warning-box">
+                <h4>EDA 常見陷阱</h4>
+                <ul>
+                    <li><strong>過度依賴自動化</strong> - 不要只看數字，要理解背後的意義</li>
+                    <li><strong>忽略異常值</strong> - 異常值可能是錯誤，也可能是重要發現</li>
+                    <li><strong>遺漏相關性</strong> - 記得檢查變數間的交互作用</li>
+                    <li><strong>過度清理</strong> - 有時「髒數據」包含重要信息</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="content">
+            <h2>5. Jupyter Notebook 使用技巧</h2>
+            
+            <h3>什麼是 Jupyter Notebook？</h3>
+            <p><span class="highlight">Jupyter Notebook</span> 是一個互動式的開發環境，特別適合資料科學和機器學習工作。</p>
+
+            <h3>安裝與啟動</h3>
+            <pre><code class="language-python"># 安裝
+# !pip install jupyter
+
+# 啟動（在終端機執行）
+# jupyter notebook
+
+# 或使用 JupyterLab（更現代的介面）
+# !pip install jupyterlab
+# jupyter lab
+</code></pre>
+
+            <h3>常用快捷鍵</h3>
+            <table>
+                <tr>
+                    <th>操作</th>
+                    <th>快捷鍵</th>
+                </tr>
+                <tr>
+                    <td>執行儲存格</td>
+                    <td>Shift + Enter</td>
+                </tr>
+                <tr>
+                    <td>執行不移動</td>
+                    <td>Ctrl + Enter</td>
+                </tr>
+                <tr>
+                    <td>插入儲存格（上）</td>
+                    <td>A</td>
+                </tr>
+                <tr>
+                    <td>插入儲存格（下）</td>
+                    <td>B</td>
+                </tr>
+                <tr>
+                    <td>刪除儲存格</td>
+                    <td>D, D</td>
+                </tr>
+                <tr>
+                    <td>轉換為 Markdown</td>
+                    <td>M</td>
+                </tr>
+                <tr>
+                    <td>轉換為程式碼</td>
+                    <td>Y</td>
+                </tr>
+                <tr>
+                    <td>開啟指令面板</td>
+                    <td>Ctrl + Shift + P</td>
+                </tr>
+            </table>
+
+            <h3>Magic Commands</h3>
+            <pre><code class="language-python"># 顯示圖表在 notebook 中
+%matplotlib inline
+
+# 測量執行時間
+%timeit sum(range(100))
+
+# 測量單次執行時間
+%%time
+result = [i**2 for i in range(1000000)]
+
+# 列出所有變數
+%whos
+
+# 執行外部 Python 檔案
+%run script.py
+
+# 載入外部程式碼
+%load script.py
+
+# 顯示完整錯誤訊息
+%xmode Verbose
+
+# 啟用自動重載模組
+%load_ext autoreload
+%autoreload 2
+</code></pre>
+
+            <div class="tip-box">
+                <h4>最佳實踐</h4>
+                <ul>
+                    <li><strong>使用 Markdown</strong> - 加入說明文字，讓 notebook 易讀</li>
+                    <li><strong>保持簡潔</strong> - 一個儲存格做一件事</li>
+                    <li><strong>版本控制</strong> - 使用 Git 追蹤 notebook 變更</li>
+                    <li><strong>定期儲存</strong> - 避免工作遺失</li>
+                    <li><strong>清理輸出</strong> - 分享前清除敏感輸出</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="content">
+            <div class="exercise-section">
+                <h3>本週練習題</h3>
+                
+                <h4>基礎練習（必做）</h4>
+                <ol>
+                    <li>
+                        <strong>NumPy 陣列運算</strong><br>
+                        建立一個 5x5 的隨機整數矩陣（範圍 1-100），計算：
+                        <ul>
+                            <li>每一列的平均值</li>
+                            <li>每一行的最大值</li>
+                            <li>整個矩陣的標準差</li>
+                            <li>大於 50 的元素索引</li>
+                        </ul>
+                    </li>
+                    
+                    <li>
+                        <strong>Pandas 資料清理</strong><br>
+                        使用 Pandas 載入 CSV 檔案，執行：
+                        <ul>
+                            <li>檢查缺失值並以適當方式處理</li>
+                            <li>刪除重複資料</li>
+                            <li>將類別欄位轉換為數值編碼</li>
+                            <li>儲存清理後的資料</li>
+                        </ul>
+                    </li>
+                    
+                    <li>
+                        <strong>資料視覺化</strong><br>
+                        使用 Matplotlib/Seaborn 繪製：
+                        <ul>
+                            <li>時間序列折線圖</li>
+                            <li>類別資料長條圖</li>
+                            <li>數值分佈直方圖</li>
+                            <li>相關性熱力圖</li>
+                        </ul>
+                    </li>
+                </ol>
+
+                <h4>進階練習</h4>
+                <ol start="4">
+                    <li>
+                        <strong>完整 EDA 專案</strong><br>
+                        選擇 Kaggle 上的一個資料集，執行完整的探索性資料分析：
+                        <ul>
+                            <li>資料載入與概覽</li>
+                            <li>缺失值與異常值分析</li>
+                            <li>單變量、雙變量、多變量分析</li>
+                            <li>特徵工程</li>
+                            <li>撰寫分析報告</li>
+                        </ul>
+                    </li>
+                    
+                    <li>
+                        <strong>資料合併與轉換</strong><br>
+                        練習 Pandas 的進階操作：
+                        <ul>
+                            <li>多個資料表的合併（merge, join, concat）</li>
+                            <li>資料透視表（pivot_table）</li>
+                            <li>時間序列重採樣</li>
+                            <li>應用自訂函數（apply, map）</li>
+                        </ul>
+                    </li>
+                </ol>
+
+                <h4>挑戰練習</h4>
+                <ol start="6">
+                    <li>
+                        <strong>效能優化</strong><br>
+                        比較不同實現方式的效能：
+                        <ul>
+                            <li>Python 迴圈 vs NumPy 向量化</li>
+                            <li>Pandas apply vs 向量化操作</li>
+                            <li>記憶體使用優化</li>
+                            <li>撰寫效能報告</li>
+                        </ul>
+                    </li>
+                    
+                    <li>
+                        <strong>互動式視覺化</strong><br>
+                        使用 Plotly 或 Bokeh 建立互動式儀表板：
+                        <ul>
+                            <li>動態篩選器</li>
+                            <li>可縮放圖表</li>
+                            <li>多圖聯動</li>
+                            <li>匯出為 HTML</li>
+                        </ul>
+                    </li>
+                </ol>
+            </div>
+        </div>
+
+        <div class="content">
+            <h2>本週總結</h2>
+            
+            <h3>重點回顧</h3>
+            <ul>
+                <li>掌握 NumPy 陣列運算與向量化</li>
+                <li>熟練 Pandas 資料處理與分析</li>
+                <li>能夠使用 Matplotlib 進行資料視覺化</li>
+                <li>了解 EDA 流程與實踐</li>
+                <li>掌握 Jupyter Notebook 使用技巧</li>
+            </ul>
+
+            <h3>關鍵技能</h3>
+            <ul>
+                <li><strong>向量化思維</strong> - 避免迴圈，善用 NumPy 運算</li>
+                <li><strong>資料清理</strong> - 處理缺失值、異常值、重複資料</li>
+                <li><strong>視覺化能力</strong> - 快速理解數據特徵</li>
+                <li><strong>分析思維</strong> - 從數據中發現洞察</li>
+            </ul>
+
+            <h3>下週預告</h3>
+            <div class="note-box">
+                <h4>Week 2 - 機器學習數學基礎</h4>
+                <p>下週將學習 AI/ML 的數學基礎：</p>
+                <ul>
+                    <li>線性代數：向量、矩陣、特徵值</li>
+                    <li>微積分：導數、梯度、鏈式法則</li>
+                    <li>機率統計：分佈、期望值、貝氏定理</li>
+                    <li>最佳化：梯度下降、損失函數</li>
+                    <li>實戰：從零實現梯度下降演算法</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="nav-buttons">
+            <a href="index.html" class="btn btn-secondary">回首頁</a>
+            <a href="llm-week2.html" class="btn">Week 2：機器學習數學基礎</a>
+        </div>
+
+        <footer>
+            <p>LLM 與 AI/ML 課程 Week 1</p>
+            <p>NumPy · Pandas · Matplotlib · EDA · Jupyter</p>
+            <p style="font-size: 0.9em; color: #95a5a6;">© 2025 All Rights Reserved</p>
+        </footer>
+    </div>
+</body>
+</html>

@@ -1,0 +1,1464 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Week 9 - 進階 NLP 技術 | LLM 與 AI/ML 課程</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft JhengHei', Arial, sans-serif;
+            background: #f8f9fa;
+            color: #1a1a1a;
+            line-height: 1.7;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .nav {
+            background: white;
+            padding: 16px 28px;
+            border-radius: 8px;
+            margin-bottom: 32px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            border: 1px solid #e0e0e0;
+        }
+
+        .nav a {
+            color: #3498db;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 8px 16px;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+        }
+
+        .nav a:hover {
+            background: #ecf0f1;
+            color: #2980b9;
+        }
+
+        .nav span {
+            color: #6c757d;
+            font-weight: 500;
+        }
+
+        header {
+            background: linear-gradient(to right, #2c3e50, #34495e);
+            color: white;
+            padding: 56px 40px;
+            border-radius: 8px;
+            margin-bottom: 32px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            border-bottom: 3px solid #3498db;
+        }
+
+        header h1 {
+            font-size: 2.2em;
+            margin-bottom: 12px;
+            font-weight: 700;
+        }
+
+        header .subtitle {
+            font-size: 1.05em;
+            opacity: 0.9;
+            font-weight: 400;
+        }
+
+        .content {
+            background: white;
+            border-radius: 8px;
+            padding: 48px;
+            margin-bottom: 32px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            border: 1px solid #e0e0e0;
+        }
+
+        .content h2 {
+            color: #1a1a1a;
+            font-size: 1.9em;
+            margin-bottom: 24px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #3498db;
+            font-weight: 700;
+        }
+
+        .content h3 {
+            color: #2c3e50;
+            font-size: 1.5em;
+            margin: 36px 0 16px 0;
+            font-weight: 600;
+        }
+
+        .content h4 {
+            color: #34495e;
+            font-size: 1.2em;
+            margin: 24px 0 12px 0;
+            font-weight: 600;
+        }
+
+        .content p {
+            margin-bottom: 16px;
+            line-height: 1.8;
+            color: #4a4a4a;
+        }
+
+        pre[class*="language-"] {
+            margin: 24px 0;
+            border-radius: 6px;
+            border: 1px solid #d0d7de;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+        }
+
+        code[class*="language-"] {
+            font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
+            font-size: 0.92em;
+            line-height: 1.6;
+        }
+
+        .note-box {
+            background: #e3f2fd;
+            border-left: 4px solid #2196f3;
+            padding: 20px 24px;
+            margin: 24px 0;
+            border-radius: 4px;
+        }
+
+        .note-box h4 {
+            color: #1565c0;
+            margin-top: 0;
+            margin-bottom: 12px;
+            font-size: 1.1em;
+        }
+
+        .warning-box {
+            background: #fff3e0;
+            border-left: 4px solid #ff9800;
+            padding: 20px 24px;
+            margin: 24px 0;
+            border-radius: 4px;
+        }
+
+        .warning-box h4 {
+            color: #e65100;
+            margin-top: 0;
+            margin-bottom: 12px;
+            font-size: 1.1em;
+        }
+
+        .tip-box {
+            background: #f1f8e9;
+            border-left: 4px solid #8bc34a;
+            padding: 20px 24px;
+            margin: 24px 0;
+            border-radius: 4px;
+        }
+
+        .tip-box h4 {
+            color: #558b2f;
+            margin-top: 0;
+            margin-bottom: 12px;
+            font-size: 1.1em;
+        }
+
+        .concept-box {
+            background: #f3e5f5;
+            border-left: 4px solid #9c27b0;
+            padding: 20px 24px;
+            margin: 24px 0;
+            border-radius: 4px;
+        }
+
+        .concept-box h4 {
+            color: #6a1b9a;
+            margin-top: 0;
+            margin-bottom: 12px;
+            font-size: 1.1em;
+        }
+
+        .exercise-section {
+            background: #fafafa;
+            border: 1px solid #e0e0e0;
+            padding: 32px;
+            margin: 32px 0;
+            border-radius: 8px;
+        }
+
+        .exercise-section h3 {
+            color: #2c3e50;
+            margin-top: 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 24px 0;
+            background: white;
+        }
+
+        table th,
+        table td {
+            padding: 14px 16px;
+            text-align: left;
+            border: 1px solid #dee2e6;
+        }
+
+        table th {
+            background: #2c3e50;
+            color: white;
+            font-weight: 600;
+        }
+
+        table tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+
+        ul, ol {
+            margin-left: 28px;
+            margin-top: 12px;
+            margin-bottom: 16px;
+        }
+
+        li {
+            margin: 10px 0;
+            line-height: 1.7;
+            color: #4a4a4a;
+        }
+
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 48px;
+            gap: 16px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 28px;
+            background: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            border: none;
+        }
+
+        .btn:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
+        }
+
+        .btn-secondary {
+            background: #95a5a6;
+        }
+
+        .btn-secondary:hover {
+            background: #7f8c8d;
+            box-shadow: 0 4px 12px rgba(149, 165, 166, 0.3);
+        }
+
+        .highlight {
+            background: #fff9c4;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-weight: 500;
+        }
+
+        footer {
+            text-align: center;
+            padding: 32px 0;
+            color: #6c757d;
+            margin-top: 48px;
+            border-top: 1px solid #dee2e6;
+        }
+
+        footer p {
+            margin: 8px 0;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 12px;
+            }
+
+            .content {
+                padding: 24px 20px;
+            }
+
+            header {
+                padding: 32px 24px;
+            }
+
+            header h1 {
+                font-size: 1.8em;
+            }
+
+            .nav-buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="nav">
+            <a href="llm-week8.html">Week 8</a>
+            <span>Week 9 / 16</span>
+            <a href="llm-week10.html">Week 10</a>
+        </div>
+
+        <header>
+            <h1>Week 9 - 進階 NLP 技術</h1>
+            <div class="subtitle">Prompt Engineering、Few-Shot Learning 與參數高效微調</div>
+        </header>
+
+        <div class="content">
+            <h2>本週學習內容</h2>
+            <ul>
+                <li>Prompt Engineering 與 In-Context Learning</li>
+                <li>Few-Shot 與 Zero-Shot 學習</li>
+                <li>參數高效微調（LoRA、Adapter）</li>
+                <li>模型壓縮與知識蒸餾</li>
+                <li>實戰：構建問答系統</li>
+            </ul>
+
+            <div class="concept-box">
+                <h4>現代 LLM 的關鍵技術</h4>
+                <p>隨著模型規模增大，新的技術範式出現：</p>
+                <ul>
+                    <li><strong>Prompt Engineering</strong> - 不修改模型，只設計輸入</li>
+                    <li><strong>In-Context Learning</strong> - 在輸入中提供示例</li>
+                    <li><strong>參數高效微調</strong> - 只訓練少量參數</li>
+                    <li><strong>知識蒸餾</strong> - 將大模型知識遷移到小模型</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="content">
+            <h2>1. Prompt Engineering（提示工程）</h2>
+            
+            <h3>什麼是 Prompt Engineering？</h3>
+            <p><span class="highlight">Prompt Engineering</span> 是設計和優化輸入提示的藝術與科學，讓 LLM 產生期望的輸出。</p>
+
+            <div class="note-box">
+                <h4>為什麼 Prompt Engineering 重要？</h4>
+                <ul>
+                    <li><strong>無需訓練</strong> - 不需要微調模型或準備訓練資料</li>
+                    <li><strong>靈活性高</strong> - 可以快速嘗試不同的任務</li>
+                    <li><strong>成本低</strong> - 只需要推理成本，不需要訓練成本</li>
+                    <li><strong>可解釋性</strong> - 提示是人類可讀的自然語言</li>
+                </ul>
+            </div>
+
+            <h3>Prompt 的基本結構</h3>
+            <pre><code class="language-python">from transformers import pipeline
+
+# 載入語言模型
+generator = pipeline('text-generation', model='gpt2')
+
+# ===== 基本 Prompt =====
+prompt_basic = "Translate English to French: Hello, how are you?"
+print("基本 Prompt:")
+print(generator(prompt_basic, max_length=50)[0]['generated_text'])
+
+# ===== 帶指令的 Prompt =====
+prompt_instruction = """Instruction: Translate the following English sentence to French.
+English: Hello, how are you?
+French:"""
+print("\n帶指令的 Prompt:")
+print(generator(prompt_instruction, max_length=50)[0]['generated_text'])
+
+# ===== 帶範例的 Prompt (Few-Shot) =====
+prompt_few_shot = """Translate English to French:
+
+English: Good morning
+French: Bonjour
+
+English: Thank you
+French: Merci
+
+English: Hello, how are you?
+French:"""
+print("\nFew-Shot Prompt:")
+print(generator(prompt_few_shot, max_length=100)[0]['generated_text'])
+
+# ===== 帶思考鏈的 Prompt (Chain-of-Thought) =====
+prompt_cot = """Q: Roger has 5 tennis balls. He buys 2 more cans of tennis balls. 
+Each can has 3 tennis balls. How many tennis balls does he have now?
+A: Let's think step by step.
+Roger started with 5 balls.
+2 cans of 3 tennis balls each is 2 × 3 = 6 tennis balls.
+5 + 6 = 11.
+The answer is 11.
+
+Q: The cafeteria had 23 apples. If they used 20 to make lunch and bought 6 more, 
+how many apples do they have?
+A: Let's think step by step."""
+print("\nChain-of-Thought Prompt:")
+print(generator(prompt_cot, max_length=150)[0]['generated_text'])
+</code></pre>
+
+            <h3>Prompt 設計原則</h3>
+            <table>
+                <tr>
+                    <th>原則</th>
+                    <th>說明</th>
+                    <th>範例</th>
+                </tr>
+                <tr>
+                    <td>清晰明確</td>
+                    <td>使用清楚的指令</td>
+                    <td>"將以下文本翻譯成中文"</td>
+                </tr>
+                <tr>
+                    <td>提供上下文</td>
+                    <td>給出任務背景</td>
+                    <td>"你是一位專業翻譯，精通多國語言"</td>
+                </tr>
+                <tr>
+                    <td>使用範例</td>
+                    <td>提供輸入輸出示例</td>
+                    <td>Few-Shot 學習</td>
+                </tr>
+                <tr>
+                    <td>指定格式</td>
+                    <td>明確輸出格式</td>
+                    <td>"以 JSON 格式輸出"</td>
+                </tr>
+                <tr>
+                    <td>分步思考</td>
+                    <td>引導推理過程</td>
+                    <td>"讓我們一步步思考"</td>
+                </tr>
+                <tr>
+                    <td>設定角色</td>
+                    <td>定義模型身份</td>
+                    <td>"你是一位資深程式設計師"</td>
+                </tr>
+            </table>
+
+            <h3>進階 Prompt 技術</h3>
+            <pre><code class="language-python"># ===== 1. 角色扮演 (Role Playing) =====
+role_prompt = """You are a professional data scientist with 10 years of experience.
+Explain the concept of overfitting to a beginner in simple terms."""
+
+# ===== 2. 思維鏈 (Chain-of-Thought) =====
+cot_prompt = """Question: A farmer has 15 chickens and 8 cows. 
+How many legs are there in total?
+
+Let's solve this step by step:
+1. First, count chicken legs
+2. Then, count cow legs
+3. Finally, add them together
+
+Answer:"""
+
+# ===== 3. 自我一致性 (Self-Consistency) =====
+# 生成多個推理路徑，選擇最常見的答案
+consistency_prompt = """Question: If it takes 5 machines 5 minutes to make 5 widgets, 
+how long would it take 100 machines to make 100 widgets?
+
+Let's think about this carefully from different angles:
+
+Approach 1:"""
+
+# ===== 4. 反思 (Reflection) =====
+reflection_prompt = """Question: What is 25% of 80?
+
+First attempt: 25% of 80 is 25.
+
+Wait, let me check this answer. Is this correct?
+Let me recalculate:"""
+
+# ===== 5. 多步推理 (Multi-Step Reasoning) =====
+multi_step_prompt = """Solve the following problem:
+A store sells apples for $2 each and oranges for $3 each. 
+John bought some fruits for $20. He bought 4 apples. 
+How many oranges did he buy?
+
+Step 1: Calculate the total cost of apples
+Step 2: Calculate the remaining money
+Step 3: Calculate the number of oranges
+
+Solution:"""
+
+print("各種進階 Prompt 技術範例已定義")
+</code></pre>
+
+            <div class="tip-box">
+                <h4>Prompt Engineering 最佳實踐</h4>
+                <ul>
+                    <li><strong>迭代優化</strong> - 不斷測試和改進 prompt</li>
+                    <li><strong>溫度控制</strong> - 調整生成的隨機性（創意 vs 確定性）</li>
+                    <li><strong>長度限制</strong> - 考慮模型的上下文窗口</li>
+                    <li><strong>分隔符使用</strong> - 使用明確的分隔符（如 ###、---）</li>
+                    <li><strong>負面提示</strong> - 告訴模型不要做什麼</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="content">
+            <h2>2. In-Context Learning 與 Few-Shot Learning</h2>
+            
+            <h3>In-Context Learning</h3>
+            <p><span class="highlight">In-Context Learning</span> 是 GPT-3 展示的驚人能力：不需要梯度更新，只透過在輸入中提供示例就能學習新任務。</p>
+
+            <pre><code class="language-python">import torch
+from transformers import AutoModelForCausalLM, AutoTokenizer
+
+class FewShotLearner:
+    """Few-Shot 學習框架"""
+    def __init__(self, model_name='gpt2'):
+        self.tokenizer = AutoTokenizer.from_pretrained(model_name)
+        self.model = AutoModelForCausalLM.from_pretrained(model_name)
+        self.model.eval()
+    
+    def create_few_shot_prompt(self, task_description, examples, test_input):
+        """
+        建立 Few-Shot Prompt
+        
+        task_description: 任務描述
+        examples: [(input, output), ...] 示例列表
+        test_input: 測試輸入
+        """
+        prompt = f"{task_description}\n\n"
+        
+        # 添加示例
+        for inp, out in examples:
+            prompt += f"Input: {inp}\nOutput: {out}\n\n"
+        
+        # 添加測試輸入
+        prompt += f"Input: {test_input}\nOutput:"
+        
+        return prompt
+    
+    def generate(self, prompt, max_length=100, temperature=0.7):
+        """生成回應"""
+        inputs = self.tokenizer(prompt, return_tensors='pt')
+        
+        with torch.no_grad():
+            outputs = self.model.generate(
+                inputs['input_ids'],
+                max_length=max_length,
+                temperature=temperature,
+                top_p=0.9,
+                do_sample=True,
+                pad_token_id=self.tokenizer.eos_token_id
+            )
+        
+        generated_text = self.tokenizer.decode(outputs[0], skip_special_tokens=True)
+        
+        # 提取輸出部分
+        output = generated_text.split("Output:")[-1].strip()
+        return output
+
+# 測試 Few-Shot Learning
+learner = FewShotLearner()
+
+# ===== 任務 1: 情感分類 =====
+task_desc = "Classify the sentiment of the following sentences as positive or negative."
+examples = [
+    ("I love this movie!", "positive"),
+    ("This is terrible.", "negative"),
+    ("Amazing performance!", "positive"),
+    ("Waste of time.", "negative")
+]
+test_input = "This product exceeded my expectations."
+
+prompt = learner.create_few_shot_prompt(task_desc, examples, test_input)
+print("Few-Shot 情感分類:")
+print(f"Prompt:\n{prompt}\n")
+print(f"生成結果: {learner.generate(prompt)}")
+
+# ===== 任務 2: 命名實體識別 =====
+task_desc = "Extract person names from the following sentences."
+examples = [
+    ("John went to Paris.", "John"),
+    ("Mary and Bob are friends.", "Mary, Bob"),
+    ("The CEO is Sarah Johnson.", "Sarah Johnson")
+]
+test_input = "Dr. Michael Chen will present the findings."
+
+prompt = learner.create_few_shot_prompt(task_desc, examples, test_input)
+print("\n\nFew-Shot 命名實體識別:")
+print(f"生成結果: {learner.generate(prompt)}")
+
+# ===== 任務 3: 簡單推理 =====
+task_desc = "Answer the following questions with reasoning."
+examples = [
+    ("Q: If all cats are animals, and Fluffy is a cat, is Fluffy an animal?", 
+     "A: Yes, because Fluffy is a cat and all cats are animals."),
+    ("Q: If it's raining, the ground is wet. The ground is wet. Is it raining?", 
+     "A: Not necessarily, the ground could be wet for other reasons.")
+]
+test_input = "Q: If all birds can fly, and penguins are birds, can penguins fly?"
+
+prompt = learner.create_few_shot_prompt(task_desc, examples, test_input)
+print("\n\nFew-Shot 推理:")
+print(f"生成結果: {learner.generate(prompt, max_length=150)}")
+</code></pre>
+
+            <h3>Zero-Shot vs Few-Shot vs Fine-Tuning</h3>
+            <table>
+                <tr>
+                    <th>方法</th>
+                    <th>示例數量</th>
+                    <th>訓練</th>
+                    <th>優點</th>
+                    <th>缺點</th>
+                </tr>
+                <tr>
+                    <td>Zero-Shot</td>
+                    <td>0</td>
+                    <td>無</td>
+                    <td>即時、無需資料</td>
+                    <td>性能較低</td>
+                </tr>
+                <tr>
+                    <td>Few-Shot</td>
+                    <td>1-10</td>
+                    <td>無</td>
+                    <td>快速、少量資料</td>
+                    <td>受示例品質影響</td>
+                </tr>
+                <tr>
+                    <td>Fine-Tuning</td>
+                    <td>100+</td>
+                    <td>有</td>
+                    <td>性能最佳</td>
+                    <td>需要資料和計算</td>
+                </tr>
+            </table>
+
+            <div class="concept-box">
+                <h4>In-Context Learning 的原理</h4>
+                <p>研究顯示 In-Context Learning 可能的機制：</p>
+                <ul>
+                    <li><strong>模式匹配</strong> - 模型識別示例中的模式</li>
+                    <li><strong>任務推斷</strong> - 從示例推斷任務本質</li>
+                    <li><strong>隱式微調</strong> - 注意力機制實現類似微調的效果</li>
+                    <li><strong>記憶提取</strong> - 激活預訓練時學到的知識</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="content">
+            <h2>3. 參數高效微調（Parameter-Efficient Fine-Tuning）</h2>
+            
+            <h3>為什麼需要參數高效微調？</h3>
+            <p>隨著模型規模增大（如 GPT-3 175B），全量微調變得不切實際。<span class="highlight">參數高效微調</span>只訓練少量參數就能達到接近全量微調的效果。</p>
+
+            <h3>LoRA（Low-Rank Adaptation）</h3>
+            <p>LoRA 凍結預訓練權重，只訓練低秩分解矩陣。</p>
+
+            <pre><code class="language-python">import torch
+import torch.nn as nn
+
+class LoRALayer(nn.Module):
+    """
+    LoRA (Low-Rank Adaptation) 層
+    
+    W = W0 + ΔW = W0 + BA
+    其中 B ∈ R^(d×r), A ∈ R^(r×k), r << min(d,k)
+    """
+    def __init__(self, in_features, out_features, rank=4, alpha=1):
+        super(LoRALayer, self).__init__()
+        
+        self.rank = rank
+        self.alpha = alpha
+        
+        # 凍結的原始權重
+        self.weight = nn.Parameter(torch.randn(out_features, in_features))
+        self.weight.requires_grad = False
+        
+        # LoRA 參數（可訓練）
+        self.lora_A = nn.Parameter(torch.randn(rank, in_features))
+        self.lora_B = nn.Parameter(torch.zeros(out_features, rank))
+        
+        # 縮放因子
+        self.scaling = alpha / rank
+    
+    def forward(self, x):
+        # 原始線性變換
+        result = F.linear(x, self.weight)
+        
+        # LoRA 增量
+        lora_result = (x @ self.lora_A.T @ self.lora_B.T) * self.scaling
+        
+        return result + lora_result
+
+class LoRATransformer(nn.Module):
+    """帶 LoRA 的 Transformer 層"""
+    def __init__(self, d_model=512, num_heads=8, rank=4):
+        super(LoRATransformer, self).__init__()
+        
+        # 標準 Transformer 組件（凍結）
+        self.attention = nn.MultiheadAttention(d_model, num_heads)
+        self.norm1 = nn.LayerNorm(d_model)
+        self.norm2 = nn.LayerNorm(d_model)
+        
+        # 凍結預訓練參數
+        for param in self.attention.parameters():
+            param.requires_grad = False
+        
+        # 添加 LoRA 層（可訓練）
+        self.lora_query = LoRALayer(d_model, d_model, rank)
+        self.lora_value = LoRALayer(d_model, d_model, rank)
+        
+        # Feed-Forward
+        self.ff = nn.Sequential(
+            nn.Linear(d_model, d_model * 4),
+            nn.ReLU(),
+            nn.Linear(d_model * 4, d_model)
+        )
+    
+    def forward(self, x):
+        # Self-Attention with LoRA
+        # 這裡簡化，實際應該整合到 attention 中
+        attn_output, _ = self.attention(x, x, x)
+        x = self.norm1(x + attn_output)
+        
+        # Feed-Forward
+        ff_output = self.ff(x)
+        x = self.norm2(x + ff_output)
+        
+        return x
+
+# 測試 LoRA
+lora_layer = LoRALayer(512, 512, rank=8)
+
+print("LoRA 層參數:")
+print(f"原始權重: {lora_layer.weight.numel():,} (凍結)")
+print(f"LoRA A: {lora_layer.lora_A.numel():,}")
+print(f"LoRA B: {lora_layer.lora_B.numel():,}")
+print(f"可訓練參數: {lora_layer.lora_A.numel() + lora_layer.lora_B.numel():,}")
+print(f"參數比例: {(lora_layer.lora_A.numel() + lora_layer.lora_B.numel()) / lora_layer.weight.numel() * 100:.2f}%")
+
+# 測試前向傳播
+x = torch.randn(32, 512)
+output = lora_layer(x)
+print(f"\n輸入形狀: {x.shape}")
+print(f"輸出形狀: {output.shape}")
+</code></pre>
+
+            <h3>Adapter</h3>
+            <p>Adapter 在 Transformer 層之間插入小型可訓練模組。</p>
+
+            <pre><code class="language-python">class Adapter(nn.Module):
+    """
+    Adapter 模組
+    通常插入在 Transformer 層的 Feed-Forward 之後
+    """
+    def __init__(self, d_model, bottleneck_dim=64):
+        super(Adapter, self).__init__()
+        
+        self.down_project = nn.Linear(d_model, bottleneck_dim)
+        self.activation = nn.ReLU()
+        self.up_project = nn.Linear(bottleneck_dim, d_model)
+        
+        # 初始化為接近恆等映射
+        nn.init.zeros_(self.up_project.weight)
+        nn.init.zeros_(self.up_project.bias)
+    
+    def forward(self, x):
+        # Bottleneck 結構
+        residual = x
+        x = self.down_project(x)
+        x = self.activation(x)
+        x = self.up_project(x)
+        
+        # 殘差連接
+        return x + residual
+
+class AdapterTransformer(nn.Module):
+    """帶 Adapter 的 Transformer 層"""
+    def __init__(self, d_model=512, num_heads=8, bottleneck_dim=64):
+        super(AdapterTransformer, self).__init__()
+        
+        # 標準 Transformer 組件（凍結）
+        self.attention = nn.MultiheadAttention(d_model, num_heads)
+        self.norm1 = nn.LayerNorm(d_model)
+        
+        self.ff = nn.Sequential(
+            nn.Linear(d_model, d_model * 4),
+            nn.ReLU(),
+            nn.Linear(d_model * 4, d_model)
+        )
+        self.norm2 = nn.LayerNorm(d_model)
+        
+        # 凍結預訓練參數
+        for param in self.attention.parameters():
+            param.requires_grad = False
+        for param in self.ff.parameters():
+            param.requires_grad = False
+        
+        # 添加 Adapter（可訓練）
+        self.adapter1 = Adapter(d_model, bottleneck_dim)
+        self.adapter2 = Adapter(d_model, bottleneck_dim)
+    
+    def forward(self, x):
+        # Self-Attention
+        attn_output, _ = self.attention(x, x, x)
+        x = self.norm1(x + attn_output)
+        
+        # Adapter 1
+        x = self.adapter1(x)
+        
+        # Feed-Forward
+        ff_output = self.ff(x)
+        x = self.norm2(x + ff_output)
+        
+        # Adapter 2
+        x = self.adapter2(x)
+        
+        return x
+
+# 測試 Adapter
+adapter_model = AdapterTransformer(d_model=512, bottleneck_dim=64)
+
+# 計算參數量
+total_params = sum(p.numel() for p in adapter_model.parameters())
+trainable_params = sum(p.numel() for p in adapter_model.parameters() if p.requires_grad)
+
+print("Adapter 模型:")
+print(f"總參數量: {total_params:,}")
+print(f"可訓練參數: {trainable_params:,}")
+print(f"可訓練比例: {trainable_params / total_params * 100:.2f}%")
+</code></pre>
+
+            <h3>Prefix Tuning</h3>
+            <pre><code class="language-python">class PrefixTuning(nn.Module):
+    """
+    Prefix Tuning
+    在輸入序列前添加可訓練的虛擬 tokens
+    """
+    def __init__(self, d_model, prefix_length=10):
+        super(PrefixTuning, self).__init__()
+        
+        self.prefix_length = prefix_length
+        
+        # 可訓練的 prefix embeddings
+        self.prefix_embeddings = nn.Parameter(
+            torch.randn(prefix_length, d_model)
+        )
+    
+    def forward(self, x):
+        """
+        x: (batch_size, seq_len, d_model)
+        返回: (batch_size, prefix_length + seq_len, d_model)
+        """
+        batch_size = x.size(0)
+        
+        # 擴展 prefix 到 batch
+        prefix = self.prefix_embeddings.unsqueeze(0).expand(batch_size, -1, -1)
+        
+        # 拼接到輸入前面
+        x_with_prefix = torch.cat([prefix, x], dim=1)
+        
+        return x_with_prefix
+
+# 測試 Prefix Tuning
+prefix_tuning = PrefixTuning(d_model=512, prefix_length=20)
+
+x = torch.randn(8, 50, 512)  # (batch, seq_len, d_model)
+output = prefix_tuning(x)
+
+print(f"Prefix Tuning:")
+print(f"輸入形狀: {x.shape}")
+print(f"輸出形狀: {output.shape}")
+print(f"可訓練參數: {sum(p.numel() for p in prefix_tuning.parameters()):,}")
+</code></pre>
+
+            <h3>參數高效微調方法比較</h3>
+            <table>
+                <tr>
+                    <th>方法</th>
+                    <th>可訓練參數</th>
+                    <th>推理效率</th>
+                    <th>實作難度</th>
+                    <th>性能</th>
+                </tr>
+                <tr>
+                    <td>Full Fine-Tuning</td>
+                    <td>100%</td>
+                    <td>標準</td>
+                    <td>簡單</td>
+                    <td>最佳</td>
+                </tr>
+                <tr>
+                    <td>LoRA</td>
+                    <td>0.1-1%</td>
+                    <td>標準</td>
+                    <td>中等</td>
+                    <td>優秀</td>
+                </tr>
+                <tr>
+                    <td>Adapter</td>
+                    <td>1-5%</td>
+                    <td>稍慢</td>
+                    <td>簡單</td>
+                    <td>良好</td>
+                </tr>
+                <tr>
+                    <td>Prefix Tuning</td>
+                    <td>0.01-0.1%</td>
+                    <td>稍慢</td>
+                    <td>簡單</td>
+                    <td>良好</td>
+                </tr>
+                <tr>
+                    <td>Prompt Tuning</td>
+                    <td>< 0.01%</td>
+                    <td>標準</td>
+                    <td>簡單</td>
+                    <td>中等</td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="content">
+            <h2>4. 知識蒸餾（Knowledge Distillation）</h2>
+            
+            <h3>知識蒸餾原理</h3>
+            <p><span class="highlight">知識蒸餾</span>將大型教師模型的知識遷移到小型學生模型，實現模型壓縮。</p>
+
+            <pre><code class="language-python">import torch
+import torch.nn as nn
+import torch.nn.functional as F
+
+class DistillationLoss(nn.Module):
+    """
+    知識蒸餾損失
+    結合硬標籤損失和軟標籤損失
+    """
+    def __init__(self, temperature=3.0, alpha=0.5):
+        super(DistillationLoss, self).__init__()
+        
+        self.temperature = temperature
+        self.alpha = alpha
+        self.ce_loss = nn.CrossEntropyLoss()
+    
+    def forward(self, student_logits, teacher_logits, labels):
+        """
+        student_logits: 學生模型的輸出 logits
+        teacher_logits: 教師模型的輸出 logits
+        labels: 真實標籤
+        """
+        # 硬標籤損失（與真實標籤比較）
+        hard_loss = self.ce_loss(student_logits, labels)
+        
+        # 軟標籤損失（與教師模型比較）
+        # 使用溫度軟化機率分佈
+        student_soft = F.log_softmax(student_logits / self.temperature, dim=1)
+        teacher_soft = F.softmax(teacher_logits / self.temperature, dim=1)
+        
+        # KL 散度
+        soft_loss = F.kl_div(
+            student_soft, 
+            teacher_soft, 
+            reduction='batchmean'
+        ) * (self.temperature ** 2)
+        
+        # 加權組合
+        total_loss = self.alpha * hard_loss + (1 - self.alpha) * soft_loss
+        
+        return total_loss, hard_loss, soft_loss
+
+def distill_model(teacher_model, student_model, train_loader, 
+                  num_epochs=10, temperature=3.0, alpha=0.5, device='cuda'):
+    """
+    知識蒸餾訓練流程
+    """
+    teacher_model.eval()  # 教師模型不訓練
+    teacher_model.to(device)
+    
+    student_model.train()
+    student_model.to(device)
+    
+    criterion = DistillationLoss(temperature, alpha)
+    optimizer = torch.optim.Adam(student_model.parameters(), lr=1e-3)
+    
+    for epoch in range(num_epochs):
+        epoch_loss = 0
+        epoch_hard_loss = 0
+        epoch_soft_loss = 0
+        
+        for batch_idx, (data, labels) in enumerate(train_loader):
+            data, labels = data.to(device), labels.to(device)
+            
+            # 教師模型預測（不計算梯度）
+            with torch.no_grad():
+                teacher_logits = teacher_model(data)
+            
+            # 學生模型預測
+            student_logits = student_model(data)
+            
+            # 計算蒸餾損失
+            loss, hard_loss, soft_loss = criterion(student_logits, teacher_logits, labels)
+            
+            # 反向傳播
+            optimizer.zero_grad()
+            loss.backward()
+            optimizer.step()
+            
+            epoch_loss += loss.item()
+            epoch_hard_loss += hard_loss.item()
+            epoch_soft_loss += soft_loss.item()
+        
+        avg_loss = epoch_loss / len(train_loader)
+        avg_hard = epoch_hard_loss / len(train_loader)
+        avg_soft = epoch_soft_loss / len(train_loader)
+        
+        print(f"Epoch {epoch+1}/{num_epochs}")
+        print(f"  Total Loss: {avg_loss:.4f}")
+        print(f"  Hard Loss: {avg_hard:.4f}")
+        print(f"  Soft Loss: {avg_soft:.4f}")
+    
+    return student_model
+
+# 測試知識蒸餾
+# 假設我們有教師和學生模型
+class TeacherModel(nn.Module):
+    def __init__(self, num_classes=10):
+        super(TeacherModel, self).__init__()
+        self.fc1 = nn.Linear(784, 512)
+        self.fc2 = nn.Linear(512, 256)
+        self.fc3 = nn.Linear(256, num_classes)
+    
+    def forward(self, x):
+        x = x.view(x.size(0), -1)
+        x = F.relu(self.fc1(x))
+        x = F.relu(self.fc2(x))
+        x = self.fc3(x)
+        return x
+
+class StudentModel(nn.Module):
+    def __init__(self, num_classes=10):
+        super(StudentModel, self).__init__()
+        self.fc1 = nn.Linear(784, 128)
+        self.fc2 = nn.Linear(128, num_classes)
+    
+    def forward(self, x):
+        x = x.view(x.size(0), -1)
+        x = F.relu(self.fc1(x))
+        x = self.fc2(x)
+        return x
+
+teacher = TeacherModel()
+student = StudentModel()
+
+print("模型比較:")
+print(f"教師模型參數: {sum(p.numel() for p in teacher.parameters()):,}")
+print(f"學生模型參數: {sum(p.numel() for p in student.parameters()):,}")
+print(f"壓縮比例: {sum(p.numel() for p in student.parameters()) / sum(p.numel() for p in teacher.parameters()) * 100:.1f}%")
+
+# 測試蒸餾損失
+criterion = DistillationLoss(temperature=3.0, alpha=0.5)
+
+# 模擬資料
+batch_size = 32
+student_logits = torch.randn(batch_size, 10)
+teacher_logits = torch.randn(batch_size, 10)
+labels = torch.randint(0, 10, (batch_size,))
+
+loss, hard_loss, soft_loss = criterion(student_logits, teacher_logits, labels)
+print(f"\n蒸餾損失測試:")
+print(f"總損失: {loss.item():.4f}")
+print(f"硬標籤損失: {hard_loss.item():.4f}")
+print(f"軟標籤損失: {soft_loss.item():.4f}")
+</code></pre>
+
+            <div class="tip-box">
+                <h4>知識蒸餾技巧</h4>
+                <ul>
+                    <li><strong>溫度設定</strong> - 通常 2-5 之間，越高越軟化</li>
+                    <li><strong>損失平衡</strong> - alpha 通常 0.3-0.7</li>
+                    <li><strong>中間層蒸餾</strong> - 也可以蒸餾中間層特徵</li>
+                    <li><strong>多教師蒸餾</strong> - 使用多個教師模型</li>
+                    <li><strong>自蒸餾</strong> - 使用模型自己作為教師</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="content">
+            <h2>5. 實戰：構建問答系統</h2>
+            
+            <h3>使用 BERT 的問答系統</h3>
+            <pre><code class="language-python">from transformers import BertForQuestionAnswering, BertTokenizer
+import torch
+
+class QASystem:
+    """基於 BERT 的問答系統"""
+    def __init__(self, model_name='bert-large-uncased-whole-word-masking-finetuned-squad'):
+        self.tokenizer = BertTokenizer.from_pretrained(model_name)
+        self.model = BertForQuestionAnswering.from_pretrained(model_name)
+        self.model.eval()
+    
+    def answer_question(self, question, context):
+        """
+        從上下文中找出問題的答案
+        
+        question: 問題
+        context: 包含答案的文本
+        """
+        # 編碼
+        inputs = self.tokenizer.encode_plus(
+            question,
+            context,
+            add_special_tokens=True,
+            return_tensors='pt',
+            max_length=512,
+            truncation=True
+        )
+        
+        input_ids = inputs['input_ids']
+        attention_mask = inputs['attention_mask']
+        
+        # 預測
+        with torch.no_grad():
+            outputs = self.model(input_ids=input_ids, attention_mask=attention_mask)
+        
+        # 獲取開始和結束位置
+        answer_start = torch.argmax(outputs.start_logits)
+        answer_end = torch.argmax(outputs.end_logits) + 1
+        
+        # 提取答案
+        answer = self.tokenizer.convert_tokens_to_string(
+            self.tokenizer.convert_ids_to_tokens(input_ids[0][answer_start:answer_end])
+        )
+        
+        # 計算置信度
+        start_prob = torch.softmax(outputs.start_logits, dim=1)[0, answer_start].item()
+        end_prob = torch.softmax(outputs.end_logits, dim=1)[0, answer_end-1].item()
+        confidence = (start_prob + end_prob) / 2
+        
+        return {
+            'answer': answer,
+            'confidence': confidence,
+            'start': answer_start.item(),
+            'end': answer_end.item()
+        }
+
+# 測試問答系統
+qa_system = QASystem()
+
+context = """
+The Transformer architecture was introduced in the paper "Attention Is All You Need" 
+by Vaswani et al. in 2017. It revolutionized natural language processing by replacing 
+recurrent neural networks with self-attention mechanisms. The model achieved 
+state-of-the-art results on machine translation tasks and became the foundation 
+for modern large language models like BERT and GPT.
+"""
+
+questions = [
+    "When was the Transformer introduced?",
+    "Who introduced the Transformer?",
+    "What did the Transformer replace?",
+    "What models are based on Transformer?"
+]
+
+print("問答系統測試:\n")
+for question in questions:
+    result = qa_system.answer_question(question, context)
+    print(f"Q: {question}")
+    print(f"A: {result['answer']}")
+    print(f"置信度: {result['confidence']:.2%}\n")
+</code></pre>
+
+            <h3>使用 RAG 的問答系統</h3>
+            <p>RAG (Retrieval-Augmented Generation) 結合檢索和生成。</p>
+
+            <pre><code class="language-python">import numpy as np
+from sklearn.metrics.pairwise import cosine_similarity
+from transformers import AutoTokenizer, AutoModel
+
+class RAGSystem:
+    """
+    Retrieval-Augmented Generation 問答系統
+    """
+    def __init__(self, encoder_model='sentence-transformers/all-MiniLM-L6-v2'):
+        self.tokenizer = AutoTokenizer.from_pretrained(encoder_model)
+        self.encoder = AutoModel.from_pretrained(encoder_model)
+        self.encoder.eval()
+        
+        self.knowledge_base = []
+        self.embeddings = []
+    
+    def encode_text(self, text):
+        """將文本編碼為向量"""
+        inputs = self.tokenizer(text, return_tensors='pt', 
+                               padding=True, truncation=True, max_length=512)
+        
+        with torch.no_grad():
+            outputs = self.encoder(**inputs)
+        
+        # 使用 [CLS] token 的輸出
+        embeddings = outputs.last_hidden_state[:, 0, :].numpy()
+        return embeddings
+    
+    def add_documents(self, documents):
+        """添加文檔到知識庫"""
+        for doc in documents:
+            self.knowledge_base.append(doc)
+            embedding = self.encode_text(doc)
+            self.embeddings.append(embedding)
+        
+        self.embeddings = np.vstack(self.embeddings)
+        print(f"已添加 {len(documents)} 個文檔到知識庫")
+    
+    def retrieve(self, query, top_k=3):
+        """檢索最相關的文檔"""
+        query_embedding = self.encode_text(query)
+        
+        # 計算相似度
+        similarities = cosine_similarity(query_embedding, self.embeddings)[0]
+        
+        # 獲取 top-k
+        top_indices = np.argsort(similarities)[-top_k:][::-1]
+        
+        results = [
+            {
+                'document': self.knowledge_base[idx],
+                'similarity': similarities[idx]
+            }
+            for idx in top_indices
+        ]
+        
+        return results
+    
+    def answer_question(self, question, top_k=3):
+        """回答問題"""
+        # 檢索相關文檔
+        retrieved_docs = self.retrieve(question, top_k)
+        
+        # 組合上下文
+        context = "\n\n".join([doc['document'] for doc in retrieved_docs])
+        
+        # 這裡可以使用生成模型來生成答案
+        # 為了演示，我們返回檢索到的文檔
+        return {
+            'context': context,
+            'retrieved_docs': retrieved_docs
+        }
+
+# 測試 RAG 系統
+rag_system = RAGSystem()
+
+# 添加知識庫
+documents = [
+    "Python is a high-level programming language known for its simplicity and readability.",
+    "Machine learning is a subset of artificial intelligence that uses algorithms to learn from data.",
+    "Neural networks are computing systems inspired by biological neural networks.",
+    "Deep learning uses multiple layers of neural networks to learn hierarchical representations.",
+    "Natural language processing enables computers to understand and generate human language.",
+    "The Transformer architecture revolutionized NLP with its self-attention mechanism."
+]
+
+rag_system.add_documents(documents)
+
+# 測試檢索
+question = "What is deep learning?"
+result = rag_system.answer_question(question)
+
+print(f"\n問題: {question}\n")
+print("檢索到的文檔:")
+for i, doc in enumerate(result['retrieved_docs'], 1):
+    print(f"\n{i}. (相似度: {doc['similarity']:.3f})")
+    print(f"   {doc['document']}")
+</code></pre>
+
+            <div class="note-box">
+                <h4>RAG 系統的優勢</h4>
+                <ul>
+                    <li><strong>知識更新</strong> - 不需要重新訓練模型</li>
+                    <li><strong>可解釋性</strong> - 可以追溯答案來源</li>
+                    <li><strong>減少幻覺</strong> - 基於檢索到的事實</li>
+                    <li><strong>領域適應</strong> - 容易添加領域知識</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="content">
+            <div class="exercise-section">
+                <h3>本週練習題</h3>
+                
+                <h4>基礎練習（必做）</h4>
+                <ol>
+                    <li>
+                        <strong>Prompt Engineering 實驗</strong>
+                        <ul>
+                            <li>設計不同類型的 prompts</li>
+                            <li>比較 zero-shot、one-shot、few-shot 效果</li>
+                            <li>實驗 Chain-of-Thought prompting</li>
+                            <li>分析溫度參數的影響</li>
+                        </ul>
+                    </li>
+                    
+                    <li>
+                        <strong>實作 LoRA</strong>
+                        <ul>
+                            <li>從零實現 LoRA 層</li>
+                            <li>將 LoRA 應用到小型語言模型</li>
+                            <li>比較不同 rank 的效果</li>
+                            <li>分析參數效率</li>
+                        </ul>
+                    </li>
+                    
+                    <li>
+                        <strong>知識蒸餾實驗</strong>
+                        <ul>
+                            <li>訓練教師模型和學生模型</li>
+                            <li>實現知識蒸餾訓練流程</li>
+                            <li>比較不同溫度的效果</li>
+                            <li>評估壓縮後的性能</li>
+                        </ul>
+                    </li>
+                </ol>
+
+                <h4>進階練習</h4>
+                <ol start="4">
+                    <li>
+                        <strong>構建完整的 QA 系統</strong>
+                        <ul>
+                            <li>使用 BERT 或其他模型</li>
+                            <li>在 SQuAD 資料集上評估</li>
+                            <li>實現置信度估計</li>
+                            <li>處理無答案情況</li>
+                        </ul>
+                    </li>
+                    
+                    <li>
+                        <strong>實作 RAG 系統</strong>
+                        <ul>
+                            <li>建立向量資料庫</li>
+                            <li>實現高效檢索</li>
+                            <li>整合生成模型</li>
+                            <li>評估端到端性能</li>
+                        </ul>
+                    </li>
+                </ol>
+
+                <h4>挑戰練習</h4>
+                <ol start="6">
+                    <li>
+                        <strong>多技術結合</strong>
+                        <ul>
+                            <li>結合 LoRA + Prompt Tuning</li>
+                            <li>實現層次化知識蒸餾</li>
+                            <li>構建多任務學習系統</li>
+                            <li>比較不同方法的效果</li>
+                        </ul>
+                    </li>
+                    
+                    <li>
+                        <strong>優化與部署</strong>
+                        <ul>
+                            <li>實現模型量化（INT8）</li>
+                            <li>優化推理速度</li>
+                            <li>部署為 API 服務</li>
+                            <li>進行壓力測試</li>
+                        </ul>
+                    </li>
+                </ol>
+            </div>
+        </div>
+
+        <div class="content">
+            <h2>本週總結</h2>
+            
+            <h3>重點回顧</h3>
+            <ul>
+                <li>掌握 Prompt Engineering 的原則與技術</li>
+                <li>理解 In-Context Learning 的機制</li>
+                <li>學會參數高效微調方法（LoRA、Adapter）</li>
+                <li>掌握知識蒸餾技術</li>
+                <li>構建實用的問答系統</li>
+            </ul>
+
+            <h3>關鍵概念</h3>
+            <ul>
+                <li><strong>Prompt Engineering</strong> - 設計輸入而非訓練模型</li>
+                <li><strong>Few-Shot Learning</strong> - 從少量示例學習</li>
+                <li><strong>PEFT</strong> - 只訓練少量參數達到接近全量微調效果</li>
+                <li><strong>知識蒸餾</strong> - 大模型知識遷移到小模型</li>
+                <li><strong>RAG</strong> - 結合檢索與生成的混合系統</li>
+            </ul>
+
+            <h3>實用技術總結</h3>
+            <table>
+                <tr>
+                    <th>技術</th>
+                    <th>適用場景</th>
+                    <th>優勢</th>
+                    <th>挑戰</th>
+                </tr>
+                <tr>
+                    <td>Prompt Engineering</td>
+                    <td>快速原型、零樣本任務</td>
+                    <td>無需訓練、靈活</td>
+                    <td>性能受限、難以優化</td>
+                </tr>
+                <tr>
+                    <td>LoRA</td>
+                    <td>大模型微調</td>
+                    <td>參數少、效果好</td>
+                    <td>需要實作</td>
+                </tr>
+                <tr>
+                    <td>知識蒸餾</td>
+                    <td>模型壓縮、部署</td>
+                    <td>小模型、快速</td>
+                    <td>需要教師模型</td>
+                </tr>
+                <tr>
+                    <td>RAG</td>
+                    <td>知識密集型任務</td>
+                    <td>可更新、可追溯</td>
+                    <td>檢索效率</td>
+                </tr>
+            </table>
+
+            <h3>下週預告</h3>
+            <div class="note-box">
+                <h4>Week 10 - 多模態學習</h4>
+                <p>下週將學習跨模態的深度學習技術：</p>
+                <ul>
+                    <li>Vision Transformer (ViT)</li>
+                    <li>CLIP：視覺與語言對齊</li>
+                    <li>多模態融合技術</li>
+                    <li>影像描述生成（Image Captioning）</li>
+                    <li>實戰：視覺問答系統（VQA）</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="nav-buttons">
+            <a href="llm-week8.html" class="btn btn-secondary">Week 8：BERT 與 GPT</a>
+            <a href="llm-week10.html" class="btn">Week 10：多模態學習</a>
+        </div>
+
+        <footer>
+            <p>LLM 與 AI/ML 課程 Week 9</p>
+            <p>Prompt Engineering · Few-Shot Learning · LoRA · 知識蒸餾 · 問答系統</p>
+            <p style="font-size: 0.9em; color: #95a5a6;">© 2025 All Rights Reserved</p>
+        </footer>
+    </div>
+</body>
+</html>

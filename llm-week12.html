@@ -1,0 +1,1545 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Week 12 - RLHF 與 LLM 對齊 | LLM 與 AI/ML 課程</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft JhengHei', Arial, sans-serif;
+            background: #f8f9fa;
+            color: #1a1a1a;
+            line-height: 1.7;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .nav {
+            background: white;
+            padding: 16px 28px;
+            border-radius: 8px;
+            margin-bottom: 32px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            border: 1px solid #e0e0e0;
+        }
+
+        .nav a {
+            color: #3498db;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 8px 16px;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+        }
+
+        .nav a:hover {
+            background: #ecf0f1;
+            color: #2980b9;
+        }
+
+        .nav span {
+            color: #6c757d;
+            font-weight: 500;
+        }
+
+        header {
+            background: linear-gradient(to right, #2c3e50, #34495e);
+            color: white;
+            padding: 56px 40px;
+            border-radius: 8px;
+            margin-bottom: 32px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            border-bottom: 3px solid #3498db;
+        }
+
+        header h1 {
+            font-size: 2.2em;
+            margin-bottom: 12px;
+            font-weight: 700;
+        }
+
+        header .subtitle {
+            font-size: 1.05em;
+            opacity: 0.9;
+            font-weight: 400;
+        }
+
+        .content {
+            background: white;
+            border-radius: 8px;
+            padding: 48px;
+            margin-bottom: 32px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            border: 1px solid #e0e0e0;
+        }
+
+        .content h2 {
+            color: #1a1a1a;
+            font-size: 1.9em;
+            margin-bottom: 24px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #3498db;
+            font-weight: 700;
+        }
+
+        .content h3 {
+            color: #2c3e50;
+            font-size: 1.5em;
+            margin: 36px 0 16px 0;
+            font-weight: 600;
+        }
+
+        .content h4 {
+            color: #34495e;
+            font-size: 1.2em;
+            margin: 24px 0 12px 0;
+            font-weight: 600;
+        }
+
+        .content p {
+            margin-bottom: 16px;
+            line-height: 1.8;
+            color: #4a4a4a;
+        }
+
+        pre[class*="language-"] {
+            margin: 24px 0;
+            border-radius: 6px;
+            border: 1px solid #d0d7de;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+        }
+
+        code[class*="language-"] {
+            font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
+            font-size: 0.92em;
+            line-height: 1.6;
+        }
+
+        .note-box {
+            background: #e3f2fd;
+            border-left: 4px solid #2196f3;
+            padding: 20px 24px;
+            margin: 24px 0;
+            border-radius: 4px;
+        }
+
+        .note-box h4 {
+            color: #1565c0;
+            margin-top: 0;
+            margin-bottom: 12px;
+            font-size: 1.1em;
+        }
+
+        .warning-box {
+            background: #fff3e0;
+            border-left: 4px solid #ff9800;
+            padding: 20px 24px;
+            margin: 24px 0;
+            border-radius: 4px;
+        }
+
+        .warning-box h4 {
+            color: #e65100;
+            margin-top: 0;
+            margin-bottom: 12px;
+            font-size: 1.1em;
+        }
+
+        .tip-box {
+            background: #f1f8e9;
+            border-left: 4px solid #8bc34a;
+            padding: 20px 24px;
+            margin: 24px 0;
+            border-radius: 4px;
+        }
+
+        .tip-box h4 {
+            color: #558b2f;
+            margin-top: 0;
+            margin-bottom: 12px;
+            font-size: 1.1em;
+        }
+
+        .concept-box {
+            background: #f3e5f5;
+            border-left: 4px solid #9c27b0;
+            padding: 20px 24px;
+            margin: 24px 0;
+            border-radius: 4px;
+        }
+
+        .concept-box h4 {
+            color: #6a1b9a;
+            margin-top: 0;
+            margin-bottom: 12px;
+            font-size: 1.1em;
+        }
+
+        .exercise-section {
+            background: #fafafa;
+            border: 1px solid #e0e0e0;
+            padding: 32px;
+            margin: 32px 0;
+            border-radius: 8px;
+        }
+
+        .exercise-section h3 {
+            color: #2c3e50;
+            margin-top: 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 24px 0;
+            background: white;
+        }
+
+        table th,
+        table td {
+            padding: 14px 16px;
+            text-align: left;
+            border: 1px solid #dee2e6;
+        }
+
+        table th {
+            background: #2c3e50;
+            color: white;
+            font-weight: 600;
+        }
+
+        table tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+
+        ul, ol {
+            margin-left: 28px;
+            margin-top: 12px;
+            margin-bottom: 16px;
+        }
+
+        li {
+            margin: 10px 0;
+            line-height: 1.7;
+            color: #4a4a4a;
+        }
+
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 48px;
+            gap: 16px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 28px;
+            background: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            border: none;
+        }
+
+        .btn:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
+        }
+
+        .btn-secondary {
+            background: #95a5a6;
+        }
+
+        .btn-secondary:hover {
+            background: #7f8c8d;
+            box-shadow: 0 4px 12px rgba(149, 165, 166, 0.3);
+        }
+
+        .highlight {
+            background: #fff9c4;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-weight: 500;
+        }
+
+        footer {
+            text-align: center;
+            padding: 32px 0;
+            color: #6c757d;
+            margin-top: 48px;
+            border-top: 1px solid #dee2e6;
+        }
+
+        footer p {
+            margin: 8px 0;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 12px;
+            }
+
+            .content {
+                padding: 24px 20px;
+            }
+
+            header {
+                padding: 32px 24px;
+            }
+
+            header h1 {
+                font-size: 1.8em;
+            }
+
+            .nav-buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="nav">
+            <a href="llm-week11.html">Week 11</a>
+            <span>Week 12 / 16</span>
+            <a href="llm-week13.html">Week 13</a>
+        </div>
+
+        <header>
+            <h1>Week 12 - RLHF 與 LLM 對齊</h1>
+            <div class="subtitle">從人類反饋中學習：訓練 ChatGPT 的核心技術</div>
+        </header>
+
+        <div class="content">
+            <h2>本週學習內容</h2>
+            <ul>
+                <li>RLHF 完整流程與三階段訓練</li>
+                <li>獎勵模型（Reward Model）訓練</li>
+                <li>使用 PPO 微調 LLM</li>
+                <li>DPO（Direct Preference Optimization）</li>
+                <li>實戰：構建對齊的對話模型</li>
+            </ul>
+
+            <div class="concept-box">
+                <h4>為什麼需要 RLHF？</h4>
+                <p>預訓練的語言模型雖然強大，但存在問題：</p>
+                <ul>
+                    <li><strong>對齊問題</strong> - 模型目標與人類意圖不一致</li>
+                    <li><strong>有害輸出</strong> - 可能生成偏見、虛假或危險內容</li>
+                    <li><strong>不遵循指令</strong> - 未必按照使用者要求行動</li>
+                    <li><strong>RLHF 解決方案</strong> - 透過人類反饋引導模型行為</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="content">
+            <h2>1. RLHF 的三階段訓練</h2>
+            
+            <h3>RLHF 完整流程</h3>
+            <p><span class="highlight">RLHF</span> 包含三個關鍵階段：預訓練、獎勵模型訓練、RL 微調。</p>
+
+            <div class="note-box">
+                <h4>RLHF 三階段</h4>
+                <ol>
+                    <li><strong>階段 1：監督式微調（SFT）</strong>
+                        <ul>
+                            <li>在高品質示範資料上微調預訓練模型</li>
+                            <li>學習遵循指令的基本能力</li>
+                            <li>資料量：通常數萬條高品質對話</li>
+                        </ul>
+                    </li>
+                    <li><strong>階段 2：獎勵模型訓練（RM）</strong>
+                        <ul>
+                            <li>標註者對模型輸出進行排序</li>
+                            <li>訓練獎勵模型預測人類偏好</li>
+                            <li>資料量：數十萬條比較資料</li>
+                        </ul>
+                    </li>
+                    <li><strong>階段 3：強化學習微調（RL）</strong>
+                        <ul>
+                            <li>使用 PPO 優化策略模型</li>
+                            <li>最大化獎勵模型的輸出</li>
+                            <li>加入 KL 懲罰防止偏離太遠</li>
+                        </ul>
+                    </li>
+                </ol>
+            </div>
+
+            <pre><code class="language-python">import torch
+import torch.nn as nn
+import torch.nn.functional as F
+from transformers import GPT2LMHeadModel, GPT2Tokenizer
+
+class RLHFPipeline:
+    """
+    RLHF 完整流程
+    """
+    def __init__(self, model_name='gpt2'):
+        self.tokenizer = GPT2Tokenizer.from_pretrained(model_name)
+        self.tokenizer.pad_token = self.tokenizer.eos_token
+        
+        # 階段 1: SFT 模型（監督式微調後的模型）
+        self.sft_model = None
+        
+        # 階段 2: 獎勵模型
+        self.reward_model = None
+        
+        # 階段 3: RL 策略模型
+        self.policy_model = None
+        self.ref_model = None  # 參考模型（SFT 的副本）
+    
+    def stage1_supervised_finetuning(self, demo_data, epochs=3):
+        """
+        階段 1: 監督式微調
+        
+        demo_data: [(prompt, response), ...]
+        """
+        print("階段 1: 監督式微調")
+        
+        # 載入預訓練模型
+        self.sft_model = GPT2LMHeadModel.from_pretrained('gpt2')
+        optimizer = torch.optim.Adam(self.sft_model.parameters(), lr=1e-5)
+        
+        for epoch in range(epochs):
+            total_loss = 0
+            
+            for prompt, response in demo_data:
+                # 組合輸入
+                text = prompt + response
+                inputs = self.tokenizer(text, return_tensors='pt', 
+                                       padding=True, truncation=True)
+                
+                # 前向傳播
+                outputs = self.sft_model(**inputs, labels=inputs['input_ids'])
+                loss = outputs.loss
+                
+                # 反向傳播
+                optimizer.zero_grad()
+                loss.backward()
+                optimizer.step()
+                
+                total_loss += loss.item()
+            
+            avg_loss = total_loss / len(demo_data)
+            print(f"Epoch {epoch+1}/{epochs}, Loss: {avg_loss:.4f}")
+        
+        print("SFT 完成\n")
+        return self.sft_model
+    
+    def stage2_reward_model_training(self, comparison_data, epochs=3):
+        """
+        階段 2: 訓練獎勵模型
+        
+        comparison_data: [(prompt, chosen, rejected), ...]
+        """
+        print("階段 2: 獎勵模型訓練")
+        
+        # 建立獎勵模型（基於 SFT 模型）
+        self.reward_model = RewardModel(self.sft_model)
+        optimizer = torch.optim.Adam(self.reward_model.parameters(), lr=1e-5)
+        
+        for epoch in range(epochs):
+            total_loss = 0
+            
+            for prompt, chosen, rejected in comparison_data:
+                # 計算獎勵
+                reward_chosen = self.reward_model(prompt, chosen)
+                reward_rejected = self.reward_model(prompt, rejected)
+                
+                # 排序損失
+                loss = -F.logsigmoid(reward_chosen - reward_rejected).mean()
+                
+                # 優化
+                optimizer.zero_grad()
+                loss.backward()
+                optimizer.step()
+                
+                total_loss += loss.item()
+            
+            avg_loss = total_loss / len(comparison_data)
+            print(f"Epoch {epoch+1}/{epochs}, Loss: {avg_loss:.4f}")
+        
+        print("獎勵模型訓練完成\n")
+        return self.reward_model
+    
+    def stage3_rl_finetuning(self, prompts, ppo_epochs=100):
+        """
+        階段 3: 強化學習微調
+        
+        prompts: [prompt1, prompt2, ...]
+        """
+        print("階段 3: 強化學習微調")
+        
+        # 策略模型（從 SFT 初始化）
+        self.policy_model = self.sft_model
+        
+        # 參考模型（凍結的 SFT 副本）
+        self.ref_model = GPT2LMHeadModel.from_pretrained('gpt2')
+        self.ref_model.load_state_dict(self.sft_model.state_dict())
+        self.ref_model.eval()
+        
+        # PPO 訓練
+        ppo_trainer = PPOTrainer(
+            self.policy_model,
+            self.ref_model,
+            self.reward_model,
+            self.tokenizer
+        )
+        
+        ppo_trainer.train(prompts, epochs=ppo_epochs)
+        
+        print("RL 微調完成\n")
+        return self.policy_model
+
+# 示例資料
+demo_data = [
+    ("What is AI?", "AI stands for Artificial Intelligence..."),
+    ("How does ML work?", "Machine Learning works by...")
+]
+
+comparison_data = [
+    ("Explain quantum computing", 
+     "Quantum computing uses qubits...",  # chosen
+     "I don't know much about that.")     # rejected
+]
+
+prompts = ["What is machine learning?", "Explain neural networks"]
+
+# 建立 RLHF Pipeline
+pipeline = RLHFPipeline()
+
+print("RLHF Pipeline 架構:")
+print("階段 1: 監督式微調 (SFT)")
+print("階段 2: 獎勵模型訓練 (RM)")
+print("階段 3: 強化學習微調 (PPO)")
+</code></pre>
+        </div>
+
+        <div class="content">
+            <h2>2. 獎勵模型訓練</h2>
+            
+            <h3>獎勵模型架構</h3>
+            <p>獎勵模型是一個分類器，輸入是 (prompt, response)，輸出是標量獎勵。</p>
+
+            <pre><code class="language-python">class RewardModel(nn.Module):
+    """
+    獎勵模型
+    基於語言模型，添加一個分數頭
+    """
+    def __init__(self, base_model):
+        super(RewardModel, self).__init__()
+        
+        # 基礎語言模型
+        self.base_model = base_model
+        
+        # 凍結部分層（可選）
+        # for param in self.base_model.parameters():
+        #     param.requires_grad = False
+        
+        # 獎勵頭（將最後一層輸出映射到標量）
+        hidden_size = base_model.config.hidden_size
+        self.reward_head = nn.Sequential(
+            nn.Linear(hidden_size, hidden_size),
+            nn.ReLU(),
+            nn.Dropout(0.1),
+            nn.Linear(hidden_size, 1)
+        )
+    
+    def forward(self, input_ids, attention_mask=None):
+        """
+        計算獎勵分數
+        
+        input_ids: (batch_size, seq_len)
+        返回: (batch_size,) 獎勵分數
+        """
+        # 獲取語言模型輸出
+        outputs = self.base_model(
+            input_ids=input_ids,
+            attention_mask=attention_mask,
+            output_hidden_states=True
+        )
+        
+        # 取最後一個 token 的隱藏狀態
+        last_hidden = outputs.hidden_states[-1][:, -1, :]
+        
+        # 計算獎勵
+        reward = self.reward_head(last_hidden).squeeze(-1)
+        
+        return reward
+
+class RewardModelTrainer:
+    """獎勵模型訓練器"""
+    def __init__(self, model, tokenizer, learning_rate=1e-5):
+        self.model = model
+        self.tokenizer = tokenizer
+        self.optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
+    
+    def prepare_comparison_data(self, prompt, chosen, rejected):
+        """
+        準備比較資料
+        
+        返回: chosen_ids, rejected_ids
+        """
+        # 組合文本
+        chosen_text = prompt + chosen
+        rejected_text = prompt + rejected
+        
+        # Tokenize
+        chosen_inputs = self.tokenizer(
+            chosen_text,
+            return_tensors='pt',
+            padding=True,
+            truncation=True,
+            max_length=512
+        )
+        
+        rejected_inputs = self.tokenizer(
+            rejected_text,
+            return_tensors='pt',
+            padding=True,
+            truncation=True,
+            max_length=512
+        )
+        
+        return chosen_inputs, rejected_inputs
+    
+    def train_step(self, prompt, chosen, rejected):
+        """
+        訓練一步
+        使用排序損失
+        """
+        # 準備資料
+        chosen_inputs, rejected_inputs = self.prepare_comparison_data(
+            prompt, chosen, rejected
+        )
+        
+        # 計算獎勵
+        reward_chosen = self.model(
+            chosen_inputs['input_ids'],
+            chosen_inputs['attention_mask']
+        )
+        
+        reward_rejected = self.model(
+            rejected_inputs['input_ids'],
+            rejected_inputs['attention_mask']
+        )
+        
+        # 排序損失（Bradley-Terry 模型）
+        # P(chosen > rejected) = sigmoid(r_chosen - r_rejected)
+        # Loss = -log(sigmoid(r_chosen - r_rejected))
+        loss = -F.logsigmoid(reward_chosen - reward_rejected).mean()
+        
+        # 優化
+        self.optimizer.zero_grad()
+        loss.backward()
+        self.optimizer.step()
+        
+        return loss.item()
+    
+    def train(self, comparison_dataset, epochs=3, batch_size=4):
+        """
+        完整訓練流程
+        
+        comparison_dataset: [(prompt, chosen, rejected), ...]
+        """
+        self.model.train()
+        
+        for epoch in range(epochs):
+            total_loss = 0
+            num_batches = 0
+            
+            # 簡單的批次處理
+            for i in range(0, len(comparison_dataset), batch_size):
+                batch = comparison_dataset[i:i+batch_size]
+                batch_loss = 0
+                
+                for prompt, chosen, rejected in batch:
+                    loss = self.train_step(prompt, chosen, rejected)
+                    batch_loss += loss
+                
+                total_loss += batch_loss
+                num_batches += 1
+            
+            avg_loss = total_loss / num_batches
+            print(f"Epoch {epoch+1}/{epochs}, Avg Loss: {avg_loss:.4f}")
+        
+        print("獎勵模型訓練完成")
+
+# 建立和訓練獎勵模型
+tokenizer = GPT2Tokenizer.from_pretrained('gpt2')
+tokenizer.pad_token = tokenizer.eos_token
+
+base_model = GPT2LMHeadModel.from_pretrained('gpt2')
+reward_model = RewardModel(base_model)
+
+print("獎勵模型架構:")
+print(f"基礎模型參數: {sum(p.numel() for p in base_model.parameters()):,}")
+print(f"獎勵頭參數: {sum(p.numel() for p in reward_model.reward_head.parameters()):,}")
+
+# 訓練示例
+comparison_data = [
+    ("What is AI?", 
+     "AI is the simulation of human intelligence in machines.",
+     "I don't know."),
+    ("Explain machine learning",
+     "Machine learning is a subset of AI that learns from data.",
+     "It's complicated.")
+]
+
+trainer = RewardModelTrainer(reward_model, tokenizer)
+# trainer.train(comparison_data, epochs=3)  # 取消註解以執行訓練
+print("\n獎勵模型訓練器已建立")
+</code></pre>
+
+            <div class="tip-box">
+                <h4>獎勵模型訓練技巧</h4>
+                <ul>
+                    <li><strong>資料品質</strong> - 確保標註一致性，使用多個標註者</li>
+                    <li><strong>正則化</strong> - 防止過擬合到特定標註者</li>
+                    <li><strong>獎勵縮放</strong> - 控制獎勵範圍，避免過大或過小</li>
+                    <li><strong>對比學習</strong> - 使用多個負例增強區分能力</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="content">
+            <h2>3. 使用 PPO 微調 LLM</h2>
+            
+            <h3>RLHF 中的 PPO</h3>
+            <p>在 RLHF 中，PPO 用於最大化獎勵模型的輸出，同時保持與參考模型的接近。</p>
+
+            <div class="concept-box">
+                <h4>RLHF 的目標函數</h4>
+                <p>J(θ) = E[r(x,y) - β * KL(π_θ || π_ref)]</p>
+                <ul>
+                    <li><strong>r(x,y)</strong> - 獎勵模型對 (prompt, response) 的評分</li>
+                    <li><strong>KL(π_θ || π_ref)</strong> - 策略與參考模型的 KL 散度</li>
+                    <li><strong>β</strong> - KL 懲罰係數（通常 0.01-0.1）</li>
+                    <li><strong>目的</strong> - 最大化獎勵，同時不偏離參考模型太遠</li>
+                </ul>
+            </div>
+
+            <pre><code class="language-python">class PPOTrainer:
+    """
+    PPO 訓練器（針對 LLM）
+    """
+    def __init__(self, policy_model, ref_model, reward_model, tokenizer,
+                 learning_rate=1e-6, gamma=1.0, epsilon_clip=0.2, 
+                 kl_coef=0.05, value_coef=0.1):
+        self.policy_model = policy_model
+        self.ref_model = ref_model
+        self.reward_model = reward_model
+        self.tokenizer = tokenizer
+        
+        # 凍結參考模型
+        for param in self.ref_model.parameters():
+            param.requires_grad = False
+        
+        # 凍結獎勵模型
+        for param in self.reward_model.parameters():
+            param.requires_grad = False
+        
+        self.optimizer = torch.optim.Adam(
+            policy_model.parameters(), 
+            lr=learning_rate
+        )
+        
+        self.gamma = gamma
+        self.epsilon_clip = epsilon_clip
+        self.kl_coef = kl_coef
+        self.value_coef = value_coef
+    
+    def generate_response(self, prompt, max_length=100):
+        """
+        使用策略模型生成回應
+        
+        返回: response_text, response_ids, log_probs
+        """
+        # Tokenize prompt
+        inputs = self.tokenizer(prompt, return_tensors='pt')
+        prompt_ids = inputs['input_ids']
+        
+        # 生成
+        self.policy_model.eval()
+        with torch.no_grad():
+            outputs = self.policy_model.generate(
+                prompt_ids,
+                max_length=max_length,
+                do_sample=True,
+                top_p=0.9,
+                temperature=0.7,
+                pad_token_id=self.tokenizer.eos_token_id,
+                return_dict_in_generate=True,
+                output_scores=True
+            )
+        
+        response_ids = outputs.sequences[0]
+        response_text = self.tokenizer.decode(response_ids, skip_special_tokens=True)
+        
+        # 計算 log 機率（簡化）
+        # 實際應該從 scores 計算
+        log_probs = torch.zeros(response_ids.size(0))
+        
+        return response_text, response_ids, log_probs
+    
+    def compute_rewards(self, prompt, response):
+        """
+        計算獎勵（包含 KL 懲罰）
+        """
+        # 組合文本
+        text = prompt + response
+        inputs = self.tokenizer(text, return_tensors='pt', 
+                               padding=True, truncation=True)
+        
+        # 獎勵模型評分
+        with torch.no_grad():
+            reward_score = self.reward_model(
+                inputs['input_ids'],
+                inputs['attention_mask']
+            )
+        
+        # KL 散度（策略 vs 參考模型）
+        with torch.no_grad():
+            # 策略模型的 log 機率
+            policy_outputs = self.policy_model(**inputs)
+            policy_logits = policy_outputs.logits
+            
+            # 參考模型的 log 機率
+            ref_outputs = self.ref_model(**inputs)
+            ref_logits = ref_outputs.logits
+            
+            # KL 散度
+            kl_div = F.kl_div(
+                F.log_softmax(policy_logits, dim=-1),
+                F.softmax(ref_logits, dim=-1),
+                reduction='batchmean'
+            )
+        
+        # 總獎勵 = 獎勵分數 - KL 懲罰
+        total_reward = reward_score - self.kl_coef * kl_div
+        
+        return total_reward.item(), reward_score.item(), kl_div.item()
+    
+    def train_step(self, prompts, k_epochs=4):
+        """
+        PPO 訓練步驟
+        """
+        # 生成回應
+        responses = []
+        log_probs_old = []
+        rewards = []
+        
+        for prompt in prompts:
+            response_text, response_ids, log_probs = self.generate_response(prompt)
+            reward, reward_score, kl = self.compute_rewards(prompt, response_text)
+            
+            responses.append(response_text)
+            log_probs_old.append(log_probs)
+            rewards.append(reward)
+        
+        # PPO 更新（多個 epoch）
+        self.policy_model.train()
+        
+        for _ in range(k_epochs):
+            total_loss = 0
+            
+            for prompt, response, old_log_prob, reward in zip(
+                prompts, responses, log_probs_old, rewards
+            ):
+                # 組合文本
+                text = prompt + response
+                inputs = self.tokenizer(text, return_tensors='pt')
+                
+                # 前向傳播
+                outputs = self.policy_model(**inputs, labels=inputs['input_ids'])
+                
+                # 當前 log 機率（簡化）
+                new_log_prob = -outputs.loss
+                
+                # 比率
+                ratio = torch.exp(new_log_prob - old_log_prob.mean())
+                
+                # Clipped surrogate loss
+                advantage = torch.tensor(reward)
+                surr1 = ratio * advantage
+                surr2 = torch.clamp(ratio, 1 - self.epsilon_clip, 1 + self.epsilon_clip) * advantage
+                
+                loss = -torch.min(surr1, surr2)
+                
+                # 優化
+                self.optimizer.zero_grad()
+                loss.backward()
+                torch.nn.utils.clip_grad_norm_(self.policy_model.parameters(), 1.0)
+                self.optimizer.step()
+                
+                total_loss += loss.item()
+            
+            avg_loss = total_loss / len(prompts)
+        
+        return avg_loss, sum(rewards) / len(rewards)
+    
+    def train(self, prompts, epochs=10, batch_size=4):
+        """
+        完整訓練流程
+        """
+        for epoch in range(epochs):
+            # 批次訓練
+            epoch_losses = []
+            epoch_rewards = []
+            
+            for i in range(0, len(prompts), batch_size):
+                batch_prompts = prompts[i:i+batch_size]
+                loss, avg_reward = self.train_step(batch_prompts)
+                
+                epoch_losses.append(loss)
+                epoch_rewards.append(avg_reward)
+            
+            avg_loss = sum(epoch_losses) / len(epoch_losses)
+            avg_reward = sum(epoch_rewards) / len(epoch_rewards)
+            
+            print(f"Epoch {epoch+1}/{epochs}")
+            print(f"  Loss: {avg_loss:.4f}")
+            print(f"  Avg Reward: {avg_reward:.4f}")
+
+# 建立 PPO 訓練器
+policy_model = GPT2LMHeadModel.from_pretrained('gpt2')
+ref_model = GPT2LMHeadModel.from_pretrained('gpt2')
+ref_model.load_state_dict(policy_model.state_dict())
+
+ppo_trainer = PPOTrainer(
+    policy_model=policy_model,
+    ref_model=ref_model,
+    reward_model=reward_model,
+    tokenizer=tokenizer
+)
+
+print("\nPPO 訓練器已建立")
+print(f"策略模型參數: {sum(p.numel() for p in policy_model.parameters()):,}")
+
+# 訓練示例
+training_prompts = [
+    "What is machine learning?",
+    "Explain neural networks",
+    "How does NLP work?"
+]
+
+# ppo_trainer.train(training_prompts, epochs=5)  # 取消註解以執行訓練
+</code></pre>
+
+            <div class="warning-box">
+                <h4>PPO 訓練的挑戰</h4>
+                <ul>
+                    <li><strong>不穩定性</strong> - 獎勵可能振盪或崩潰</li>
+                    <li><strong>模式崩潰</strong> - 模型可能學會欺騙獎勵模型</li>
+                    <li><strong>計算成本</strong> - 需要多次前向傳播</li>
+                    <li><strong>超參數敏感</strong> - KL 係數和裁剪範圍需要仔細調整</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="content">
+            <h2>4. DPO（Direct Preference Optimization）</h2>
+            
+            <h3>DPO 的動機</h3>
+            <p><span class="highlight">DPO</span> 繞過獎勵模型，直接從偏好資料優化策略，更簡單且穩定。</p>
+
+            <div class="concept-box">
+                <h4>DPO vs RLHF</h4>
+                <table>
+                    <tr>
+                        <th>特性</th>
+                        <th>RLHF</th>
+                        <th>DPO</th>
+                    </tr>
+                    <tr>
+                        <td>訓練階段</td>
+                        <td>3 階段（SFT + RM + PPO）</td>
+                        <td>2 階段（SFT + DPO）</td>
+                    </tr>
+                    <tr>
+                        <td>獎勵模型</td>
+                        <td>需要</td>
+                        <td>不需要</td>
+                    </tr>
+                    <tr>
+                        <td>穩定性</td>
+                        <td>中等</td>
+                        <td>高</td>
+                    </tr>
+                    <tr>
+                        <td>計算成本</td>
+                        <td>高</td>
+                        <td>低</td>
+                    </tr>
+                    <tr>
+                        <td>實作複雜度</td>
+                        <td>高</td>
+                        <td>低</td>
+                    </tr>
+                </table>
+            </div>
+
+            <pre><code class="language-python">class DPOTrainer:
+    """
+    Direct Preference Optimization
+    
+    直接從偏好資料優化策略，不需要獎勵模型
+    """
+    def __init__(self, policy_model, ref_model, tokenizer, 
+                 learning_rate=1e-6, beta=0.1):
+        self.policy_model = policy_model
+        self.ref_model = ref_model
+        self.tokenizer = tokenizer
+        self.beta = beta  # 溫度參數
+        
+        # 凍結參考模型
+        for param in self.ref_model.parameters():
+            param.requires_grad = False
+        
+        self.optimizer = torch.optim.Adam(
+            policy_model.parameters(),
+            lr=learning_rate
+        )
+    
+    def compute_log_prob(self, model, input_ids, attention_mask):
+        """
+        計算序列的 log 機率
+        """
+        outputs = model(
+            input_ids=input_ids,
+            attention_mask=attention_mask
+        )
+        
+        logits = outputs.logits
+        log_probs = F.log_softmax(logits, dim=-1)
+        
+        # 取對應 token 的 log 機率
+        # 這裡簡化，實際需要更仔細的計算
+        token_log_probs = log_probs.gather(-1, input_ids.unsqueeze(-1)).squeeze(-1)
+        
+        # 平均 log 機率
+        return token_log_probs.mean()
+    
+    def dpo_loss(self, prompt, chosen, rejected):
+        """
+        DPO 損失函數
+        
+        L = -log(σ(β * (log π(y_w|x) - log π(y_l|x) 
+                       - log π_ref(y_w|x) + log π_ref(y_l|x))))
+        
+        其中 y_w 是選中的回應，y_l 是拒絕的回應
+        """
+        # 準備輸入
+        chosen_text = prompt + chosen
+        rejected_text = prompt + rejected
+        
+        chosen_inputs = self.tokenizer(
+            chosen_text,
+            return_tensors='pt',
+            padding=True,
+            truncation=True
+        )
+        
+        rejected_inputs = self.tokenizer(
+            rejected_text,
+            return_tensors='pt',
+            padding=True,
+            truncation=True
+        )
+        
+        # 策略模型的 log 機率
+        log_prob_chosen = self.compute_log_prob(
+            self.policy_model,
+            chosen_inputs['input_ids'],
+            chosen_inputs['attention_mask']
+        )
+        
+        log_prob_rejected = self.compute_log_prob(
+            self.policy_model,
+            rejected_inputs['input_ids'],
+            rejected_inputs['attention_mask']
+        )
+        
+        # 參考模型的 log 機率
+        with torch.no_grad():
+            ref_log_prob_chosen = self.compute_log_prob(
+                self.ref_model,
+                chosen_inputs['input_ids'],
+                chosen_inputs['attention_mask']
+            )
+            
+            ref_log_prob_rejected = self.compute_log_prob(
+                self.ref_model,
+                rejected_inputs['input_ids'],
+                rejected_inputs['attention_mask']
+            )
+        
+        # DPO 目標
+        logits = self.beta * (
+            (log_prob_chosen - log_prob_rejected) - 
+            (ref_log_prob_chosen - ref_log_prob_rejected)
+        )
+        
+        # 損失
+        loss = -F.logsigmoid(logits)
+        
+        return loss
+    
+    def train_step(self, prompt, chosen, rejected):
+        """訓練一步"""
+        loss = self.dpo_loss(prompt, chosen, rejected)
+        
+        # 優化
+        self.optimizer.zero_grad()
+        loss.backward()
+        torch.nn.utils.clip_grad_norm_(self.policy_model.parameters(), 1.0)
+        self.optimizer.step()
+        
+        return loss.item()
+    
+    def train(self, preference_data, epochs=3, batch_size=4):
+        """
+        完整訓練流程
+        
+        preference_data: [(prompt, chosen, rejected), ...]
+        """
+        self.policy_model.train()
+        
+        for epoch in range(epochs):
+            total_loss = 0
+            num_batches = 0
+            
+            for i in range(0, len(preference_data), batch_size):
+                batch = preference_data[i:i+batch_size]
+                batch_loss = 0
+                
+                for prompt, chosen, rejected in batch:
+                    loss = self.train_step(prompt, chosen, rejected)
+                    batch_loss += loss
+                
+                total_loss += batch_loss
+                num_batches += 1
+            
+            avg_loss = total_loss / num_batches
+            print(f"Epoch {epoch+1}/{epochs}, Avg Loss: {avg_loss:.4f}")
+        
+        print("DPO 訓練完成")
+
+# 建立 DPO 訓練器
+policy_model_dpo = GPT2LMHeadModel.from_pretrained('gpt2')
+ref_model_dpo = GPT2LMHeadModel.from_pretrained('gpt2')
+ref_model_dpo.load_state_dict(policy_model_dpo.state_dict())
+
+dpo_trainer = DPOTrainer(
+    policy_model=policy_model_dpo,
+    ref_model=ref_model_dpo,
+    tokenizer=tokenizer,
+    beta=0.1
+)
+
+print("\nDPO 訓練器已建立")
+print(f"Beta (溫度參數): {dpo_trainer.beta}")
+
+# 訓練示例
+preference_data = [
+    ("What is AI?",
+     "AI is the simulation of human intelligence in machines.",
+     "I don't know."),
+    ("Explain ML",
+     "Machine learning allows computers to learn from data.",
+     "It's too complicated.")
+]
+
+# dpo_trainer.train(preference_data, epochs=3)  # 取消註解以執行訓練
+print("DPO 訓練準備就緒")
+</code></pre>
+
+            <div class="tip-box">
+                <h4>DPO 的優勢</h4>
+                <ul>
+                    <li><strong>更簡單</strong> - 不需要訓練獎勵模型</li>
+                    <li><strong>更穩定</strong> - 直接優化，避免 RL 的不穩定性</li>
+                    <li><strong>更快速</strong> - 訓練速度更快</li>
+                    <li><strong>效果相當</strong> - 在多個任務上與 RLHF 性能相當</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="content">
+            <h2>5. 實戰：構建對齊的對話模型</h2>
+            
+            <h3>使用 TRL 庫</h3>
+            <p>Hugging Face 的 TRL (Transformer Reinforcement Learning) 提供了完整的 RLHF 工具。</p>
+
+            <pre><code class="language-python"># 使用 TRL 進行 RLHF
+"""
+from trl import PPOTrainer, PPOConfig, AutoModelForCausalLMWithValueHead
+from transformers import AutoTokenizer
+
+# 配置
+config = PPOConfig(
+    model_name="gpt2",
+    learning_rate=1e-5,
+    batch_size=4,
+    mini_batch_size=1,
+    gradient_accumulation_steps=1,
+)
+
+# 載入模型
+model = AutoModelForCausalLMWithValueHead.from_pretrained(config.model_name)
+ref_model = AutoModelForCausalLMWithValueHead.from_pretrained(config.model_name)
+tokenizer = AutoTokenizer.from_pretrained(config.model_name)
+
+# 建立訓練器
+ppo_trainer = PPOTrainer(
+    config=config,
+    model=model,
+    ref_model=ref_model,
+    tokenizer=tokenizer
+)
+
+# 訓練循環
+for epoch in range(10):
+    for batch in dataset:
+        query_tensors = batch['input_ids']
+        
+        # 生成回應
+        response_tensors = ppo_trainer.generate(
+            query_tensors,
+            return_prompt=False,
+            **generation_kwargs
+        )
+        
+        # 計算獎勵
+        rewards = [reward_model(q, r) for q, r in zip(query_tensors, response_tensors)]
+        
+        # PPO 更新
+        stats = ppo_trainer.step(query_tensors, response_tensors, rewards)
+"""
+
+print("TRL 庫使用範例")
+</code></pre>
+
+            <h3>評估對齊效果</h3>
+            <pre><code class="language-python">class AlignmentEvaluator:
+    """
+    評估模型對齊效果
+    """
+    def __init__(self, model, tokenizer):
+        self.model = model
+        self.tokenizer = tokenizer
+    
+    def evaluate_helpfulness(self, prompts):
+        """評估有用性"""
+        scores = []
+        
+        for prompt in prompts:
+            inputs = self.tokenizer(prompt, return_tensors='pt')
+            
+            with torch.no_grad():
+                outputs = self.model.generate(
+                    **inputs,
+                    max_length=100,
+                    num_return_sequences=1
+                )
+            
+            response = self.tokenizer.decode(outputs[0], skip_special_tokens=True)
+            
+            # 簡化評分（實際應該使用獎勵模型或人工評估）
+            score = len(response.split())  # 以長度作為代理指標
+            scores.append(score)
+        
+        return sum(scores) / len(scores)
+    
+    def evaluate_harmlessness(self, prompts):
+        """評估無害性"""
+        # 檢查是否包含有害內容
+        harmful_keywords = ['hate', 'violence', 'illegal']
+        harmful_count = 0
+        
+        for prompt in prompts:
+            inputs = self.tokenizer(prompt, return_tensors='pt')
+            
+            with torch.no_grad():
+                outputs = self.model.generate(
+                    **inputs,
+                    max_length=100,
+                    num_return_sequences=1
+                )
+            
+            response = self.tokenizer.decode(outputs[0], skip_special_tokens=True).lower()
+            
+            if any(keyword in response for keyword in harmful_keywords):
+                harmful_count += 1
+        
+        harmlessness_rate = 1 - (harmful_count / len(prompts))
+        return harmlessness_rate
+    
+    def evaluate_honesty(self, prompts_with_answers):
+        """評估誠實性"""
+        # 檢查是否如實回答
+        correct_count = 0
+        
+        for prompt, expected in prompts_with_answers:
+            inputs = self.tokenizer(prompt, return_tensors='pt')
+            
+            with torch.no_grad():
+                outputs = self.model.generate(
+                    **inputs,
+                    max_length=100,
+                    num_return_sequences=1
+                )
+            
+            response = self.tokenizer.decode(outputs[0], skip_special_tokens=True)
+            
+            # 簡化檢查
+            if expected.lower() in response.lower():
+                correct_count += 1
+        
+        accuracy = correct_count / len(prompts_with_answers)
+        return accuracy
+    
+    def comprehensive_evaluation(self):
+        """綜合評估"""
+        # 測試資料
+        helpfulness_prompts = [
+            "How do I learn Python?",
+            "Explain quantum computing",
+            "What is machine learning?"
+        ]
+        
+        harmlessness_prompts = [
+            "Tell me about history",
+            "Explain science",
+            "Describe art"
+        ]
+        
+        honesty_prompts = [
+            ("What is the capital of France?", "Paris"),
+            ("Who wrote Romeo and Juliet?", "Shakespeare")
+        ]
+        
+        # 評估
+        helpfulness = self.evaluate_helpfulness(helpfulness_prompts)
+        harmlessness = self.evaluate_harmlessness(harmlessness_prompts)
+        honesty = self.evaluate_honesty(honesty_prompts)
+        
+        print("=== 對齊評估結果 ===")
+        print(f"有用性分數: {helpfulness:.2f}")
+        print(f"無害性率: {harmlessness:.2%}")
+        print(f"誠實性率: {honesty:.2%}")
+        
+        return {
+            'helpfulness': helpfulness,
+            'harmlessness': harmlessness,
+            'honesty': honesty
+        }
+
+# 評估示例
+evaluator = AlignmentEvaluator(policy_model, tokenizer)
+# results = evaluator.comprehensive_evaluation()  # 取消註解以執行
+print("\n對齊評估器已建立")
+</code></pre>
+
+            <div class="note-box">
+                <h4>對齊的三個維度（HHH）</h4>
+                <ul>
+                    <li><strong>Helpful（有用）</strong> - 提供有價值的資訊，遵循指令</li>
+                    <li><strong>Harmless（無害）</strong> - 避免產生危險、偏見或不當內容</li>
+                    <li><strong>Honest（誠實）</strong> - 準確回答，承認不確定性</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="content">
+            <div class="exercise-section">
+                <h3>本週練習題</h3>
+                
+                <h4>基礎練習（必做）</h4>
+                <ol>
+                    <li>
+                        <strong>實作獎勵模型</strong>
+                        <ul>
+                            <li>建立基於 GPT-2 的獎勵模型</li>
+                            <li>準備比較資料集</li>
+                            <li>實現排序損失</li>
+                            <li>評估獎勵模型的準確性</li>
+                        </ul>
+                    </li>
+                    
+                    <li>
+                        <strong>實作 DPO</strong>
+                        <ul>
+                            <li>實現 DPO 損失函數</li>
+                            <li>訓練 DPO 模型</li>
+                            <li>比較訓練前後的生成質量</li>
+                            <li>分析 beta 參數的影響</li>
+                        </ul>
+                    </li>
+                    
+                    <li>
+                        <strong>對齊評估</strong>
+                        <ul>
+                            <li>設計評估指標</li>
+                            <li>建立測試集</li>
+                            <li>評估有用性、無害性、誠實性</li>
+                            <li>視覺化評估結果</li>
+                        </ul>
+                    </li>
+                </ol>
+
+                <h4>進階練習</h4>
+                <ol start="4">
+                    <li>
+                        <strong>完整 RLHF Pipeline</strong>
+                        <ul>
+                            <li>實現三階段訓練流程</li>
+                            <li>SFT → RM → PPO</li>
+                            <li>在對話資料上訓練</li>
+                            <li>比較各階段的效果</li>
+                        </ul>
+                    </li>
+                    
+                    <li>
+                        <strong>獎勵模型改進</strong>
+                        <ul>
+                            <li>實現多個獎勵頭（helpfulness, harmlessness, honesty）</li>
+                            <li>使用對比學習增強區分能力</li>
+                            <li>處理標註不一致性</li>
+                            <li>獎勵模型的不確定性估計</li>
+                        </ul>
+                    </li>
+                </ol>
+
+                <h4>挑戰練習</h4>
+                <ol start="6">
+                    <li>
+                        <strong>RLHF vs DPO 比較研究</strong>
+                        <ul>
+                            <li>在相同資料上訓練 RLHF 和 DPO</li>
+                            <li>比較訓練時間和計算成本</li>
+                            <li>評估最終模型性能</li>
+                            <li>分析各自的優勢和局限</li>
+                        </ul>
+                    </li>
+                    
+                    <li>
+                        <strong>對抗性測試</strong>
+                        <ul>
+                            <li>設計對抗性提示</li>
+                            <li>測試模型的魯棒性</li>
+                            <li>發現模型的弱點</li>
+                            <li>提出改進方案</li>
+                        </ul>
+                    </li>
+                </ol>
+            </div>
+        </div>
+
+        <div class="content">
+            <h2>本週總結</h2>
+            
+            <h3>重點回顧</h3>
+            <ul>
+                <li>理解 RLHF 的三階段訓練流程</li>
+                <li>掌握獎勵模型的訓練方法</li>
+                <li>學會使用 PPO 微調 LLM</li>
+                <li>理解 DPO 的優勢與實作</li>
+                <li>評估模型對齊效果</li>
+            </ul>
+
+            <h3>關鍵概念</h3>
+            <ul>
+                <li><strong>對齊問題</strong> - 讓 AI 行為符合人類價值觀</li>
+                <li><strong>人類反饋</strong> - 利用人類偏好引導訓練</li>
+                <li><strong>獎勵建模</strong> - 學習人類的偏好函數</li>
+                <li><strong>KL 懲罰</strong> - 防止策略偏離參考模型太遠</li>
+                <li><strong>DPO</strong> - 直接優化偏好，繞過獎勵模型</li>
+            </ul>
+
+            <h3>RLHF 的應用</h3>
+            <table>
+                <tr>
+                    <th>模型</th>
+                    <th>公司</th>
+                    <th>對齊方法</th>
+                    <th>特點</th>
+                </tr>
+                <tr>
+                    <td>ChatGPT</td>
+                    <td>OpenAI</td>
+                    <td>RLHF (PPO)</td>
+                    <td>最早大規模應用</td>
+                </tr>
+                <tr>
+                    <td>Claude</td>
+                    <td>Anthropic</td>
+                    <td>RLHF + Constitutional AI</td>
+                    <td>強調安全性</td>
+                </tr>
+                <tr>
+                    <td>Llama 2</td>
+                    <td>Meta</td>
+                    <td>RLHF</td>
+                    <td>開源模型</td>
+                </tr>
+                <tr>
+                    <td>Mistral</td>
+                    <td>Mistral AI</td>
+                    <td>DPO</td>
+                    <td>使用 DPO 對齊</td>
+                </tr>
+                <tr>
+                    <td>Gemini</td>
+                    <td>Google</td>
+                    <td>RLHF</td>
+                    <td>多模態對齊</td>
+                </tr>
+            </table>
+
+            <h3>下週預告</h3>
+            <div class="note-box">
+                <h4>Week 13 - 大型語言模型訓練與優化</h4>
+                <p>下週將學習如何高效訓練和優化大型語言模型：</p>
+                <ul>
+                    <li>分散式訓練（Data Parallel、Model Parallel）</li>
+                    <li>混合精度訓練與梯度累積</li>
+                    <li>DeepSpeed 與 FSDP</li>
+                    <li>模型量化（INT8、INT4）</li>
+                    <li>推理優化（KV Cache、Flash Attention）</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="nav-buttons">
+            <a href="llm-week11.html" class="btn btn-secondary">Week 11：強化學習基礎</a>
+            <a href="llm-week13.html" class="btn">Week 13：LLM 訓練與優化</a>
+        </div>
+
+        <footer>
+            <p>LLM 與 AI/ML 課程 Week 12</p>
+            <p>RLHF · 獎勵模型 · PPO 微調 · DPO · 對齊評估 · ChatGPT</p>
+            <p style="font-size: 0.9em; color: #95a5a6;">© 2025 All Rights Reserved</p>
+        </footer>
+    </div>
+</body>
+</html>

@@ -1,0 +1,1666 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Week 3 - 機器學習入門 | LLM 與 AI/ML 課程</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft JhengHei', Arial, sans-serif;
+            background: #f8f9fa;
+            color: #1a1a1a;
+            line-height: 1.7;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .nav {
+            background: white;
+            padding: 16px 28px;
+            border-radius: 8px;
+            margin-bottom: 32px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            border: 1px solid #e0e0e0;
+        }
+
+        .nav a {
+            color: #3498db;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 8px 16px;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+        }
+
+        .nav a:hover {
+            background: #ecf0f1;
+            color: #2980b9;
+        }
+
+        .nav span {
+            color: #6c757d;
+            font-weight: 500;
+        }
+
+        header {
+            background: linear-gradient(to right, #2c3e50, #34495e);
+            color: white;
+            padding: 56px 40px;
+            border-radius: 8px;
+            margin-bottom: 32px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            border-bottom: 3px solid #3498db;
+        }
+
+        header h1 {
+            font-size: 2.2em;
+            margin-bottom: 12px;
+            font-weight: 700;
+        }
+
+        header .subtitle {
+            font-size: 1.05em;
+            opacity: 0.9;
+            font-weight: 400;
+        }
+
+        .content {
+            background: white;
+            border-radius: 8px;
+            padding: 48px;
+            margin-bottom: 32px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            border: 1px solid #e0e0e0;
+        }
+
+        .content h2 {
+            color: #1a1a1a;
+            font-size: 1.9em;
+            margin-bottom: 24px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #3498db;
+            font-weight: 700;
+        }
+
+        .content h3 {
+            color: #2c3e50;
+            font-size: 1.5em;
+            margin: 36px 0 16px 0;
+            font-weight: 600;
+        }
+
+        .content h4 {
+            color: #34495e;
+            font-size: 1.2em;
+            margin: 24px 0 12px 0;
+            font-weight: 600;
+        }
+
+        .content p {
+            margin-bottom: 16px;
+            line-height: 1.8;
+            color: #4a4a4a;
+        }
+
+        pre[class*="language-"] {
+            margin: 24px 0;
+            border-radius: 6px;
+            border: 1px solid #d0d7de;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+        }
+
+        code[class*="language-"] {
+            font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
+            font-size: 0.92em;
+            line-height: 1.6;
+        }
+
+        .note-box {
+            background: #e3f2fd;
+            border-left: 4px solid #2196f3;
+            padding: 20px 24px;
+            margin: 24px 0;
+            border-radius: 4px;
+        }
+
+        .note-box h4 {
+            color: #1565c0;
+            margin-top: 0;
+            margin-bottom: 12px;
+            font-size: 1.1em;
+        }
+
+        .warning-box {
+            background: #fff3e0;
+            border-left: 4px solid #ff9800;
+            padding: 20px 24px;
+            margin: 24px 0;
+            border-radius: 4px;
+        }
+
+        .warning-box h4 {
+            color: #e65100;
+            margin-top: 0;
+            margin-bottom: 12px;
+            font-size: 1.1em;
+        }
+
+        .tip-box {
+            background: #f1f8e9;
+            border-left: 4px solid #8bc34a;
+            padding: 20px 24px;
+            margin: 24px 0;
+            border-radius: 4px;
+        }
+
+        .tip-box h4 {
+            color: #558b2f;
+            margin-top: 0;
+            margin-bottom: 12px;
+            font-size: 1.1em;
+        }
+
+        .concept-box {
+            background: #f3e5f5;
+            border-left: 4px solid #9c27b0;
+            padding: 20px 24px;
+            margin: 24px 0;
+            border-radius: 4px;
+        }
+
+        .concept-box h4 {
+            color: #6a1b9a;
+            margin-top: 0;
+            margin-bottom: 12px;
+            font-size: 1.1em;
+        }
+
+        .exercise-section {
+            background: #fafafa;
+            border: 1px solid #e0e0e0;
+            padding: 32px;
+            margin: 32px 0;
+            border-radius: 8px;
+        }
+
+        .exercise-section h3 {
+            color: #2c3e50;
+            margin-top: 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 24px 0;
+            background: white;
+        }
+
+        table th,
+        table td {
+            padding: 14px 16px;
+            text-align: left;
+            border: 1px solid #dee2e6;
+        }
+
+        table th {
+            background: #2c3e50;
+            color: white;
+            font-weight: 600;
+        }
+
+        table tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+
+        ul, ol {
+            margin-left: 28px;
+            margin-top: 12px;
+            margin-bottom: 16px;
+        }
+
+        li {
+            margin: 10px 0;
+            line-height: 1.7;
+            color: #4a4a4a;
+        }
+
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 48px;
+            gap: 16px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 28px;
+            background: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            border: none;
+        }
+
+        .btn:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
+        }
+
+        .btn-secondary {
+            background: #95a5a6;
+        }
+
+        .btn-secondary:hover {
+            background: #7f8c8d;
+            box-shadow: 0 4px 12px rgba(149, 165, 166, 0.3);
+        }
+
+        .highlight {
+            background: #fff9c4;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-weight: 500;
+        }
+
+        footer {
+            text-align: center;
+            padding: 32px 0;
+            color: #6c757d;
+            margin-top: 48px;
+            border-top: 1px solid #dee2e6;
+        }
+
+        footer p {
+            margin: 8px 0;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 12px;
+            }
+
+            .content {
+                padding: 24px 20px;
+            }
+
+            header {
+                padding: 32px 24px;
+            }
+
+            header h1 {
+                font-size: 1.8em;
+            }
+
+            .nav-buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="nav">
+            <a href="llm-week2.html">Week 2</a>
+            <span>Week 3 / 16</span>
+            <a href="llm-week4.html">Week 4</a>
+        </div>
+
+        <header>
+            <h1>Week 3 - 機器學習入門</h1>
+            <div class="subtitle">掌握傳統機器學習演算法與 Scikit-learn 框架</div>
+        </header>
+
+        <div class="content">
+            <h2>本週學習內容</h2>
+            <ul>
+                <li>監督式學習：線性回歸、邏輯回歸、決策樹、隨機森林</li>
+                <li>非監督式學習：K-Means 聚類、PCA 降維</li>
+                <li>模型評估：交叉驗證、混淆矩陣、ROC 曲線</li>
+                <li>Scikit-learn 完整使用與 ML Pipeline</li>
+                <li>實戰：信用卡詐欺偵測系統</li>
+            </ul>
+
+            <div class="concept-box">
+                <h4>機器學習的分類</h4>
+                <p>機器學習主要分為三大類：</p>
+                <ul>
+                    <li><strong>監督式學習</strong> - 有標籤資料，學習輸入到輸出的映射（分類、回歸）</li>
+                    <li><strong>非監督式學習</strong> - 無標籤資料，發現資料中的模式（聚類、降維）</li>
+                    <li><strong>強化學習</strong> - 透過與環境互動學習最佳策略（遊戲、機器人）</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="content">
+            <h2>1. Scikit-learn 基礎</h2>
+            
+            <h3>什麼是 Scikit-learn？</h3>
+            <p><span class="highlight">Scikit-learn</span> 是 Python 最流行的機器學習庫，提供簡單一致的 API 和豐富的演算法。</p>
+
+            <h4>安裝與匯入</h4>
+            <pre><code class="language-python"># 安裝
+# !pip install scikit-learn
+
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+from sklearn import datasets
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+from sklearn.metrics import accuracy_score, confusion_matrix
+
+# 檢查版本
+import sklearn
+print(f"Scikit-learn 版本: {sklearn.__version__}")
+</code></pre>
+
+            <h3>Scikit-learn 的統一 API</h3>
+            <p>幾乎所有 Scikit-learn 模型都遵循相同的介面：</p>
+
+            <pre><code class="language-python"># 統一的工作流程
+from sklearn.linear_model import LogisticRegression
+
+# 1. 建立模型
+model = LogisticRegression()
+
+# 2. 訓練模型
+model.fit(X_train, y_train)
+
+# 3. 預測
+y_pred = model.predict(X_test)
+
+# 4. 評估
+score = model.score(X_test, y_test)
+print(f"準確率: {score:.4f}")
+</code></pre>
+
+            <div class="note-box">
+                <h4>Scikit-learn 的一致性設計</h4>
+                <ul>
+                    <li><strong>Estimator</strong> - 所有模型都有 fit() 方法</li>
+                    <li><strong>Predictor</strong> - 監督式模型有 predict() 方法</li>
+                    <li><strong>Transformer</strong> - 資料轉換器有 transform() 方法</li>
+                    <li><strong>Model</strong> - 所有模型有 score() 方法評估效能</li>
+                </ul>
+            </div>
+
+            <h3>資料準備</h3>
+            <pre><code class="language-python">from sklearn import datasets
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+
+# 載入範例資料集
+iris = datasets.load_iris()
+X = iris.data
+y = iris.target
+
+print(f"資料形狀: {X.shape}")
+print(f"類別數量: {len(np.unique(y))}")
+print(f"特徵名稱: {iris.feature_names}")
+
+# 分割訓練集與測試集
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, 
+    test_size=0.2,      # 20% 測試集
+    random_state=42,    # 固定隨機種子
+    stratify=y          # 保持類別比例
+)
+
+print(f"\n訓練集大小: {X_train.shape}")
+print(f"測試集大小: {X_test.shape}")
+
+# 特徵標準化
+scaler = StandardScaler()
+X_train_scaled = scaler.fit_transform(X_train)
+X_test_scaled = scaler.transform(X_test)  # 注意：只用 transform
+
+print(f"\n標準化前 - 平均: {X_train.mean():.4f}, 標準差: {X_train.std():.4f}")
+print(f"標準化後 - 平均: {X_train_scaled.mean():.4f}, 標準差: {X_train_scaled.std():.4f}")
+</code></pre>
+
+            <div class="warning-box">
+                <h4>資料洩漏（Data Leakage）警告</h4>
+                <p>避免在測試集上使用 fit()：</p>
+                <ul>
+                    <li><strong>正確</strong>：scaler.fit(X_train) → scaler.transform(X_test)</li>
+                    <li><strong>錯誤</strong>：scaler.fit(X_test) - 這會洩漏測試集資訊</li>
+                    <li>標準化、編碼等轉換都要先在訓練集上 fit</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="content">
+            <h2>2. 監督式學習 - 回歸</h2>
+            
+            <h3>線性回歸（Linear Regression）</h3>
+            <p><span class="highlight">線性回歸</span>是最基本的回歸演算法，假設目標變數與特徵之間存在線性關係。</p>
+
+            <pre><code class="language-python">import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.linear_model import LinearRegression
+from sklearn.metrics import mean_squared_error, r2_score
+
+# 生成模擬資料
+np.random.seed(42)
+X = 2 * np.random.rand(100, 1)
+y = 4 + 3 * X.squeeze() + np.random.randn(100)
+
+# 訓練線性回歸模型
+model = LinearRegression()
+model.fit(X, y)
+
+# 預測
+y_pred = model.predict(X)
+
+# 評估
+mse = mean_squared_error(y, y_pred)
+r2 = r2_score(y, y_pred)
+
+print(f"模型參數:")
+print(f"斜率 (w): {model.coef_[0]:.4f}")
+print(f"截距 (b): {model.intercept_:.4f}")
+print(f"\n模型評估:")
+print(f"MSE: {mse:.4f}")
+print(f"R² 分數: {r2:.4f}")
+
+# 視覺化
+plt.figure(figsize=(10, 6))
+plt.scatter(X, y, alpha=0.5, label='資料點')
+plt.plot(X, y_pred, 'r-', linewidth=2, label='擬合線')
+plt.xlabel('X')
+plt.ylabel('y')
+plt.title('線性回歸')
+plt.legend()
+plt.grid(True, alpha=0.3)
+plt.show()
+</code></pre>
+
+            <h3>多項式回歸（Polynomial Regression）</h3>
+            <p>處理非線性關係時，可以使用多項式特徵。</p>
+
+            <pre><code class="language-python">from sklearn.preprocessing import PolynomialFeatures
+from sklearn.pipeline import make_pipeline
+
+# 生成非線性資料
+np.random.seed(42)
+X = np.sort(5 * np.random.rand(80, 1), axis=0)
+y = np.sin(X).ravel() + np.random.normal(0, 0.1, X.shape[0])
+
+# 比較不同階數的多項式
+degrees = [1, 3, 10]
+fig, axes = plt.subplots(1, 3, figsize=(15, 5))
+
+for idx, degree in enumerate(degrees):
+    # 建立多項式回歸管道
+    model = make_pipeline(
+        PolynomialFeatures(degree),
+        LinearRegression()
+    )
+    
+    # 訓練
+    model.fit(X, y)
+    
+    # 預測
+    X_test = np.linspace(0, 5, 100).reshape(-1, 1)
+    y_pred = model.predict(X_test)
+    
+    # 視覺化
+    axes[idx].scatter(X, y, alpha=0.5)
+    axes[idx].plot(X_test, y_pred, 'r-', linewidth=2)
+    axes[idx].set_title(f'多項式階數: {degree}')
+    axes[idx].set_xlabel('X')
+    axes[idx].set_ylabel('y')
+    axes[idx].grid(True, alpha=0.3)
+
+plt.tight_layout()
+plt.show()
+
+print("觀察:")
+print("- 階數 1: 欠擬合（underfitting）")
+print("- 階數 3: 適當擬合")
+print("- 階數 10: 過擬合（overfitting）")
+</code></pre>
+
+            <h3>正則化回歸</h3>
+            <p>使用正則化防止過擬合。</p>
+
+            <pre><code class="language-python">from sklearn.linear_model import Ridge, Lasso, ElasticNet
+
+# 生成資料
+np.random.seed(42)
+X = np.random.randn(100, 10)
+y = X[:, 0] * 3 + X[:, 1] * 2 + np.random.randn(100) * 0.5
+
+# 分割資料
+from sklearn.model_selection import train_test_split
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# 比較不同正則化方法
+models = {
+    'Linear Regression': LinearRegression(),
+    'Ridge (L2)': Ridge(alpha=1.0),
+    'Lasso (L1)': Lasso(alpha=0.1),
+    'ElasticNet': ElasticNet(alpha=0.1, l1_ratio=0.5)
+}
+
+results = {}
+for name, model in models.items():
+    model.fit(X_train, y_train)
+    train_score = model.score(X_train, y_train)
+    test_score = model.score(X_test, y_test)
+    results[name] = (train_score, test_score)
+    print(f"{name}:")
+    print(f"  訓練 R²: {train_score:.4f}")
+    print(f"  測試 R²: {test_score:.4f}")
+    print()
+</code></pre>
+
+            <div class="concept-box">
+                <h4>正則化方法比較</h4>
+                <table>
+                    <tr>
+                        <th>方法</th>
+                        <th>懲罰項</th>
+                        <th>特點</th>
+                    </tr>
+                    <tr>
+                        <td>Ridge (L2)</td>
+                        <td>α · Σw²</td>
+                        <td>縮小係數，不會變成 0</td>
+                    </tr>
+                    <tr>
+                        <td>Lasso (L1)</td>
+                        <td>α · Σ|w|</td>
+                        <td>可將係數變成 0，特徵選擇</td>
+                    </tr>
+                    <tr>
+                        <td>ElasticNet</td>
+                        <td>L1 + L2</td>
+                        <td>結合兩者優點</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <div class="content">
+            <h2>3. 監督式學習 - 分類</h2>
+            
+            <h3>邏輯回歸（Logistic Regression）</h3>
+            <p><span class="highlight">邏輯回歸</span>用於二元或多元分類問題，輸出機率值。</p>
+
+            <pre><code class="language-python">from sklearn.linear_model import LogisticRegression
+from sklearn.datasets import make_classification
+from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
+import seaborn as sns
+
+# 生成分類資料
+X, y = make_classification(n_samples=1000, n_features=20, n_informative=15,
+                          n_redundant=5, random_state=42)
+
+# 分割資料
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# 訓練邏輯回歸
+model = LogisticRegression(random_state=42, max_iter=1000)
+model.fit(X_train, y_train)
+
+# 預測
+y_pred = model.predict(X_test)
+y_pred_proba = model.predict_proba(X_test)  # 預測機率
+
+# 評估
+accuracy = accuracy_score(y_test, y_pred)
+print(f"準確率: {accuracy:.4f}")
+print("\n分類報告:")
+print(classification_report(y_test, y_pred))
+
+# 混淆矩陣
+cm = confusion_matrix(y_test, y_pred)
+plt.figure(figsize=(8, 6))
+sns.heatmap(cm, annot=True, fmt='d', cmap='Blues')
+plt.title('混淆矩陣')
+plt.ylabel('真實標籤')
+plt.xlabel('預測標籤')
+plt.show()
+</code></pre>
+
+            <div class="note-box">
+                <h4>混淆矩陣解讀</h4>
+                <table>
+                    <tr>
+                        <th></th>
+                        <th>預測正類</th>
+                        <th>預測負類</th>
+                    </tr>
+                    <tr>
+                        <th>實際正類</th>
+                        <td>True Positive (TP)</td>
+                        <td>False Negative (FN)</td>
+                    </tr>
+                    <tr>
+                        <th>實際負類</th>
+                        <td>False Positive (FP)</td>
+                        <td>True Negative (TN)</td>
+                    </tr>
+                </table>
+                <p>重要指標：</p>
+                <ul>
+                    <li>準確率 = (TP + TN) / (TP + TN + FP + FN)</li>
+                    <li>精確率 = TP / (TP + FP)</li>
+                    <li>召回率 = TP / (TP + FN)</li>
+                    <li>F1 分數 = 2 × (精確率 × 召回率) / (精確率 + 召回率)</li>
+                </ul>
+            </div>
+
+            <h3>決策樹（Decision Tree）</h3>
+            <p><span class="highlight">決策樹</span>通過一系列判斷規則進行分類或回歸。</p>
+
+            <pre><code class="language-python">from sklearn.tree import DecisionTreeClassifier, plot_tree
+from sklearn.datasets import load_iris
+
+# 載入資料
+iris = load_iris()
+X, y = iris.data, iris.target
+
+# 只使用前兩個特徵以便視覺化
+X_simple = X[:, :2]
+
+# 訓練決策樹
+model = DecisionTreeClassifier(max_depth=3, random_state=42)
+model.fit(X_simple, y)
+
+# 評估
+accuracy = model.score(X_simple, y)
+print(f"準確率: {accuracy:.4f}")
+
+# 視覺化決策樹
+plt.figure(figsize=(20, 10))
+plot_tree(model, 
+          feature_names=iris.feature_names[:2],
+          class_names=iris.target_names,
+          filled=True,
+          rounded=True,
+          fontsize=10)
+plt.title('決策樹視覺化')
+plt.show()
+
+# 特徵重要性
+feature_importance = model.feature_importances_
+print("\n特徵重要性:")
+for name, importance in zip(iris.feature_names[:2], feature_importance):
+    print(f"{name}: {importance:.4f}")
+</code></pre>
+
+            <h4>決策邊界視覺化</h4>
+            <pre><code class="language-python">import numpy as np
+
+def plot_decision_boundary(model, X, y):
+    # 建立網格
+    h = 0.02
+    x_min, x_max = X[:, 0].min() - 1, X[:, 0].max() + 1
+    y_min, y_max = X[:, 1].min() - 1, X[:, 1].max() + 1
+    xx, yy = np.meshgrid(np.arange(x_min, x_max, h),
+                         np.arange(y_min, y_max, h))
+    
+    # 預測
+    Z = model.predict(np.c_[xx.ravel(), yy.ravel()])
+    Z = Z.reshape(xx.shape)
+    
+    # 繪圖
+    plt.figure(figsize=(10, 8))
+    plt.contourf(xx, yy, Z, alpha=0.4, cmap='viridis')
+    scatter = plt.scatter(X[:, 0], X[:, 1], c=y, cmap='viridis', 
+                         edgecolors='black', s=50)
+    plt.xlabel(iris.feature_names[0])
+    plt.ylabel(iris.feature_names[1])
+    plt.title('決策邊界')
+    plt.colorbar(scatter)
+    plt.show()
+
+plot_decision_boundary(model, X_simple, y)
+</code></pre>
+
+            <h3>隨機森林（Random Forest）</h3>
+            <p><span class="highlight">隨機森林</span>是決策樹的集成方法，通過多個決策樹投票提升準確率。</p>
+
+            <pre><code class="language-python">from sklearn.ensemble import RandomForestClassifier
+from sklearn.datasets import make_classification
+
+# 生成資料
+X, y = make_classification(n_samples=1000, n_features=20, 
+                          n_informative=15, n_redundant=5, 
+                          random_state=42)
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# 比較單一決策樹 vs 隨機森林
+models = {
+    'Decision Tree': DecisionTreeClassifier(random_state=42),
+    'Random Forest': RandomForestClassifier(n_estimators=100, random_state=42)
+}
+
+for name, model in models.items():
+    model.fit(X_train, y_train)
+    train_score = model.score(X_train, y_train)
+    test_score = model.score(X_test, y_test)
+    
+    print(f"{name}:")
+    print(f"  訓練準確率: {train_score:.4f}")
+    print(f"  測試準確率: {test_score:.4f}")
+    print()
+
+# 隨機森林的特徵重要性
+rf_model = models['Random Forest']
+feature_importance = rf_model.feature_importances_
+sorted_idx = np.argsort(feature_importance)[::-1]
+
+plt.figure(figsize=(10, 6))
+plt.bar(range(10), feature_importance[sorted_idx[:10]])
+plt.xlabel('特徵索引')
+plt.ylabel('重要性')
+plt.title('前 10 個最重要特徵')
+plt.xticks(range(10), sorted_idx[:10])
+plt.grid(True, alpha=0.3)
+plt.show()
+</code></pre>
+
+            <h3>支援向量機（SVM）</h3>
+            <pre><code class="language-python">from sklearn.svm import SVC
+from sklearn.datasets import make_moons
+
+# 生成非線性可分資料
+X, y = make_moons(n_samples=200, noise=0.15, random_state=42)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# 比較不同核函數
+kernels = ['linear', 'rbf', 'poly']
+fig, axes = plt.subplots(1, 3, figsize=(15, 5))
+
+for idx, kernel in enumerate(kernels):
+    # 訓練 SVM
+    model = SVC(kernel=kernel, gamma='auto')
+    model.fit(X_train, y_train)
+    
+    # 測試
+    test_score = model.score(X_test, y_test)
+    
+    # 視覺化決策邊界
+    h = 0.02
+    x_min, x_max = X[:, 0].min() - 0.5, X[:, 0].max() + 0.5
+    y_min, y_max = X[:, 1].min() - 0.5, X[:, 1].max() + 0.5
+    xx, yy = np.meshgrid(np.arange(x_min, x_max, h),
+                         np.arange(y_min, y_max, h))
+    Z = model.predict(np.c_[xx.ravel(), yy.ravel()])
+    Z = Z.reshape(xx.shape)
+    
+    axes[idx].contourf(xx, yy, Z, alpha=0.4, cmap='viridis')
+    axes[idx].scatter(X[:, 0], X[:, 1], c=y, cmap='viridis', edgecolors='black')
+    axes[idx].set_title(f'{kernel.upper()} - 準確率: {test_score:.3f}')
+    axes[idx].set_xlabel('特徵 1')
+    axes[idx].set_ylabel('特徵 2')
+
+plt.tight_layout()
+plt.show()
+</code></pre>
+
+            <div class="concept-box">
+                <h4>常見分類演算法比較</h4>
+                <table>
+                    <tr>
+                        <th>演算法</th>
+                        <th>優點</th>
+                        <th>缺點</th>
+                    </tr>
+                    <tr>
+                        <td>邏輯回歸</td>
+                        <td>簡單、快速、可解釋</td>
+                        <td>只能處理線性問題</td>
+                    </tr>
+                    <tr>
+                        <td>決策樹</td>
+                        <td>易理解、無需標準化</td>
+                        <td>容易過擬合</td>
+                    </tr>
+                    <tr>
+                        <td>隨機森林</td>
+                        <td>準確、穩健、特徵重要性</td>
+                        <td>訓練慢、難解釋</td>
+                    </tr>
+                    <tr>
+                        <td>SVM</td>
+                        <td>高維空間有效、核技巧</td>
+                        <td>大數據慢、難調參</td>
+                    </tr>
+                    <tr>
+                        <td>KNN</td>
+                        <td>簡單、無訓練</td>
+                        <td>預測慢、對規模敏感</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <div class="content">
+            <h2>4. 非監督式學習</h2>
+            
+            <h3>K-Means 聚類</h3>
+            <p><span class="highlight">K-Means</span> 是最常用的聚類演算法，將資料分成 K 個群集。</p>
+
+            <pre><code class="language-python">from sklearn.cluster import KMeans
+from sklearn.datasets import make_blobs
+
+# 生成聚類資料
+X, y_true = make_blobs(n_samples=300, centers=4, 
+                       cluster_std=0.60, random_state=42)
+
+# K-Means 聚類
+kmeans = KMeans(n_clusters=4, random_state=42)
+y_pred = kmeans.fit_predict(X)
+
+# 視覺化
+plt.figure(figsize=(12, 5))
+
+plt.subplot(1, 2, 1)
+plt.scatter(X[:, 0], X[:, 1], c=y_true, cmap='viridis', s=50)
+plt.title('真實標籤')
+plt.xlabel('特徵 1')
+plt.ylabel('特徵 2')
+
+plt.subplot(1, 2, 2)
+plt.scatter(X[:, 0], X[:, 1], c=y_pred, cmap='viridis', s=50)
+plt.scatter(kmeans.cluster_centers_[:, 0], 
+           kmeans.cluster_centers_[:, 1],
+           c='red', marker='X', s=200, edgecolors='black', label='中心點')
+plt.title('K-Means 預測')
+plt.xlabel('特徵 1')
+plt.ylabel('特徵 2')
+plt.legend()
+
+plt.tight_layout()
+plt.show()
+
+# 評估
+from sklearn.metrics import silhouette_score
+silhouette_avg = silhouette_score(X, y_pred)
+print(f"輪廓係數: {silhouette_avg:.4f}")
+</code></pre>
+
+            <h4>選擇最佳 K 值 - 手肘法</h4>
+            <pre><code class="language-python"># 手肘法（Elbow Method）
+inertias = []
+K_range = range(1, 11)
+
+for k in K_range:
+    kmeans = KMeans(n_clusters=k, random_state=42)
+    kmeans.fit(X)
+    inertias.append(kmeans.inertia_)
+
+plt.figure(figsize=(10, 6))
+plt.plot(K_range, inertias, 'bo-', linewidth=2, markersize=8)
+plt.xlabel('K 值')
+plt.ylabel('慣性（Inertia）')
+plt.title('手肘法選擇最佳 K')
+plt.grid(True, alpha=0.3)
+plt.show()
+
+print("觀察：曲線出現「手肘」的位置通常是最佳 K 值")
+</code></pre>
+
+            <h3>階層式聚類（Hierarchical Clustering）</h3>
+            <pre><code class="language-python">from sklearn.cluster import AgglomerativeClustering
+from scipy.cluster.hierarchy import dendrogram, linkage
+
+# 生成資料
+X, _ = make_blobs(n_samples=50, centers=3, random_state=42)
+
+# 階層式聚類
+hierarchical = AgglomerativeClustering(n_clusters=3)
+y_pred = hierarchical.fit_predict(X)
+
+# 樹狀圖（Dendrogram）
+linkage_matrix = linkage(X, method='ward')
+
+plt.figure(figsize=(12, 5))
+
+plt.subplot(1, 2, 1)
+dendrogram(linkage_matrix)
+plt.title('樹狀圖')
+plt.xlabel('樣本索引')
+plt.ylabel('距離')
+
+plt.subplot(1, 2, 2)
+plt.scatter(X[:, 0], X[:, 1], c=y_pred, cmap='viridis', s=50)
+plt.title('聚類結果')
+plt.xlabel('特徵 1')
+plt.ylabel('特徵 2')
+
+plt.tight_layout()
+plt.show()
+</code></pre>
+
+            <h3>主成分分析（PCA）</h3>
+            <p><span class="highlight">PCA</span> 是最常用的降維技術，將高維資料投影到低維空間。</p>
+
+            <pre><code class="language-python">from sklearn.decomposition import PCA
+from sklearn.datasets import load_digits
+
+# 載入手寫數字資料集（64 維）
+digits = load_digits()
+X = digits.data
+y = digits.target
+
+print(f"原始資料維度: {X.shape}")
+
+# PCA 降維到 2 維
+pca = PCA(n_components=2)
+X_pca = pca.fit_transform(X)
+
+print(f"降維後維度: {X_pca.shape}")
+print(f"解釋變異比例: {pca.explained_variance_ratio_}")
+print(f"累積解釋變異: {pca.explained_variance_ratio_.sum():.4f}")
+
+# 視覺化
+plt.figure(figsize=(10, 8))
+scatter = plt.scatter(X_pca[:, 0], X_pca[:, 1], c=y, cmap='tab10', s=20)
+plt.xlabel('第一主成分')
+plt.ylabel('第二主成分')
+plt.title('PCA 降維視覺化')
+plt.colorbar(scatter, label='數字類別')
+plt.grid(True, alpha=0.3)
+plt.show()
+</code></pre>
+
+            <h4>選擇主成分數量</h4>
+            <pre><code class="language-python"># 計算不同主成分數量的累積解釋變異
+pca_full = PCA()
+pca_full.fit(X)
+
+cumulative_variance = np.cumsum(pca_full.explained_variance_ratio_)
+
+plt.figure(figsize=(10, 6))
+plt.plot(range(1, len(cumulative_variance) + 1), 
+         cumulative_variance, 'bo-', linewidth=2)
+plt.axhline(y=0.95, color='r', linestyle='--', label='95% 變異')
+plt.xlabel('主成分數量')
+plt.ylabel('累積解釋變異比例')
+plt.title('主成分數量選擇')
+plt.legend()
+plt.grid(True, alpha=0.3)
+plt.show()
+
+# 找出達到 95% 變異需要的主成分數量
+n_components_95 = np.argmax(cumulative_variance >= 0.95) + 1
+print(f"達到 95% 變異需要 {n_components_95} 個主成分")
+print(f"維度從 {X.shape[1]} 降到 {n_components_95}")
+</code></pre>
+
+            <div class="tip-box">
+                <h4>PCA 的應用場景</h4>
+                <ul>
+                    <li><strong>資料視覺化</strong> - 降到 2-3 維進行視覺化</li>
+                    <li><strong>加速訓練</strong> - 減少特徵數量，提升訓練速度</li>
+                    <li><strong>去除共線性</strong> - 主成分相互獨立</li>
+                    <li><strong>雜訊過濾</strong> - 保留主要變異，去除雜訊</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="content">
+            <h2>5. 模型評估與驗證</h2>
+            
+            <h3>交叉驗證（Cross-Validation）</h3>
+            <p><span class="highlight">交叉驗證</span>透過多次分割資料來更可靠地評估模型效能。</p>
+
+            <pre><code class="language-python">from sklearn.model_selection import cross_val_score, cross_validate
+from sklearn.ensemble import RandomForestClassifier
+
+# 載入資料
+iris = load_iris()
+X, y = iris.data, iris.target
+
+# 建立模型
+model = RandomForestClassifier(n_estimators=100, random_state=42)
+
+# K-Fold 交叉驗證
+scores = cross_val_score(model, X, y, cv=5, scoring='accuracy')
+
+print("5-Fold 交叉驗證結果:")
+print(f"每折分數: {scores}")
+print(f"平均準確率: {scores.mean():.4f}")
+print(f"標準差: {scores.std():.4f}")
+
+# 更詳細的交叉驗證
+cv_results = cross_validate(model, X, y, cv=5,
+                           scoring=['accuracy', 'precision_macro', 'recall_macro'],
+                           return_train_score=True)
+
+print("\n詳細交叉驗證結果:")
+for metric in ['accuracy', 'precision_macro', 'recall_macro']:
+    test_key = f'test_{metric}'
+    train_key = f'train_{metric}'
+    print(f"{metric}:")
+    print(f"  訓練: {cv_results[train_key].mean():.4f} ± {cv_results[train_key].std():.4f}")
+    print(f"  測試: {cv_results[test_key].mean():.4f} ± {cv_results[test_key].std():.4f}")
+</code></pre>
+
+            <h4>分層 K-Fold 交叉驗證</h4>
+            <pre><code class="language-python">from sklearn.model_selection import StratifiedKFold
+import matplotlib.pyplot as plt
+
+# 建立分層 K-Fold
+skf = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)
+
+fold_scores = []
+for fold, (train_idx, val_idx) in enumerate(skf.split(X, y)):
+    X_train, X_val = X[train_idx], X[val_idx]
+    y_train, y_val = y[train_idx], y[val_idx]
+    
+    model = RandomForestClassifier(n_estimators=100, random_state=42)
+    model.fit(X_train, y_train)
+    score = model.score(X_val, y_val)
+    fold_scores.append(score)
+    
+    print(f"Fold {fold + 1}: {score:.4f}")
+
+print(f"\n平均分數: {np.mean(fold_scores):.4f}")
+
+# 視覺化
+plt.figure(figsize=(10, 6))
+plt.bar(range(1, 6), fold_scores)
+plt.axhline(y=np.mean(fold_scores), color='r', linestyle='--', label='平均')
+plt.xlabel('Fold')
+plt.ylabel('準確率')
+plt.title('分層 K-Fold 交叉驗證')
+plt.legend()
+plt.grid(True, alpha=0.3)
+plt.show()
+</code></pre>
+
+            <h3>ROC 曲線與 AUC</h3>
+            <pre><code class="language-python">from sklearn.metrics import roc_curve, roc_auc_score, auc
+from sklearn.model_selection import train_test_split
+
+# 生成二元分類資料
+X, y = make_classification(n_samples=1000, n_features=20, 
+                          n_informative=15, random_state=42)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# 訓練多個模型
+models = {
+    'Logistic Regression': LogisticRegression(random_state=42),
+    'Random Forest': RandomForestClassifier(n_estimators=100, random_state=42),
+    'SVM': SVC(probability=True, random_state=42)
+}
+
+plt.figure(figsize=(10, 8))
+
+for name, model in models.items():
+    model.fit(X_train, y_train)
+    y_pred_proba = model.predict_proba(X_test)[:, 1]
+    
+    # 計算 ROC 曲線
+    fpr, tpr, thresholds = roc_curve(y_test, y_pred_proba)
+    roc_auc = auc(fpr, tpr)
+    
+    # 繪製 ROC 曲線
+    plt.plot(fpr, tpr, linewidth=2, label=f'{name} (AUC = {roc_auc:.3f})')
+
+# 繪製隨機分類器
+plt.plot([0, 1], [0, 1], 'k--', linewidth=2, label='Random (AUC = 0.500)')
+
+plt.xlabel('偽陽性率（False Positive Rate）')
+plt.ylabel('真陽性率（True Positive Rate）')
+plt.title('ROC 曲線比較')
+plt.legend()
+plt.grid(True, alpha=0.3)
+plt.show()
+</code></pre>
+
+            <div class="note-box">
+                <h4>ROC 與 AUC 解讀</h4>
+                <ul>
+                    <li><strong>ROC 曲線</strong> - 真陽性率 vs 偽陽性率</li>
+                    <li><strong>AUC</strong> - ROC 曲線下面積，越大越好</li>
+                    <li><strong>AUC = 1.0</strong> - 完美分類器</li>
+                    <li><strong>AUC = 0.5</strong> - 隨機猜測</li>
+                    <li><strong>AUC < 0.5</strong> - 比隨機還差（反向預測）</li>
+                </ul>
+            </div>
+
+            <h3>學習曲線（Learning Curve）</h3>
+            <pre><code class="language-python">from sklearn.model_selection import learning_curve
+
+# 計算學習曲線
+train_sizes, train_scores, val_scores = learning_curve(
+    RandomForestClassifier(n_estimators=100, random_state=42),
+    X, y, cv=5,
+    train_sizes=np.linspace(0.1, 1.0, 10),
+    scoring='accuracy'
+)
+
+# 計算平均值和標準差
+train_mean = np.mean(train_scores, axis=1)
+train_std = np.std(train_scores, axis=1)
+val_mean = np.mean(val_scores, axis=1)
+val_std = np.std(val_scores, axis=1)
+
+# 視覺化
+plt.figure(figsize=(10, 6))
+plt.plot(train_sizes, train_mean, 'o-', linewidth=2, label='訓練分數')
+plt.fill_between(train_sizes, train_mean - train_std, train_mean + train_std, alpha=0.2)
+plt.plot(train_sizes, val_mean, 'o-', linewidth=2, label='驗證分數')
+plt.fill_between(train_sizes, val_mean - val_std, val_mean + val_std, alpha=0.2)
+plt.xlabel('訓練樣本數')
+plt.ylabel('準確率')
+plt.title('學習曲線')
+plt.legend()
+plt.grid(True, alpha=0.3)
+plt.show()
+
+print("學習曲線分析:")
+if train_mean[-1] > val_mean[-1] + 0.1:
+    print("- 訓練分數遠高於驗證分數：可能過擬合")
+elif train_mean[-1] < 0.8 and val_mean[-1] < 0.8:
+    print("- 兩者都較低：可能欠擬合，需要更複雜模型")
+else:
+    print("- 模型表現良好")
+</code></pre>
+        </div>
+
+        <div class="content">
+            <h2>6. 機器學習 Pipeline</h2>
+            
+            <h3>建立 ML Pipeline</h3>
+            <p><span class="highlight">Pipeline</span> 將資料處理和模型訓練串接成一個流程，避免資料洩漏並簡化程式碼。</p>
+
+            <pre><code class="language-python">from sklearn.pipeline import Pipeline
+from sklearn.preprocessing import StandardScaler
+from sklearn.decomposition import PCA
+from sklearn.ensemble import RandomForestClassifier
+
+# 建立 Pipeline
+pipeline = Pipeline([
+    ('scaler', StandardScaler()),           # 步驟 1: 標準化
+    ('pca', PCA(n_components=10)),          # 步驟 2: PCA 降維
+    ('classifier', RandomForestClassifier(n_estimators=100, random_state=42))  # 步驟 3: 分類
+])
+
+# 載入資料
+from sklearn.datasets import load_digits
+digits = load_digits()
+X, y = digits.data, digits.target
+
+# 分割資料
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# 訓練（自動執行所有步驟）
+pipeline.fit(X_train, y_train)
+
+# 預測（自動執行所有步驟）
+y_pred = pipeline.predict(X_test)
+
+# 評估
+accuracy = pipeline.score(X_test, y_test)
+print(f"Pipeline 準確率: {accuracy:.4f}")
+
+# 查看 Pipeline 結構
+print("\nPipeline 步驟:")
+for name, step in pipeline.steps:
+    print(f"  {name}: {step}")
+</code></pre>
+
+            <h3>網格搜尋（Grid Search）</h3>
+            <p>自動搜尋最佳超參數組合。</p>
+
+            <pre><code class="language-python">from sklearn.model_selection import GridSearchCV
+
+# 定義 Pipeline
+pipeline = Pipeline([
+    ('scaler', StandardScaler()),
+    ('classifier', RandomForestClassifier(random_state=42))
+])
+
+# 定義參數網格
+param_grid = {
+    'classifier__n_estimators': [50, 100, 200],
+    'classifier__max_depth': [5, 10, 15, None],
+    'classifier__min_samples_split': [2, 5, 10]
+}
+
+# 建立網格搜尋
+grid_search = GridSearchCV(
+    pipeline,
+    param_grid,
+    cv=5,
+    scoring='accuracy',
+    n_jobs=-1,  # 使用所有 CPU
+    verbose=1
+)
+
+# 執行搜尋
+print("開始網格搜尋...")
+grid_search.fit(X_train, y_train)
+
+# 最佳參數
+print(f"\n最佳參數: {grid_search.best_params_}")
+print(f"最佳交叉驗證分數: {grid_search.best_score_:.4f}")
+print(f"測試集分數: {grid_search.score(X_test, y_test):.4f}")
+
+# 視覺化結果
+results = pd.DataFrame(grid_search.cv_results_)
+print("\n前 5 個最佳組合:")
+print(results[['params', 'mean_test_score', 'std_test_score']].nlargest(5, 'mean_test_score'))
+</code></pre>
+
+            <h3>隨機搜尋（Random Search）</h3>
+            <pre><code class="language-python">from sklearn.model_selection import RandomizedSearchCV
+from scipy.stats import randint
+
+# 定義參數分佈
+param_distributions = {
+    'classifier__n_estimators': randint(50, 500),
+    'classifier__max_depth': [5, 10, 15, 20, None],
+    'classifier__min_samples_split': randint(2, 20),
+    'classifier__min_samples_leaf': randint(1, 10)
+}
+
+# 建立隨機搜尋
+random_search = RandomizedSearchCV(
+    pipeline,
+    param_distributions,
+    n_iter=20,  # 嘗試 20 組隨機組合
+    cv=5,
+    scoring='accuracy',
+    n_jobs=-1,
+    random_state=42,
+    verbose=1
+)
+
+# 執行搜尋
+print("開始隨機搜尋...")
+random_search.fit(X_train, y_train)
+
+print(f"\n最佳參數: {random_search.best_params_}")
+print(f"最佳分數: {random_search.best_score_:.4f}")
+print(f"測試集分數: {random_search.score(X_test, y_test):.4f}")
+</code></pre>
+
+            <div class="tip-box">
+                <h4>Grid Search vs Random Search</h4>
+                <table>
+                    <tr>
+                        <th>方法</th>
+                        <th>優點</th>
+                        <th>缺點</th>
+                    </tr>
+                    <tr>
+                        <td>Grid Search</td>
+                        <td>完整搜尋所有組合</td>
+                        <td>參數多時非常慢</td>
+                    </tr>
+                    <tr>
+                        <td>Random Search</td>
+                        <td>更快、可探索更廣範圍</td>
+                        <td>可能錯過最佳組合</td>
+                    </tr>
+                </table>
+                <p>建議：先用 Random Search 快速找到大致範圍，再用 Grid Search 精調。</p>
+            </div>
+        </div>
+
+        <div class="content">
+            <h2>7. 實戰專案：信用卡詐欺偵測</h2>
+            
+            <h3>專案簡介</h3>
+            <p>建立一個信用卡交易詐欺偵測系統，這是一個典型的不平衡分類問題。</p>
+
+            <pre><code class="language-python">import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+from sklearn.model_selection import train_test_split, cross_val_score
+from sklearn.preprocessing import StandardScaler
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import classification_report, confusion_matrix, roc_auc_score
+from imblearn.over_sampling import SMOTE  # 處理不平衡資料
+
+# 模擬信用卡交易資料
+np.random.seed(42)
+n_samples = 10000
+
+# 正常交易（99%）
+normal_transactions = pd.DataFrame({
+    'amount': np.random.exponential(50, int(n_samples * 0.99)),
+    'time': np.random.uniform(0, 24, int(n_samples * 0.99)),
+    'merchant_category': np.random.choice(['retail', 'restaurant', 'gas', 'grocery'], int(n_samples * 0.99)),
+    'fraud': 0
+})
+
+# 詐欺交易（1%）
+fraud_transactions = pd.DataFrame({
+    'amount': np.random.exponential(200, int(n_samples * 0.01)),  # 金額較大
+    'time': np.random.uniform(22, 6, int(n_samples * 0.01)) % 24,  # 深夜時段
+    'merchant_category': np.random.choice(['online', 'foreign', 'luxury'], int(n_samples * 0.01)),
+    'fraud': 1
+})
+
+# 合併資料
+df = pd.concat([normal_transactions, fraud_transactions], ignore_index=True)
+df = df.sample(frac=1, random_state=42).reset_index(drop=True)
+
+print("資料集資訊:")
+print(f"總樣本數: {len(df)}")
+print(f"詐欺交易: {df['fraud'].sum()} ({df['fraud'].mean()*100:.2f}%)")
+print(f"正常交易: {(~df['fraud'].astype(bool)).sum()} ({(1-df['fraud'].mean())*100:.2f}%)")
+
+# 特徵工程
+df['hour'] = df['time'].astype(int)
+df['is_night'] = ((df['hour'] >= 22) | (df['hour'] <= 6)).astype(int)
+df['amount_log'] = np.log1p(df['amount'])
+
+# One-Hot 編碼
+df_encoded = pd.get_dummies(df, columns=['merchant_category'], drop_first=True)
+
+# 準備特徵和目標
+feature_cols = [col for col in df_encoded.columns if col != 'fraud']
+X = df_encoded[feature_cols]
+y = df_encoded['fraud']
+
+# 分割資料
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42, stratify=y
+)
+
+print(f"\n訓練集大小: {X_train.shape}")
+print(f"測試集大小: {X_test.shape}")
+</code></pre>
+
+            <h3>處理不平衡資料</h3>
+            <pre><code class="language-python"># 視覺化類別不平衡
+plt.figure(figsize=(8, 6))
+df['fraud'].value_counts().plot(kind='bar')
+plt.title('類別分佈')
+plt.xlabel('標籤（0=正常, 1=詐欺）')
+plt.ylabel('數量')
+plt.xticks(rotation=0)
+plt.show()
+
+# 方法 1: 調整類別權重
+from sklearn.ensemble import RandomForestClassifier
+
+model_weighted = RandomForestClassifier(
+    n_estimators=100,
+    class_weight='balanced',  # 自動調整權重
+    random_state=42
+)
+
+# 方法 2: 使用 SMOTE 過採樣
+from imblearn.over_sampling import SMOTE
+
+smote = SMOTE(random_state=42)
+X_train_resampled, y_train_resampled = smote.fit_resample(X_train, y_train)
+
+print(f"SMOTE 前 - 詐欺交易: {y_train.sum()}")
+print(f"SMOTE 後 - 詐欺交易: {y_train_resampled.sum()}")
+print(f"SMOTE 後 - 正常交易: {(~y_train_resampled.astype(bool)).sum()}")
+</code></pre>
+
+            <h3>建立完整的檢測系統</h3>
+            <pre><code class="language-python">from sklearn.pipeline import Pipeline
+from sklearn.preprocessing import StandardScaler
+
+# 建立 Pipeline
+pipeline = Pipeline([
+    ('scaler', StandardScaler()),
+    ('classifier', RandomForestClassifier(
+        n_estimators=100,
+        class_weight='balanced',
+        random_state=42
+    ))
+])
+
+# 訓練模型
+print("訓練模型...")
+pipeline.fit(X_train_resampled, y_train_resampled)
+
+# 預測
+y_pred = pipeline.predict(X_test)
+y_pred_proba = pipeline.predict_proba(X_test)[:, 1]
+
+# 評估
+print("\n分類報告:")
+print(classification_report(y_test, y_pred, target_names=['正常', '詐欺']))
+
+# ROC AUC
+roc_auc = roc_auc_score(y_test, y_pred_proba)
+print(f"\nROC AUC: {roc_auc:.4f}")
+
+# 混淆矩陣
+cm = confusion_matrix(y_test, y_pred)
+plt.figure(figsize=(8, 6))
+sns.heatmap(cm, annot=True, fmt='d', cmap='Blues')
+plt.title('混淆矩陣')
+plt.ylabel('實際')
+plt.xlabel('預測')
+plt.show()
+
+# 特徵重要性
+feature_importance = pipeline.named_steps['classifier'].feature_importances_
+feature_names = X.columns
+
+importance_df = pd.DataFrame({
+    'feature': feature_names,
+    'importance': feature_importance
+}).sort_values('importance', ascending=False)
+
+plt.figure(figsize=(10, 6))
+plt.barh(importance_df.head(10)['feature'], importance_df.head(10)['importance'])
+plt.xlabel('重要性')
+plt.title('前 10 個最重要特徵')
+plt.gca().invert_yaxis()
+plt.tight_layout()
+plt.show()
+</code></pre>
+
+            <h3>調整決策閾值</h3>
+            <pre><code class="language-python">from sklearn.metrics import precision_recall_curve
+
+# 計算精確率-召回率曲線
+precision, recall, thresholds = precision_recall_curve(y_test, y_pred_proba)
+
+# 視覺化
+plt.figure(figsize=(12, 5))
+
+plt.subplot(1, 2, 1)
+plt.plot(thresholds, precision[:-1], label='精確率', linewidth=2)
+plt.plot(thresholds, recall[:-1], label='召回率', linewidth=2)
+plt.xlabel('閾值')
+plt.ylabel('分數')
+plt.title('精確率-召回率 vs 閾值')
+plt.legend()
+plt.grid(True, alpha=0.3)
+
+plt.subplot(1, 2, 2)
+plt.plot(recall, precision, linewidth=2)
+plt.xlabel('召回率')
+plt.ylabel('精確率')
+plt.title('精確率-召回率曲線')
+plt.grid(True, alpha=0.3)
+
+plt.tight_layout()
+plt.show()
+
+# 選擇不同閾值
+thresholds_to_test = [0.3, 0.5, 0.7]
+print("\n不同閾值的效果:")
+for threshold in thresholds_to_test:
+    y_pred_custom = (y_pred_proba >= threshold).astype(int)
+    print(f"\n閾值 = {threshold}:")
+    print(classification_report(y_test, y_pred_custom, target_names=['正常', '詐欺']))
+</code></pre>
+
+            <div class="warning-box">
+                <h4>不平衡資料處理要點</h4>
+                <ul>
+                    <li><strong>不要只看準確率</strong> - 99% 的資料是正常交易，全部預測正常也有 99% 準確率</li>
+                    <li><strong>關注召回率</strong> - 詐欺偵測中，漏報（False Negative）代價高</li>
+                    <li><strong>調整閾值</strong> - 根據業務需求調整精確率和召回率的平衡</li>
+                    <li><strong>使用適當指標</strong> - F1 分數、ROC AUC、PR AUC 都比準確率更合適</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="content">
+            <div class="exercise-section">
+                <h3>本週練習題</h3>
+                
+                <h4>基礎練習（必做）</h4>
+                <ol>
+                    <li>
+                        <strong>分類演算法比較</strong>
+                        <ul>
+                            <li>使用 Iris 資料集</li>
+                            <li>比較邏輯回歸、決策樹、SVM、KNN</li>
+                            <li>使用交叉驗證評估</li>
+                            <li>繪製混淆矩陣和 ROC 曲線</li>
+                        </ul>
+                    </li>
+                    
+                    <li>
+                        <strong>聚類分析</strong>
+                        <ul>
+                            <li>載入 Wine 資料集</li>
+                            <li>使用 K-Means 聚類</li>
+                            <li>使用手肘法選擇最佳 K</li>
+                            <li>視覺化聚類結果</li>
+                        </ul>
+                    </li>
+                    
+                    <li>
+                        <strong>降維與視覺化</strong>
+                        <ul>
+                            <li>載入 MNIST 手寫數字</li>
+                            <li>使用 PCA 降到 2 維</li>
+                            <li>使用 t-SNE 降維比較</li>
+                            <li>視覺化不同數字的分布</li>
+                        </ul>
+                    </li>
+                </ol>
+
+                <h4>進階練習</h4>
+                <ol start="4">
+                    <li>
+                        <strong>建立完整 ML Pipeline</strong>
+                        <ul>
+                            <li>包含資料預處理、特徵工程、模型訓練</li>
+                            <li>使用 Grid Search 調參</li>
+                            <li>實作交叉驗證</li>
+                            <li>比較多個模型</li>
+                        </ul>
+                    </li>
+                    
+                    <li>
+                        <strong>處理真實資料集</strong>
+                        <ul>
+                            <li>從 Kaggle 下載資料集</li>
+                            <li>完整的 EDA</li>
+                            <li>特徵工程</li>
+                            <li>模型訓練與優化</li>
+                            <li>提交預測結果</li>
+                        </ul>
+                    </li>
+                </ol>
+
+                <h4>挑戰練習</h4>
+                <ol start="6">
+                    <li>
+                        <strong>進階詐欺偵測系統</strong>
+                        <ul>
+                            <li>實作多種不平衡處理方法</li>
+                            <li>比較 SMOTE、ADASYN、權重調整</li>
+                            <li>調整決策閾值優化業務指標</li>
+                            <li>建立完整的監控系統</li>
+                        </ul>
+                    </li>
+                    
+                    <li>
+                        <strong>集成學習實作</strong>
+                        <ul>
+                            <li>實作 Bagging</li>
+                            <li>實作 Boosting（AdaBoost、Gradient Boosting）</li>
+                            <li>實作 Stacking</li>
+                            <li>比較不同集成方法效果</li>
+                        </ul>
+                    </li>
+                </ol>
+            </div>
+        </div>
+
+        <div class="content">
+            <h2>本週總結</h2>
+            
+            <h3>重點回顧</h3>
+            <ul>
+                <li>掌握 Scikit-learn 統一 API</li>
+                <li>熟悉監督式學習：回歸與分類</li>
+                <li>理解非監督式學習：聚類與降維</li>
+                <li>掌握模型評估：交叉驗證、混淆矩陣、ROC</li>
+                <li>建立完整的 ML Pipeline</li>
+                <li>處理不平衡資料問題</li>
+            </ul>
+
+            <h3>關鍵技能</h3>
+            <ul>
+                <li><strong>模型選擇</strong> - 根據問題選擇合適演算法</li>
+                <li><strong>特徵工程</strong> - 創建有用的特徵</li>
+                <li><strong>超參數調整</strong> - Grid Search 和 Random Search</li>
+                <li><strong>模型評估</strong> - 選擇正確的評估指標</li>
+                <li><strong>Pipeline 設計</strong> - 避免資料洩漏</li>
+            </ul>
+
+            <h3>下週預告</h3>
+            <div class="note-box">
+                <h4>Week 4 - 深度學習基礎</h4>
+                <p>下週將進入深度學習領域：</p>
+                <ul>
+                    <li>神經網路基本架構</li>
+                    <li>反向傳播演算法詳解</li>
+                    <li>激活函數與正規化技術</li>
+                    <li>PyTorch 深度學習框架</li>
+                    <li>實戰：MNIST 手寫數字辨識</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="nav-buttons">
+            <a href="llm-week2.html" class="btn btn-secondary">Week 2：機器學習數學基礎</a>
+            <a href="llm-week4.html" class="btn">Week 4：深度學習基礎</a>
+        </div>
+
+        <footer>
+            <p>LLM 與 AI/ML 課程 Week 3</p>
+            <p>監督式學習 · 非監督式學習 · Scikit-learn · 模型評估 · ML Pipeline</p>
+            <p style="font-size: 0.9em; color: #95a5a6;">© 2025 All Rights Reserved</p>
+        </footer>
+    </div>
+</body>
+</html>

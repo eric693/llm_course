@@ -1,0 +1,1454 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Week 11 - 強化學習基礎 | LLM 與 AI/ML 課程</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft JhengHei', Arial, sans-serif;
+            background: #f8f9fa;
+            color: #1a1a1a;
+            line-height: 1.7;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .nav {
+            background: white;
+            padding: 16px 28px;
+            border-radius: 8px;
+            margin-bottom: 32px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            border: 1px solid #e0e0e0;
+        }
+
+        .nav a {
+            color: #3498db;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 8px 16px;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+        }
+
+        .nav a:hover {
+            background: #ecf0f1;
+            color: #2980b9;
+        }
+
+        .nav span {
+            color: #6c757d;
+            font-weight: 500;
+        }
+
+        header {
+            background: linear-gradient(to right, #2c3e50, #34495e);
+            color: white;
+            padding: 56px 40px;
+            border-radius: 8px;
+            margin-bottom: 32px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            border-bottom: 3px solid #3498db;
+        }
+
+        header h1 {
+            font-size: 2.2em;
+            margin-bottom: 12px;
+            font-weight: 700;
+        }
+
+        header .subtitle {
+            font-size: 1.05em;
+            opacity: 0.9;
+            font-weight: 400;
+        }
+
+        .content {
+            background: white;
+            border-radius: 8px;
+            padding: 48px;
+            margin-bottom: 32px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            border: 1px solid #e0e0e0;
+        }
+
+        .content h2 {
+            color: #1a1a1a;
+            font-size: 1.9em;
+            margin-bottom: 24px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #3498db;
+            font-weight: 700;
+        }
+
+        .content h3 {
+            color: #2c3e50;
+            font-size: 1.5em;
+            margin: 36px 0 16px 0;
+            font-weight: 600;
+        }
+
+        .content h4 {
+            color: #34495e;
+            font-size: 1.2em;
+            margin: 24px 0 12px 0;
+            font-weight: 600;
+        }
+
+        .content p {
+            margin-bottom: 16px;
+            line-height: 1.8;
+            color: #4a4a4a;
+        }
+
+        pre[class*="language-"] {
+            margin: 24px 0;
+            border-radius: 6px;
+            border: 1px solid #d0d7de;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+        }
+
+        code[class*="language-"] {
+            font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
+            font-size: 0.92em;
+            line-height: 1.6;
+        }
+
+        .note-box {
+            background: #e3f2fd;
+            border-left: 4px solid #2196f3;
+            padding: 20px 24px;
+            margin: 24px 0;
+            border-radius: 4px;
+        }
+
+        .note-box h4 {
+            color: #1565c0;
+            margin-top: 0;
+            margin-bottom: 12px;
+            font-size: 1.1em;
+        }
+
+        .warning-box {
+            background: #fff3e0;
+            border-left: 4px solid #ff9800;
+            padding: 20px 24px;
+            margin: 24px 0;
+            border-radius: 4px;
+        }
+
+        .warning-box h4 {
+            color: #e65100;
+            margin-top: 0;
+            margin-bottom: 12px;
+            font-size: 1.1em;
+        }
+
+        .tip-box {
+            background: #f1f8e9;
+            border-left: 4px solid #8bc34a;
+            padding: 20px 24px;
+            margin: 24px 0;
+            border-radius: 4px;
+        }
+
+        .tip-box h4 {
+            color: #558b2f;
+            margin-top: 0;
+            margin-bottom: 12px;
+            font-size: 1.1em;
+        }
+
+        .concept-box {
+            background: #f3e5f5;
+            border-left: 4px solid #9c27b0;
+            padding: 20px 24px;
+            margin: 24px 0;
+            border-radius: 4px;
+        }
+
+        .concept-box h4 {
+            color: #6a1b9a;
+            margin-top: 0;
+            margin-bottom: 12px;
+            font-size: 1.1em;
+        }
+
+        .exercise-section {
+            background: #fafafa;
+            border: 1px solid #e0e0e0;
+            padding: 32px;
+            margin: 32px 0;
+            border-radius: 8px;
+        }
+
+        .exercise-section h3 {
+            color: #2c3e50;
+            margin-top: 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 24px 0;
+            background: white;
+        }
+
+        table th,
+        table td {
+            padding: 14px 16px;
+            text-align: left;
+            border: 1px solid #dee2e6;
+        }
+
+        table th {
+            background: #2c3e50;
+            color: white;
+            font-weight: 600;
+        }
+
+        table tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+
+        ul, ol {
+            margin-left: 28px;
+            margin-top: 12px;
+            margin-bottom: 16px;
+        }
+
+        li {
+            margin: 10px 0;
+            line-height: 1.7;
+            color: #4a4a4a;
+        }
+
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 48px;
+            gap: 16px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 28px;
+            background: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            border: none;
+        }
+
+        .btn:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
+        }
+
+        .btn-secondary {
+            background: #95a5a6;
+        }
+
+        .btn-secondary:hover {
+            background: #7f8c8d;
+            box-shadow: 0 4px 12px rgba(149, 165, 166, 0.3);
+        }
+
+        .highlight {
+            background: #fff9c4;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-weight: 500;
+        }
+
+        footer {
+            text-align: center;
+            padding: 32px 0;
+            color: #6c757d;
+            margin-top: 48px;
+            border-top: 1px solid #dee2e6;
+        }
+
+        footer p {
+            margin: 8px 0;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 12px;
+            }
+
+            .content {
+                padding: 24px 20px;
+            }
+
+            header {
+                padding: 32px 24px;
+            }
+
+            header h1 {
+                font-size: 1.8em;
+            }
+
+            .nav-buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="nav">
+            <a href="llm-week10.html">Week 10</a>
+            <span>Week 11 / 16</span>
+            <a href="llm-week12.html">Week 12</a>
+        </div>
+
+        <header>
+            <h1>Week 11 - 強化學習基礎</h1>
+            <div class="subtitle">從 Q-Learning 到 Policy Gradient：訓練智能代理</div>
+        </header>
+
+        <div class="content">
+            <h2>本週學習內容</h2>
+            <ul>
+                <li>馬可夫決策過程（MDP）</li>
+                <li>Q-Learning 與 Deep Q-Network (DQN)</li>
+                <li>Policy Gradient 方法</li>
+                <li>Actor-Critic 架構（A2C、PPO）</li>
+                <li>實戰：訓練遊戲 AI</li>
+            </ul>
+
+            <div class="concept-box">
+                <h4>強化學習與 LLM 的關係</h4>
+                <p>強化學習是訓練現代 LLM 的關鍵技術：</p>
+                <ul>
+                    <li><strong>RLHF</strong> - Reinforcement Learning from Human Feedback</li>
+                    <li><strong>對齊</strong> - 讓模型行為符合人類偏好</li>
+                    <li><strong>安全性</strong> - 減少有害輸出</li>
+                    <li><strong>ChatGPT</strong> - 使用 PPO 進行微調</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="content">
+            <h2>1. 馬可夫決策過程（MDP）</h2>
+            
+            <h3>MDP 的基本要素</h3>
+            <p><span class="highlight">馬可夫決策過程</span>是強化學習的數學框架，由五元組 (S, A, P, R, γ) 定義。</p>
+
+            <div class="note-box">
+                <h4>MDP 的組成</h4>
+                <ul>
+                    <li><strong>狀態空間 S</strong> - 所有可能的狀態集合</li>
+                    <li><strong>動作空間 A</strong> - 在每個狀態下可採取的動作</li>
+                    <li><strong>轉移機率 P</strong> - P(s'|s,a) 狀態轉移機率</li>
+                    <li><strong>獎勵函數 R</strong> - R(s,a,s') 即時獎勵</li>
+                    <li><strong>折扣因子 γ</strong> - 未來獎勵的折現率 (0 ≤ γ ≤ 1)</li>
+                </ul>
+            </div>
+
+            <pre><code class="language-python">import numpy as np
+import matplotlib.pyplot as plt
+
+class GridWorld:
+    """
+    簡單的網格世界環境
+    代理需要從起點到達終點
+    """
+    def __init__(self, size=5):
+        self.size = size
+        self.state_space = size * size
+        self.action_space = 4  # 上、下、左、右
+        
+        # 起點和終點
+        self.start = (0, 0)
+        self.goal = (size-1, size-1)
+        
+        # 障礙物
+        self.obstacles = [(2, 2), (2, 3), (3, 2)]
+        
+        self.reset()
+    
+    def reset(self):
+        """重置環境"""
+        self.agent_pos = list(self.start)
+        return self._get_state()
+    
+    def _get_state(self):
+        """將位置轉換為狀態索引"""
+        return self.agent_pos[0] * self.size + self.agent_pos[1]
+    
+    def step(self, action):
+        """
+        執行動作
+        action: 0=上, 1=下, 2=左, 3=右
+        
+        返回: (next_state, reward, done, info)
+        """
+        # 計算新位置
+        new_pos = self.agent_pos.copy()
+        
+        if action == 0:  # 上
+            new_pos[0] = max(0, new_pos[0] - 1)
+        elif action == 1:  # 下
+            new_pos[0] = min(self.size - 1, new_pos[0] + 1)
+        elif action == 2:  # 左
+            new_pos[1] = max(0, new_pos[1] - 1)
+        elif action == 3:  # 右
+            new_pos[1] = min(self.size - 1, new_pos[1] + 1)
+        
+        # 檢查障礙物
+        if tuple(new_pos) not in self.obstacles:
+            self.agent_pos = new_pos
+        
+        # 計算獎勵
+        reward = -1  # 每步懲罰
+        done = False
+        
+        if tuple(self.agent_pos) == self.goal:
+            reward = 100  # 到達目標
+            done = True
+        
+        return self._get_state(), reward, done, {}
+    
+    def render(self):
+        """視覺化環境"""
+        grid = np.zeros((self.size, self.size))
+        
+        # 標記障礙物
+        for obs in self.obstacles:
+            grid[obs] = -1
+        
+        # 標記目標
+        grid[self.goal] = 2
+        
+        # 標記代理
+        grid[tuple(self.agent_pos)] = 1
+        
+        plt.figure(figsize=(6, 6))
+        plt.imshow(grid, cmap='coolwarm')
+        plt.colorbar(label='0:空地, -1:障礙, 1:代理, 2:目標')
+        plt.title('網格世界')
+        plt.grid(True)
+        plt.show()
+
+# 測試環境
+env = GridWorld(size=5)
+state = env.reset()
+
+print("網格世界環境:")
+print(f"狀態空間大小: {env.state_space}")
+print(f"動作空間大小: {env.action_space}")
+print(f"初始狀態: {state}")
+
+# 隨機走幾步
+for i in range(5):
+    action = np.random.randint(0, 4)
+    next_state, reward, done, _ = env.step(action)
+    print(f"步驟 {i+1}: 動作={action}, 狀態={next_state}, 獎勵={reward}, 結束={done}")
+    
+    if done:
+        break
+
+# env.render()  # 取消註解以視覺化
+</code></pre>
+
+            <h3>價值函數與貝爾曼方程</h3>
+            <div class="concept-box">
+                <h4>核心概念</h4>
+                <ul>
+                    <li><strong>狀態價值函數 V(s)</strong> - 從狀態 s 開始，遵循策略 π 的期望回報</li>
+                    <li><strong>動作價值函數 Q(s,a)</strong> - 在狀態 s 採取動作 a，然後遵循策略 π 的期望回報</li>
+                    <li><strong>貝爾曼方程</strong> - V(s) = Σ π(a|s) [R(s,a) + γ Σ P(s'|s,a) V(s')]</li>
+                    <li><strong>最優價值函數</strong> - V*(s) = max_a Q*(s,a)</li>
+                </ul>
+            </div>
+
+            <pre><code class="language-python">def value_iteration(env, gamma=0.9, theta=1e-6):
+    """
+    價值迭代算法
+    找到最優價值函數和策略
+    """
+    V = np.zeros(env.state_space)
+    
+    while True:
+        delta = 0
+        
+        for s in range(env.state_space):
+            v = V[s]
+            
+            # 計算所有動作的 Q 值
+            q_values = []
+            for a in range(env.action_space):
+                # 模擬這個動作
+                env.agent_pos = [s // env.size, s % env.size]
+                next_state, reward, done, _ = env.step(a)
+                
+                # Q(s,a) = R(s,a) + γ * V(s')
+                q = reward + gamma * V[next_state] * (1 - done)
+                q_values.append(q)
+            
+            # V(s) = max_a Q(s,a)
+            V[s] = max(q_values)
+            
+            delta = max(delta, abs(v - V[s]))
+        
+        if delta < theta:
+            break
+    
+    # 提取最優策略
+    policy = np.zeros(env.state_space, dtype=int)
+    
+    for s in range(env.state_space):
+        q_values = []
+        for a in range(env.action_space):
+            env.agent_pos = [s // env.size, s % env.size]
+            next_state, reward, done, _ = env.step(a)
+            q = reward + gamma * V[next_state] * (1 - done)
+            q_values.append(q)
+        
+        policy[s] = np.argmax(q_values)
+    
+    return V, policy
+
+# 執行價值迭代
+V_optimal, policy_optimal = value_iteration(env)
+
+print("\n價值迭代結果:")
+print("最優價值函數:")
+print(V_optimal.reshape(env.size, env.size))
+print("\n最優策略（0=上, 1=下, 2=左, 3=右）:")
+print(policy_optimal.reshape(env.size, env.size))
+</code></pre>
+        </div>
+
+        <div class="content">
+            <h2>2. Q-Learning 與 Deep Q-Network (DQN)</h2>
+            
+            <h3>Q-Learning 算法</h3>
+            <p><span class="highlight">Q-Learning</span> 是一種無模型的強化學習算法，透過學習 Q 函數來找到最優策略。</p>
+
+            <pre><code class="language-python">import torch
+import torch.nn as nn
+import torch.optim as optim
+from collections import deque
+import random
+
+class QLearningAgent:
+    """表格式 Q-Learning 代理"""
+    def __init__(self, state_space, action_space, learning_rate=0.1, 
+                 gamma=0.99, epsilon=1.0, epsilon_decay=0.995, epsilon_min=0.01):
+        self.state_space = state_space
+        self.action_space = action_space
+        
+        # Q 表
+        self.Q = np.zeros((state_space, action_space))
+        
+        # 超參數
+        self.lr = learning_rate
+        self.gamma = gamma
+        self.epsilon = epsilon
+        self.epsilon_decay = epsilon_decay
+        self.epsilon_min = epsilon_min
+    
+    def choose_action(self, state):
+        """ε-貪婪策略選擇動作"""
+        if np.random.random() < self.epsilon:
+            return np.random.randint(self.action_space)  # 探索
+        else:
+            return np.argmax(self.Q[state])  # 利用
+    
+    def learn(self, state, action, reward, next_state, done):
+        """
+        Q-Learning 更新規則
+        Q(s,a) ← Q(s,a) + α[r + γ max_a' Q(s',a') - Q(s,a)]
+        """
+        if done:
+            target = reward
+        else:
+            target = reward + self.gamma * np.max(self.Q[next_state])
+        
+        # 更新 Q 值
+        self.Q[state, action] += self.lr * (target - self.Q[state, action])
+        
+        # 衰減 epsilon
+        if self.epsilon > self.epsilon_min:
+            self.epsilon *= self.epsilon_decay
+    
+    def train(self, env, episodes=1000):
+        """訓練代理"""
+        rewards_history = []
+        
+        for episode in range(episodes):
+            state = env.reset()
+            total_reward = 0
+            done = False
+            steps = 0
+            max_steps = 100
+            
+            while not done and steps < max_steps:
+                action = self.choose_action(state)
+                next_state, reward, done, _ = env.step(action)
+                
+                self.learn(state, action, reward, next_state, done)
+                
+                state = next_state
+                total_reward += reward
+                steps += 1
+            
+            rewards_history.append(total_reward)
+            
+            if (episode + 1) % 100 == 0:
+                avg_reward = np.mean(rewards_history[-100:])
+                print(f"Episode {episode+1}, Avg Reward: {avg_reward:.2f}, Epsilon: {self.epsilon:.3f}")
+        
+        return rewards_history
+
+# 訓練 Q-Learning 代理
+env = GridWorld(size=5)
+agent = QLearningAgent(env.state_space, env.action_space)
+
+print("開始訓練 Q-Learning 代理...")
+rewards = agent.train(env, episodes=500)
+
+# 視覺化學習曲線
+plt.figure(figsize=(10, 6))
+plt.plot(rewards, alpha=0.3)
+plt.plot(np.convolve(rewards, np.ones(50)/50, mode='valid'), linewidth=2)
+plt.xlabel('Episode')
+plt.ylabel('Total Reward')
+plt.title('Q-Learning 學習曲線')
+plt.grid(True, alpha=0.3)
+plt.show()
+</code></pre>
+
+            <h3>Deep Q-Network (DQN)</h3>
+            <p>當狀態空間很大時，使用神經網路近似 Q 函數。</p>
+
+            <pre><code class="language-python">class QNetwork(nn.Module):
+    """Q 網路"""
+    def __init__(self, state_dim, action_dim, hidden_dim=128):
+        super(QNetwork, self).__init__()
+        
+        self.network = nn.Sequential(
+            nn.Linear(state_dim, hidden_dim),
+            nn.ReLU(),
+            nn.Linear(hidden_dim, hidden_dim),
+            nn.ReLU(),
+            nn.Linear(hidden_dim, action_dim)
+        )
+    
+    def forward(self, state):
+        return self.network(state)
+
+class ReplayBuffer:
+    """經驗回放緩衝區"""
+    def __init__(self, capacity=10000):
+        self.buffer = deque(maxlen=capacity)
+    
+    def push(self, state, action, reward, next_state, done):
+        self.buffer.append((state, action, reward, next_state, done))
+    
+    def sample(self, batch_size):
+        batch = random.sample(self.buffer, batch_size)
+        states, actions, rewards, next_states, dones = zip(*batch)
+        return (np.array(states), np.array(actions), np.array(rewards),
+                np.array(next_states), np.array(dones))
+    
+    def __len__(self):
+        return len(self.buffer)
+
+class DQNAgent:
+    """DQN 代理"""
+    def __init__(self, state_dim, action_dim, hidden_dim=128, 
+                 learning_rate=1e-3, gamma=0.99, epsilon=1.0, 
+                 epsilon_decay=0.995, epsilon_min=0.01):
+        self.state_dim = state_dim
+        self.action_dim = action_dim
+        self.gamma = gamma
+        self.epsilon = epsilon
+        self.epsilon_decay = epsilon_decay
+        self.epsilon_min = epsilon_min
+        
+        # Q 網路和目標網路
+        self.q_network = QNetwork(state_dim, action_dim, hidden_dim)
+        self.target_network = QNetwork(state_dim, action_dim, hidden_dim)
+        self.target_network.load_state_dict(self.q_network.state_dict())
+        
+        self.optimizer = optim.Adam(self.q_network.parameters(), lr=learning_rate)
+        self.replay_buffer = ReplayBuffer()
+        
+        self.update_target_every = 10
+        self.updates = 0
+    
+    def choose_action(self, state):
+        """選擇動作"""
+        if np.random.random() < self.epsilon:
+            return np.random.randint(self.action_dim)
+        
+        with torch.no_grad():
+            state = torch.FloatTensor(state).unsqueeze(0)
+            q_values = self.q_network(state)
+            return q_values.argmax().item()
+    
+    def learn(self, batch_size=64):
+        """從經驗回放中學習"""
+        if len(self.replay_buffer) < batch_size:
+            return 0
+        
+        # 採樣
+        states, actions, rewards, next_states, dones = self.replay_buffer.sample(batch_size)
+        
+        # 轉換為張量
+        states = torch.FloatTensor(states)
+        actions = torch.LongTensor(actions)
+        rewards = torch.FloatTensor(rewards)
+        next_states = torch.FloatTensor(next_states)
+        dones = torch.FloatTensor(dones)
+        
+        # 當前 Q 值
+        current_q = self.q_network(states).gather(1, actions.unsqueeze(1)).squeeze()
+        
+        # 目標 Q 值（使用目標網路）
+        with torch.no_grad():
+            next_q = self.target_network(next_states).max(1)[0]
+            target_q = rewards + (1 - dones) * self.gamma * next_q
+        
+        # 損失
+        loss = nn.MSELoss()(current_q, target_q)
+        
+        # 優化
+        self.optimizer.zero_grad()
+        loss.backward()
+        self.optimizer.step()
+        
+        # 更新目標網路
+        self.updates += 1
+        if self.updates % self.update_target_every == 0:
+            self.target_network.load_state_dict(self.q_network.state_dict())
+        
+        # 衰減 epsilon
+        if self.epsilon > self.epsilon_min:
+            self.epsilon *= self.epsilon_decay
+        
+        return loss.item()
+
+# 測試 DQN（需要連續狀態空間的環境）
+print("\nDQN 架構已定義")
+print(f"Q 網路參數量: {sum(p.numel() for p in QNetwork(4, 2).parameters()):,}")
+</code></pre>
+
+            <div class="tip-box">
+                <h4>DQN 的關鍵技巧</h4>
+                <ul>
+                    <li><strong>經驗回放</strong> - 打破資料相關性，提升樣本效率</li>
+                    <li><strong>目標網路</strong> - 穩定訓練，減少振盪</li>
+                    <li><strong>ε-貪婪</strong> - 平衡探索與利用</li>
+                    <li><strong>獎勵裁剪</strong> - 限制獎勵範圍，穩定學習</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="content">
+            <h2>3. Policy Gradient 方法</h2>
+            
+            <h3>Policy Gradient 的直覺</h3>
+            <p><span class="highlight">Policy Gradient</span> 直接優化策略，而不是學習價值函數。</p>
+
+            <div class="concept-box">
+                <h4>Policy Gradient 定理</h4>
+                <p>目標：最大化期望回報 J(θ) = E[Σ γ^t r_t]</p>
+                <p>梯度：∇J(θ) = E[∇log π(a|s) * Q(s,a)]</p>
+                <ul>
+                    <li><strong>REINFORCE</strong> - 使用完整軌跡的回報作為 Q</li>
+                    <li><strong>基線</strong> - 減去基線減少方差</li>
+                    <li><strong>優勢函數</strong> - A(s,a) = Q(s,a) - V(s)</li>
+                </ul>
+            </div>
+
+            <pre><code class="language-python">class PolicyNetwork(nn.Module):
+    """策略網路"""
+    def __init__(self, state_dim, action_dim, hidden_dim=128):
+        super(PolicyNetwork, self).__init__()
+        
+        self.network = nn.Sequential(
+            nn.Linear(state_dim, hidden_dim),
+            nn.ReLU(),
+            nn.Linear(hidden_dim, hidden_dim),
+            nn.ReLU(),
+            nn.Linear(hidden_dim, action_dim),
+            nn.Softmax(dim=-1)
+        )
+    
+    def forward(self, state):
+        return self.network(state)
+
+class REINFORCEAgent:
+    """
+    REINFORCE 算法（Monte Carlo Policy Gradient）
+    """
+    def __init__(self, state_dim, action_dim, hidden_dim=128, 
+                 learning_rate=1e-3, gamma=0.99):
+        self.gamma = gamma
+        
+        # 策略網路
+        self.policy = PolicyNetwork(state_dim, action_dim, hidden_dim)
+        self.optimizer = optim.Adam(self.policy.parameters(), lr=learning_rate)
+        
+        # 儲存軌跡
+        self.saved_log_probs = []
+        self.rewards = []
+    
+    def choose_action(self, state):
+        """根據策略選擇動作"""
+        state = torch.FloatTensor(state).unsqueeze(0)
+        probs = self.policy(state)
+        
+        # 從分佈中採樣
+        action_dist = torch.distributions.Categorical(probs)
+        action = action_dist.sample()
+        
+        # 儲存 log 機率（用於計算梯度）
+        self.saved_log_probs.append(action_dist.log_prob(action))
+        
+        return action.item()
+    
+    def store_reward(self, reward):
+        """儲存獎勵"""
+        self.rewards.append(reward)
+    
+    def learn(self):
+        """
+        更新策略
+        使用完整軌跡的回報
+        """
+        # 計算折扣回報
+        returns = []
+        G = 0
+        
+        for r in reversed(self.rewards):
+            G = r + self.gamma * G
+            returns.insert(0, G)
+        
+        returns = torch.tensor(returns)
+        
+        # 標準化（減少方差）
+        returns = (returns - returns.mean()) / (returns.std() + 1e-8)
+        
+        # 計算策略損失
+        policy_loss = []
+        for log_prob, G in zip(self.saved_log_probs, returns):
+            policy_loss.append(-log_prob * G)
+        
+        policy_loss = torch.stack(policy_loss).sum()
+        
+        # 優化
+        self.optimizer.zero_grad()
+        policy_loss.backward()
+        self.optimizer.step()
+        
+        # 清空軌跡
+        self.saved_log_probs = []
+        self.rewards = []
+        
+        return policy_loss.item()
+
+# 測試 REINFORCE
+print("\nREINFORCE 代理已定義")
+print(f"策略網路參數量: {sum(p.numel() for p in PolicyNetwork(4, 2).parameters()):,}")
+</code></pre>
+
+            <h3>帶基線的 Policy Gradient</h3>
+            <pre><code class="language-python">class ValueNetwork(nn.Module):
+    """價值網路（基線）"""
+    def __init__(self, state_dim, hidden_dim=128):
+        super(ValueNetwork, self).__init__()
+        
+        self.network = nn.Sequential(
+            nn.Linear(state_dim, hidden_dim),
+            nn.ReLU(),
+            nn.Linear(hidden_dim, hidden_dim),
+            nn.ReLU(),
+            nn.Linear(hidden_dim, 1)
+        )
+    
+    def forward(self, state):
+        return self.network(state)
+
+class A2CAgent:
+    """
+    Advantage Actor-Critic (A2C)
+    結合策略梯度和價值函數
+    """
+    def __init__(self, state_dim, action_dim, hidden_dim=128, 
+                 learning_rate=1e-3, gamma=0.99):
+        self.gamma = gamma
+        
+        # Actor（策略網路）
+        self.actor = PolicyNetwork(state_dim, action_dim, hidden_dim)
+        self.actor_optimizer = optim.Adam(self.actor.parameters(), lr=learning_rate)
+        
+        # Critic（價值網路）
+        self.critic = ValueNetwork(state_dim, hidden_dim)
+        self.critic_optimizer = optim.Adam(self.critic.parameters(), lr=learning_rate)
+        
+        # 儲存軌跡
+        self.saved_log_probs = []
+        self.values = []
+        self.rewards = []
+    
+    def choose_action(self, state):
+        """選擇動作"""
+        state = torch.FloatTensor(state).unsqueeze(0)
+        
+        # 策略分佈
+        probs = self.actor(state)
+        action_dist = torch.distributions.Categorical(probs)
+        action = action_dist.sample()
+        
+        # 價值估計
+        value = self.critic(state)
+        
+        # 儲存
+        self.saved_log_probs.append(action_dist.log_prob(action))
+        self.values.append(value)
+        
+        return action.item()
+    
+    def store_reward(self, reward):
+        """儲存獎勵"""
+        self.rewards.append(reward)
+    
+    def learn(self):
+        """更新 Actor 和 Critic"""
+        # 計算回報
+        returns = []
+        G = 0
+        
+        for r in reversed(self.rewards):
+            G = r + self.gamma * G
+            returns.insert(0, G)
+        
+        returns = torch.tensor(returns).unsqueeze(1)
+        
+        # 計算優勢
+        values = torch.cat(self.values)
+        advantages = returns - values.detach()
+        
+        # Actor 損失（策略梯度）
+        actor_loss = []
+        for log_prob, advantage in zip(self.saved_log_probs, advantages):
+            actor_loss.append(-log_prob * advantage)
+        
+        actor_loss = torch.stack(actor_loss).sum()
+        
+        # Critic 損失（TD 誤差）
+        critic_loss = nn.MSELoss()(values, returns)
+        
+        # 優化 Actor
+        self.actor_optimizer.zero_grad()
+        actor_loss.backward()
+        self.actor_optimizer.step()
+        
+        # 優化 Critic
+        self.critic_optimizer.zero_grad()
+        critic_loss.backward()
+        self.critic_optimizer.step()
+        
+        # 清空
+        self.saved_log_probs = []
+        self.values = []
+        self.rewards = []
+        
+        return actor_loss.item(), critic_loss.item()
+
+# 測試 A2C
+print("\nA2C 代理已定義")
+a2c = A2CAgent(4, 2)
+print(f"Actor 參數量: {sum(p.numel() for p in a2c.actor.parameters()):,}")
+print(f"Critic 參數量: {sum(p.numel() for p in a2c.critic.parameters()):,}")
+</code></pre>
+        </div>
+
+        <div class="content">
+            <h2>4. Proximal Policy Optimization (PPO)</h2>
+            
+            <h3>PPO 的動機</h3>
+            <p><span class="highlight">PPO</span> 是目前最流行的策略梯度方法，用於訓練 ChatGPT 等大型語言模型。</p>
+
+            <div class="note-box">
+                <h4>PPO 的優勢</h4>
+                <ul>
+                    <li><strong>穩定性</strong> - 限制策略更新幅度</li>
+                    <li><strong>樣本效率</strong> - 重用資料多次</li>
+                    <li><strong>易於調參</strong> - 超參數不敏感</li>
+                    <li><strong>廣泛應用</strong> - 從遊戲到 LLM</li>
+                </ul>
+            </div>
+
+            <pre><code class="language-python">class PPOAgent:
+    """
+    Proximal Policy Optimization
+    """
+    def __init__(self, state_dim, action_dim, hidden_dim=128, 
+                 learning_rate=3e-4, gamma=0.99, epsilon_clip=0.2, 
+                 k_epochs=4, value_coef=0.5, entropy_coef=0.01):
+        self.gamma = gamma
+        self.epsilon_clip = epsilon_clip
+        self.k_epochs = k_epochs
+        self.value_coef = value_coef
+        self.entropy_coef = entropy_coef
+        
+        # Actor-Critic 網路
+        self.actor = PolicyNetwork(state_dim, action_dim, hidden_dim)
+        self.critic = ValueNetwork(state_dim, hidden_dim)
+        self.optimizer = optim.Adam([
+            {'params': self.actor.parameters(), 'lr': learning_rate},
+            {'params': self.critic.parameters(), 'lr': learning_rate}
+        ])
+        
+        # 舊策略（用於計算比率）
+        self.old_actor = PolicyNetwork(state_dim, action_dim, hidden_dim)
+        self.old_actor.load_state_dict(self.actor.state_dict())
+        
+        # 緩衝區
+        self.buffer = {
+            'states': [],
+            'actions': [],
+            'rewards': [],
+            'log_probs': [],
+            'values': [],
+            'dones': []
+        }
+    
+    def choose_action(self, state):
+        """選擇動作"""
+        state = torch.FloatTensor(state).unsqueeze(0)
+        
+        with torch.no_grad():
+            probs = self.old_actor(state)
+            value = self.critic(state)
+        
+        action_dist = torch.distributions.Categorical(probs)
+        action = action_dist.sample()
+        log_prob = action_dist.log_prob(action)
+        
+        # 儲存到緩衝區
+        self.buffer['states'].append(state)
+        self.buffer['actions'].append(action)
+        self.buffer['log_probs'].append(log_prob)
+        self.buffer['values'].append(value)
+        
+        return action.item()
+    
+    def store_transition(self, reward, done):
+        """儲存轉移"""
+        self.buffer['rewards'].append(reward)
+        self.buffer['dones'].append(done)
+    
+    def learn(self):
+        """PPO 更新"""
+        # 轉換為張量
+        states = torch.cat(self.buffer['states'])
+        actions = torch.cat(self.buffer['actions'])
+        old_log_probs = torch.cat(self.buffer['log_probs'])
+        values = torch.cat(self.buffer['values'])
+        
+        # 計算折扣回報
+        rewards = self.buffer['rewards']
+        dones = self.buffer['dones']
+        
+        returns = []
+        G = 0
+        for r, done in zip(reversed(rewards), reversed(dones)):
+            if done:
+                G = 0
+            G = r + self.gamma * G
+            returns.insert(0, G)
+        
+        returns = torch.tensor(returns, dtype=torch.float32).unsqueeze(1)
+        
+        # 標準化回報
+        returns = (returns - returns.mean()) / (returns.std() + 1e-8)
+        
+        # 計算優勢
+        advantages = returns - values.detach()
+        advantages = (advantages - advantages.mean()) / (advantages.std() + 1e-8)
+        
+        # PPO 更新（多個 epoch）
+        for _ in range(self.k_epochs):
+            # 當前策略的 log 機率
+            probs = self.actor(states)
+            dist = torch.distributions.Categorical(probs)
+            new_log_probs = dist.log_prob(actions)
+            entropy = dist.entropy()
+            
+            # 當前價值
+            new_values = self.critic(states)
+            
+            # 比率
+            ratio = torch.exp(new_log_probs - old_log_probs.detach())
+            
+            # Surrogate Loss
+            surr1 = ratio * advantages
+            surr2 = torch.clamp(ratio, 1 - self.epsilon_clip, 1 + self.epsilon_clip) * advantages
+            
+            # 總損失
+            actor_loss = -torch.min(surr1, surr2).mean()
+            critic_loss = nn.MSELoss()(new_values, returns)
+            entropy_loss = -entropy.mean()
+            
+            loss = actor_loss + self.value_coef * critic_loss + self.entropy_coef * entropy_loss
+            
+            # 優化
+            self.optimizer.zero_grad()
+            loss.backward()
+            nn.utils.clip_grad_norm_(list(self.actor.parameters()) + list(self.critic.parameters()), 0.5)
+            self.optimizer.step()
+        
+        # 更新舊策略
+        self.old_actor.load_state_dict(self.actor.state_dict())
+        
+        # 清空緩衝區
+        for key in self.buffer:
+            self.buffer[key] = []
+        
+        return loss.item()
+
+# 測試 PPO
+print("\nPPO 代理已定義")
+ppo = PPOAgent(4, 2)
+print(f"總參數量: {sum(p.numel() for p in list(ppo.actor.parameters()) + list(ppo.critic.parameters())):,}")
+</code></pre>
+
+            <div class="tip-box">
+                <h4>PPO 在 LLM 中的應用（RLHF）</h4>
+                <ul>
+                    <li><strong>獎勵模型</strong> - 根據人類偏好訓練獎勵函數</li>
+                    <li><strong>策略優化</strong> - 使用 PPO 最大化獎勵</li>
+                    <li><strong>KL 懲罰</strong> - 防止策略偏離太遠</li>
+                    <li><strong>參考模型</strong> - 保持生成質量</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="content">
+            <h2>5. 實戰：訓練 CartPole 代理</h2>
+            
+            <h3>使用 OpenAI Gym</h3>
+            <pre><code class="language-python"># 需要安裝: pip install gym
+"""
+import gym
+
+# 建立環境
+env = gym.make('CartPole-v1')
+
+# 重置環境
+state = env.reset()
+print(f"初始狀態: {state}")
+print(f"狀態空間: {env.observation_space}")
+print(f"動作空間: {env.action_space}")
+
+# 隨機玩一回合
+total_reward = 0
+done = False
+
+while not done:
+    action = env.action_space.sample()  # 隨機動作
+    state, reward, done, info = env.step(action)
+    total_reward += reward
+    env.render()
+
+print(f"總獎勵: {total_reward}")
+env.close()
+"""
+
+print("OpenAI Gym CartPole 環境使用範例")
+</code></pre>
+
+            <h3>完整訓練流程</h3>
+            <pre><code class="language-python">def train_ppo_cartpole(episodes=500):
+    """
+    使用 PPO 訓練 CartPole
+    """
+    # 環境參數
+    state_dim = 4  # CartPole 狀態維度
+    action_dim = 2  # 左或右
+    
+    # 建立代理
+    agent = PPOAgent(state_dim, action_dim, hidden_dim=64)
+    
+    # 訓練
+    rewards_history = []
+    
+    for episode in range(episodes):
+        # 模擬環境（這裡簡化，實際應該使用 gym）
+        state = np.random.randn(state_dim)
+        episode_reward = 0
+        
+        for t in range(200):  # 最多 200 步
+            action = agent.choose_action(state)
+            
+            # 模擬環境轉移
+            next_state = np.random.randn(state_dim)
+            reward = 1.0  # 簡化的獎勵
+            done = (t == 199) or (np.random.random() < 0.01)
+            
+            agent.store_transition(reward, done)
+            
+            state = next_state
+            episode_reward += reward
+            
+            if done:
+                break
+        
+        # 更新策略
+        if (episode + 1) % 10 == 0:
+            loss = agent.learn()
+            print(f"Episode {episode+1}, Reward: {episode_reward:.2f}, Loss: {loss:.4f}")
+        
+        rewards_history.append(episode_reward)
+    
+    return rewards_history
+
+# 訓練示例
+print("\n訓練 PPO 代理（簡化版）...")
+# rewards = train_ppo_cartpole(episodes=100)
+print("訓練函數已定義")
+</code></pre>
+
+            <h3>算法比較</h3>
+            <table>
+                <tr>
+                    <th>算法</th>
+                    <th>類型</th>
+                    <th>樣本效率</th>
+                    <th>穩定性</th>
+                    <th>應用</th>
+                </tr>
+                <tr>
+                    <td>Q-Learning</td>
+                    <td>Value-based</td>
+                    <td>中</td>
+                    <td>中</td>
+                    <td>離散動作</td>
+                </tr>
+                <tr>
+                    <td>DQN</td>
+                    <td>Value-based</td>
+                    <td>高</td>
+                    <td>中</td>
+                    <td>Atari 遊戲</td>
+                </tr>
+                <tr>
+                    <td>REINFORCE</td>
+                    <td>Policy-based</td>
+                    <td>低</td>
+                    <td>低</td>
+                    <td>簡單任務</td>
+                </tr>
+                <tr>
+                    <td>A2C</td>
+                    <td>Actor-Critic</td>
+                    <td>中</td>
+                    <td>中</td>
+                    <td>連續控制</td>
+                </tr>
+                <tr>
+                    <td>PPO</td>
+                    <td>Actor-Critic</td>
+                    <td>高</td>
+                    <td>高</td>
+                    <td>LLM、機器人</td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="content">
+            <div class="exercise-section">
+                <h3>本週練習題</h3>
+                
+                <h4>基礎練習（必做）</h4>
+                <ol>
+                    <li>
+                        <strong>實作 Q-Learning</strong>
+                        <ul>
+                            <li>在網格世界環境中訓練 Q-Learning</li>
+                            <li>視覺化 Q 表和策略</li>
+                            <li>調整超參數（學習率、折扣因子、ε）</li>
+                            <li>分析收斂速度</li>
+                        </ul>
+                    </li>
+                    
+                    <li>
+                        <strong>實作 DQN</strong>
+                        <ul>
+                            <li>建立 Q 網路和目標網路</li>
+                            <li>實現經驗回放機制</li>
+                            <li>在 CartPole 上訓練</li>
+                            <li>視覺化學習曲線</li>
+                        </ul>
+                    </li>
+                    
+                    <li>
+                        <strong>實作 REINFORCE</strong>
+                        <ul>
+                            <li>建立策略網路</li>
+                            <li>實現軌跡採樣和策略梯度</li>
+                            <li>添加基線減少方差</li>
+                            <li>比較有無基線的效果</li>
+                        </ul>
+                    </li>
+                </ol>
+
+                <h4>進階練習</h4>
+                <ol start="4">
+                    <li>
+                        <strong>實作 A2C</strong>
+                        <ul>
+                            <li>建立 Actor 和 Critic 網路</li>
+                            <li>實現優勢函數計算</li>
+                            <li>在連續控制任務上測試</li>
+                            <li>分析 Actor 和 Critic 的學習過程</li>
+                        </ul>
+                    </li>
+                    
+                    <li>
+                        <strong>實作完整的 PPO</strong>
+                        <ul>
+                            <li>實現 clipped surrogate objective</li>
+                            <li>添加 GAE（Generalized Advantage Estimation）</li>
+                            <li>在多個環境上評估</li>
+                            <li>調整裁剪範圍和更新次數</li>
+                        </ul>
+                    </li>
+                </ol>
+
+                <h4>挑戰練習</h4>
+                <ol start="6">
+                    <li>
+                        <strong>訓練 Atari 遊戲 AI</strong>
+                        <ul>
+                            <li>實現 DQN 的所有改進（Double DQN、Dueling DQN）</li>
+                            <li>處理影像輸入（CNN）</li>
+                            <li>訓練並評估性能</li>
+                            <li>視覺化學到的特徵</li>
+                        </ul>
+                    </li>
+                    
+                    <li>
+                        <strong>簡化版 RLHF</strong>
+                        <ul>
+                            <li>訓練獎勵模型（偏好學習）</li>
+                            <li>使用 PPO 優化語言模型</li>
+                            <li>實現 KL 散度懲罰</li>
+                            <li>評估對齊效果</li>
+                        </ul>
+                    </li>
+                </ol>
+            </div>
+        </div>
+
+        <div class="content">
+            <h2>本週總結</h2>
+            
+            <h3>重點回顧</h3>
+            <ul>
+                <li>理解 MDP 框架與貝爾曼方程</li>
+                <li>掌握 Q-Learning 和 DQN</li>
+                <li>學會 Policy Gradient 方法</li>
+                <li>理解 Actor-Critic 架構</li>
+                <li>掌握 PPO 算法</li>
+            </ul>
+
+            <h3>關鍵概念</h3>
+            <ul>
+                <li><strong>探索與利用</strong> - ε-貪婪平衡探索和利用</li>
+                <li><strong>經驗回放</strong> - 打破資料相關性</li>
+                <li><strong>目標網路</strong> - 穩定 Q 值更新</li>
+                <li><strong>優勢函數</strong> - 減少策略梯度方差</li>
+                <li><strong>策略裁剪</strong> - PPO 的核心創新</li>
+            </ul>
+
+            <h3>強化學習算法演進</h3>
+            <table>
+                <tr>
+                    <th>時期</th>
+                    <th>代表算法</th>
+                    <th>關鍵創新</th>
+                </tr>
+                <tr>
+                    <td>經典</td>
+                    <td>Q-Learning</td>
+                    <td>無模型學習</td>
+                </tr>
+                <tr>
+                    <td>2013-2015</td>
+                    <td>DQN</td>
+                    <td>深度學習 + RL</td>
+                </tr>
+                <tr>
+                    <td>2015-2017</td>
+                    <td>A3C, TRPO</td>
+                    <td>非同步、信賴域</td>
+                </tr>
+                <tr>
+                    <td>2017-2019</td>
+                    <td>PPO, SAC</td>
+                    <td>穩定、高效</td>
+                </tr>
+                <tr>
+                    <td>2020-現在</td>
+                    <td>RLHF</td>
+                    <td>LLM 對齊</td>
+                </tr>
+            </table>
+
+            <h3>下週預告</h3>
+            <div class="note-box">
+                <h4>Week 12 - RLHF 與 LLM 對齊</h4>
+                <p>下週將深入學習如何使用強化學習對齊大型語言模型：</p>
+                <ul>
+                    <li>RLHF 完整流程</li>
+                    <li>獎勵模型訓練</li>
+                    <li>PPO 微調 LLM</li>
+                    <li>DPO（Direct Preference Optimization）</li>
+                    <li>實戰：構建對齊的對話模型</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="nav-buttons">
+            <a href="llm-week10.html" class="btn btn-secondary">Week 10：多模態學習</a>
+            <a href="llm-week12.html" class="btn">Week 12：RLHF 與對齊</a>
+        </div>
+
+        <footer>
+            <p>LLM 與 AI/ML 課程 Week 11</p>
+            <p>強化學習 · Q-Learning · DQN · Policy Gradient · PPO · Actor-Critic</p>
+            <p style="font-size: 0.9em; color: #95a5a6;">© 2025 All Rights Reserved</p>
+        </footer>
+    </div>
+</body>
+</html>

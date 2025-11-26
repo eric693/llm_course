@@ -1,0 +1,1729 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Week 4 - 深度學習基礎 | LLM 與 AI/ML 課程</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft JhengHei', Arial, sans-serif;
+            background: #f8f9fa;
+            color: #1a1a1a;
+            line-height: 1.7;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .nav {
+            background: white;
+            padding: 16px 28px;
+            border-radius: 8px;
+            margin-bottom: 32px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            border: 1px solid #e0e0e0;
+        }
+
+        .nav a {
+            color: #3498db;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 8px 16px;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+        }
+
+        .nav a:hover {
+            background: #ecf0f1;
+            color: #2980b9;
+        }
+
+        .nav span {
+            color: #6c757d;
+            font-weight: 500;
+        }
+
+        header {
+            background: linear-gradient(to right, #2c3e50, #34495e);
+            color: white;
+            padding: 56px 40px;
+            border-radius: 8px;
+            margin-bottom: 32px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            border-bottom: 3px solid #3498db;
+        }
+
+        header h1 {
+            font-size: 2.2em;
+            margin-bottom: 12px;
+            font-weight: 700;
+        }
+
+        header .subtitle {
+            font-size: 1.05em;
+            opacity: 0.9;
+            font-weight: 400;
+        }
+
+        .content {
+            background: white;
+            border-radius: 8px;
+            padding: 48px;
+            margin-bottom: 32px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            border: 1px solid #e0e0e0;
+        }
+
+        .content h2 {
+            color: #1a1a1a;
+            font-size: 1.9em;
+            margin-bottom: 24px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #3498db;
+            font-weight: 700;
+        }
+
+        .content h3 {
+            color: #2c3e50;
+            font-size: 1.5em;
+            margin: 36px 0 16px 0;
+            font-weight: 600;
+        }
+
+        .content h4 {
+            color: #34495e;
+            font-size: 1.2em;
+            margin: 24px 0 12px 0;
+            font-weight: 600;
+        }
+
+        .content p {
+            margin-bottom: 16px;
+            line-height: 1.8;
+            color: #4a4a4a;
+        }
+
+        pre[class*="language-"] {
+            margin: 24px 0;
+            border-radius: 6px;
+            border: 1px solid #d0d7de;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+        }
+
+        code[class*="language-"] {
+            font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
+            font-size: 0.92em;
+            line-height: 1.6;
+        }
+
+        .note-box {
+            background: #e3f2fd;
+            border-left: 4px solid #2196f3;
+            padding: 20px 24px;
+            margin: 24px 0;
+            border-radius: 4px;
+        }
+
+        .note-box h4 {
+            color: #1565c0;
+            margin-top: 0;
+            margin-bottom: 12px;
+            font-size: 1.1em;
+        }
+
+        .warning-box {
+            background: #fff3e0;
+            border-left: 4px solid #ff9800;
+            padding: 20px 24px;
+            margin: 24px 0;
+            border-radius: 4px;
+        }
+
+        .warning-box h4 {
+            color: #e65100;
+            margin-top: 0;
+            margin-bottom: 12px;
+            font-size: 1.1em;
+        }
+
+        .tip-box {
+            background: #f1f8e9;
+            border-left: 4px solid #8bc34a;
+            padding: 20px 24px;
+            margin: 24px 0;
+            border-radius: 4px;
+        }
+
+        .tip-box h4 {
+            color: #558b2f;
+            margin-top: 0;
+            margin-bottom: 12px;
+            font-size: 1.1em;
+        }
+
+        .concept-box {
+            background: #f3e5f5;
+            border-left: 4px solid #9c27b0;
+            padding: 20px 24px;
+            margin: 24px 0;
+            border-radius: 4px;
+        }
+
+        .concept-box h4 {
+            color: #6a1b9a;
+            margin-top: 0;
+            margin-bottom: 12px;
+            font-size: 1.1em;
+        }
+
+        .exercise-section {
+            background: #fafafa;
+            border: 1px solid #e0e0e0;
+            padding: 32px;
+            margin: 32px 0;
+            border-radius: 8px;
+        }
+
+        .exercise-section h3 {
+            color: #2c3e50;
+            margin-top: 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 24px 0;
+            background: white;
+        }
+
+        table th,
+        table td {
+            padding: 14px 16px;
+            text-align: left;
+            border: 1px solid #dee2e6;
+        }
+
+        table th {
+            background: #2c3e50;
+            color: white;
+            font-weight: 600;
+        }
+
+        table tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+
+        ul, ol {
+            margin-left: 28px;
+            margin-top: 12px;
+            margin-bottom: 16px;
+        }
+
+        li {
+            margin: 10px 0;
+            line-height: 1.7;
+            color: #4a4a4a;
+        }
+
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 48px;
+            gap: 16px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 28px;
+            background: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            border: none;
+        }
+
+        .btn:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
+        }
+
+        .btn-secondary {
+            background: #95a5a6;
+        }
+
+        .btn-secondary:hover {
+            background: #7f8c8d;
+            box-shadow: 0 4px 12px rgba(149, 165, 166, 0.3);
+        }
+
+        .highlight {
+            background: #fff9c4;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-weight: 500;
+        }
+
+        footer {
+            text-align: center;
+            padding: 32px 0;
+            color: #6c757d;
+            margin-top: 48px;
+            border-top: 1px solid #dee2e6;
+        }
+
+        footer p {
+            margin: 8px 0;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 12px;
+            }
+
+            .content {
+                padding: 24px 20px;
+            }
+
+            header {
+                padding: 32px 24px;
+            }
+
+            header h1 {
+                font-size: 1.8em;
+            }
+
+            .nav-buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="nav">
+            <a href="llm-week3.html">Week 3</a>
+            <span>Week 4 / 16</span>
+            <a href="llm-week5.html">Week 5</a>
+        </div>
+
+        <header>
+            <h1>Week 4 - 深度學習基礎</h1>
+            <div class="subtitle">理解神經網路原理與 PyTorch 深度學習框架</div>
+        </header>
+
+        <div class="content">
+            <h2>本週學習內容</h2>
+            <ul>
+                <li>神經網路基本架構與原理</li>
+                <li>反向傳播演算法詳解</li>
+                <li>激活函數與正規化技術</li>
+                <li>PyTorch 深度學習框架入門</li>
+                <li>實戰：MNIST 手寫數字辨識</li>
+            </ul>
+
+            <div class="concept-box">
+                <h4>為什麼要學深度學習？</h4>
+                <p>深度學習是現代 AI 的核心技術：</p>
+                <ul>
+                    <li><strong>自動特徵學習</strong> - 不需手動設計特徵，從資料中自動學習</li>
+                    <li><strong>處理複雜問題</strong> - 影像、語音、文本等非結構化資料</li>
+                    <li><strong>端到端學習</strong> - 從原始資料直接學習到最終輸出</li>
+                    <li><strong>強大的表示能力</strong> - 多層網路可以學習複雜的函數</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="content">
+            <h2>1. 神經網路基礎</h2>
+            
+            <h3>感知機（Perceptron）</h3>
+            <p><span class="highlight">感知機</span>是最簡單的神經元模型，是神經網路的基本單元。</p>
+
+            <pre><code class="language-python">import numpy as np
+import matplotlib.pyplot as plt
+
+class Perceptron:
+    def __init__(self, learning_rate=0.01, n_iterations=1000):
+        self.learning_rate = learning_rate
+        self.n_iterations = n_iterations
+        self.weights = None
+        self.bias = None
+    
+    def activation(self, x):
+        """階躍函數"""
+        return 1 if x >= 0 else 0
+    
+    def fit(self, X, y):
+        n_samples, n_features = X.shape
+        
+        # 初始化參數
+        self.weights = np.zeros(n_features)
+        self.bias = 0
+        
+        # 訓練
+        for _ in range(self.n_iterations):
+            for idx, x_i in enumerate(X):
+                # 計算預測
+                linear_output = np.dot(x_i, self.weights) + self.bias
+                y_pred = self.activation(linear_output)
+                
+                # 更新參數
+                update = self.learning_rate * (y[idx] - y_pred)
+                self.weights += update * x_i
+                self.bias += update
+    
+    def predict(self, X):
+        linear_output = np.dot(X, self.weights) + self.bias
+        return np.array([self.activation(x) for x in linear_output])
+
+# 測試感知機 - AND 邏輯閘
+X = np.array([[0, 0], [0, 1], [1, 0], [1, 1]])
+y = np.array([0, 0, 0, 1])  # AND
+
+perceptron = Perceptron(learning_rate=0.1, n_iterations=10)
+perceptron.fit(X, y)
+
+predictions = perceptron.predict(X)
+print("AND 邏輯閘:")
+for i in range(len(X)):
+    print(f"輸入: {X[i]}, 預測: {predictions[i]}, 真實: {y[i]}")
+
+# 視覺化決策邊界
+plt.figure(figsize=(8, 6))
+plt.scatter(X[y==0][:, 0], X[y==0][:, 1], c='red', marker='o', s=100, label='類別 0')
+plt.scatter(X[y==1][:, 0], X[y==1][:, 1], c='blue', marker='s', s=100, label='類別 1')
+
+# 繪製決策邊界
+x_vals = np.array([0, 1])
+y_vals = -(perceptron.weights[0] * x_vals + perceptron.bias) / perceptron.weights[1]
+plt.plot(x_vals, y_vals, 'k-', linewidth=2, label='決策邊界')
+
+plt.xlabel('x1')
+plt.ylabel('x2')
+plt.title('感知機 - AND 邏輯閘')
+plt.legend()
+plt.grid(True, alpha=0.3)
+plt.xlim(-0.5, 1.5)
+plt.ylim(-0.5, 1.5)
+plt.show()
+</code></pre>
+
+            <div class="warning-box">
+                <h4>感知機的限制</h4>
+                <p>感知機只能解決<strong>線性可分</strong>的問題。例如：</p>
+                <ul>
+                    <li>可以：AND、OR 邏輯閘</li>
+                    <li>不可以：XOR 邏輯閘（需要多層神經網路）</li>
+                </ul>
+            </div>
+
+            <h3>多層感知機（MLP）</h3>
+            <p>堆疊多層神經元就形成了<span class="highlight">多層感知機</span>，可以解決非線性問題。</p>
+
+            <pre><code class="language-python">import numpy as np
+
+class NeuralNetwork:
+    def __init__(self, layer_sizes):
+        """
+        layer_sizes: 每層神經元數量，例如 [2, 4, 1] 表示
+                     輸入層 2 個神經元，隱藏層 4 個，輸出層 1 個
+        """
+        self.layer_sizes = layer_sizes
+        self.weights = []
+        self.biases = []
+        
+        # 初始化權重和偏置
+        for i in range(len(layer_sizes) - 1):
+            # He 初始化
+            w = np.random.randn(layer_sizes[i], layer_sizes[i+1]) * np.sqrt(2.0 / layer_sizes[i])
+            b = np.zeros((1, layer_sizes[i+1]))
+            self.weights.append(w)
+            self.biases.append(b)
+    
+    def sigmoid(self, x):
+        """Sigmoid 激活函數"""
+        return 1 / (1 + np.exp(-np.clip(x, -500, 500)))
+    
+    def sigmoid_derivative(self, x):
+        """Sigmoid 導數"""
+        return x * (1 - x)
+    
+    def forward(self, X):
+        """前向傳播"""
+        self.activations = [X]
+        
+        for i in range(len(self.weights)):
+            z = np.dot(self.activations[-1], self.weights[i]) + self.biases[i]
+            a = self.sigmoid(z)
+            self.activations.append(a)
+        
+        return self.activations[-1]
+    
+    def backward(self, X, y, learning_rate):
+        """反向傳播"""
+        m = X.shape[0]
+        
+        # 計算輸出層誤差
+        delta = self.activations[-1] - y
+        
+        # 反向傳播誤差
+        for i in range(len(self.weights) - 1, -1, -1):
+            # 計算梯度
+            dW = np.dot(self.activations[i].T, delta) / m
+            db = np.sum(delta, axis=0, keepdims=True) / m
+            
+            # 更新參數
+            self.weights[i] -= learning_rate * dW
+            self.biases[i] -= learning_rate * db
+            
+            # 傳播到前一層
+            if i > 0:
+                delta = np.dot(delta, self.weights[i].T) * self.sigmoid_derivative(self.activations[i])
+    
+    def train(self, X, y, epochs, learning_rate=0.1):
+        """訓練網路"""
+        losses = []
+        
+        for epoch in range(epochs):
+            # 前向傳播
+            output = self.forward(X)
+            
+            # 計算損失（MSE）
+            loss = np.mean((output - y) ** 2)
+            losses.append(loss)
+            
+            # 反向傳播
+            self.backward(X, y, learning_rate)
+            
+            if (epoch + 1) % 100 == 0:
+                print(f"Epoch {epoch+1}/{epochs}, Loss: {loss:.4f}")
+        
+        return losses
+    
+    def predict(self, X):
+        """預測"""
+        output = self.forward(X)
+        return (output > 0.5).astype(int)
+
+# 測試 XOR 問題
+X = np.array([[0, 0], [0, 1], [1, 0], [1, 1]])
+y = np.array([[0], [1], [1], [0]])  # XOR
+
+# 建立神經網路：輸入層 2 個神經元，隱藏層 4 個，輸出層 1 個
+nn = NeuralNetwork([2, 4, 1])
+
+print("訓練前預測:")
+predictions = nn.predict(X)
+for i in range(len(X)):
+    print(f"輸入: {X[i]}, 預測: {predictions[i][0]}, 真實: {y[i][0]}")
+
+# 訓練
+print("\n開始訓練...")
+losses = nn.train(X, y, epochs=5000, learning_rate=0.5)
+
+print("\n訓練後預測:")
+predictions = nn.predict(X)
+for i in range(len(X)):
+    print(f"輸入: {X[i]}, 預測: {predictions[i][0]}, 真實: {y[i][0]}")
+
+# 繪製學習曲線
+plt.figure(figsize=(10, 6))
+plt.plot(losses, linewidth=2)
+plt.xlabel('訓練週期')
+plt.ylabel('損失')
+plt.title('學習曲線')
+plt.grid(True, alpha=0.3)
+plt.show()
+</code></pre>
+
+            <div class="concept-box">
+                <h4>神經網路的關鍵組件</h4>
+                <ul>
+                    <li><strong>輸入層</strong> - 接收原始特徵</li>
+                    <li><strong>隱藏層</strong> - 學習特徵表示（可以有多層）</li>
+                    <li><strong>輸出層</strong> - 產生最終預測</li>
+                    <li><strong>權重（Weights）</strong> - 連接神經元的參數</li>
+                    <li><strong>偏置（Bias）</strong> - 每個神經元的偏移量</li>
+                    <li><strong>激活函數</strong> - 引入非線性</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="content">
+            <h2>2. 激活函數</h2>
+            
+            <h3>為什麼需要激活函數？</h3>
+            <p>如果沒有激活函數，多層神經網路就等同於單層線性模型。激活函數引入<strong>非線性</strong>，讓網路能夠學習複雜的函數。</p>
+
+            <pre><code class="language-python">import numpy as np
+import matplotlib.pyplot as plt
+
+# 定義各種激活函數
+def sigmoid(x):
+    return 1 / (1 + np.exp(-np.clip(x, -500, 500)))
+
+def tanh(x):
+    return np.tanh(x)
+
+def relu(x):
+    return np.maximum(0, x)
+
+def leaky_relu(x, alpha=0.01):
+    return np.where(x > 0, x, alpha * x)
+
+def elu(x, alpha=1.0):
+    return np.where(x > 0, x, alpha * (np.exp(x) - 1))
+
+def softplus(x):
+    return np.log(1 + np.exp(np.clip(x, -500, 500)))
+
+# 定義導數
+def sigmoid_derivative(x):
+    s = sigmoid(x)
+    return s * (1 - s)
+
+def tanh_derivative(x):
+    return 1 - np.tanh(x) ** 2
+
+def relu_derivative(x):
+    return np.where(x > 0, 1, 0)
+
+# 繪製激活函數
+x = np.linspace(-5, 5, 200)
+
+fig, axes = plt.subplots(2, 3, figsize=(15, 10))
+
+# Sigmoid
+axes[0, 0].plot(x, sigmoid(x), linewidth=2, label='Sigmoid')
+axes[0, 0].plot(x, sigmoid_derivative(x), linewidth=2, linestyle='--', label='導數')
+axes[0, 0].set_title('Sigmoid')
+axes[0, 0].legend()
+axes[0, 0].grid(True, alpha=0.3)
+
+# Tanh
+axes[0, 1].plot(x, tanh(x), linewidth=2, label='Tanh')
+axes[0, 1].plot(x, tanh_derivative(x), linewidth=2, linestyle='--', label='導數')
+axes[0, 1].set_title('Tanh')
+axes[0, 1].legend()
+axes[0, 1].grid(True, alpha=0.3)
+
+# ReLU
+axes[0, 2].plot(x, relu(x), linewidth=2, label='ReLU')
+axes[0, 2].plot(x, relu_derivative(x), linewidth=2, linestyle='--', label='導數')
+axes[0, 2].set_title('ReLU')
+axes[0, 2].legend()
+axes[0, 2].grid(True, alpha=0.3)
+
+# Leaky ReLU
+axes[1, 0].plot(x, leaky_relu(x), linewidth=2, label='Leaky ReLU')
+axes[1, 0].set_title('Leaky ReLU')
+axes[1, 0].legend()
+axes[1, 0].grid(True, alpha=0.3)
+
+# ELU
+axes[1, 1].plot(x, elu(x), linewidth=2, label='ELU')
+axes[1, 1].set_title('ELU')
+axes[1, 1].legend()
+axes[1, 1].grid(True, alpha=0.3)
+
+# Softplus
+axes[1, 2].plot(x, softplus(x), linewidth=2, label='Softplus')
+axes[1, 2].set_title('Softplus')
+axes[1, 2].legend()
+axes[1, 2].grid(True, alpha=0.3)
+
+plt.tight_layout()
+plt.show()
+</code></pre>
+
+            <h3>激活函數比較</h3>
+            <table>
+                <tr>
+                    <th>激活函數</th>
+                    <th>公式</th>
+                    <th>優點</th>
+                    <th>缺點</th>
+                    <th>使用場景</th>
+                </tr>
+                <tr>
+                    <td>Sigmoid</td>
+                    <td>σ(x) = 1/(1+e⁻ˣ)</td>
+                    <td>輸出 0-1，可解釋為機率</td>
+                    <td>梯度消失、非零中心</td>
+                    <td>輸出層（二元分類）</td>
+                </tr>
+                <tr>
+                    <td>Tanh</td>
+                    <td>tanh(x)</td>
+                    <td>零中心、範圍 -1 到 1</td>
+                    <td>梯度消失</td>
+                    <td>RNN、隱藏層</td>
+                </tr>
+                <tr>
+                    <td>ReLU</td>
+                    <td>max(0, x)</td>
+                    <td>計算簡單、緩解梯度消失</td>
+                    <td>神經元死亡問題</td>
+                    <td>最常用（CNN、隱藏層）</td>
+                </tr>
+                <tr>
+                    <td>Leaky ReLU</td>
+                    <td>max(αx, x)</td>
+                    <td>解決神經元死亡</td>
+                    <td>需要調整 α</td>
+                    <td>替代 ReLU</td>
+                </tr>
+                <tr>
+                    <td>ELU</td>
+                    <td>x if x>0 else α(eˣ-1)</td>
+                    <td>零中心、負值飽和</td>
+                    <td>計算較慢</td>
+                    <td>需要更穩定訓練時</td>
+                </tr>
+                <tr>
+                    <td>Softmax</td>
+                    <td>eˣⁱ / Σeˣʲ</td>
+                    <td>多類別機率分佈</td>
+                    <td>只用於輸出層</td>
+                    <td>多類別分類輸出層</td>
+                </tr>
+            </table>
+
+            <div class="tip-box">
+                <h4>激活函數選擇建議</h4>
+                <ul>
+                    <li><strong>隱藏層</strong>：優先使用 ReLU，如有問題再嘗試 Leaky ReLU 或 ELU</li>
+                    <li><strong>輸出層（回歸）</strong>：不使用激活函數或使用線性激活</li>
+                    <li><strong>輸出層（二元分類）</strong>：Sigmoid</li>
+                    <li><strong>輸出層（多類別分類）</strong>：Softmax</li>
+                    <li><strong>RNN</strong>：Tanh 或 Sigmoid（用於閘控機制）</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="content">
+            <h2>3. 反向傳播演算法</h2>
+            
+            <h3>反向傳播的原理</h3>
+            <p><span class="highlight">反向傳播</span>是訓練神經網路的核心演算法，使用鏈式法則計算損失函數對每個參數的梯度。</p>
+
+            <div class="concept-box">
+                <h4>反向傳播的步驟</h4>
+                <ol>
+                    <li><strong>前向傳播</strong>：輸入通過網路，計算輸出和損失</li>
+                    <li><strong>計算輸出層梯度</strong>：損失對輸出層的偏微分</li>
+                    <li><strong>反向傳播梯度</strong>：使用鏈式法則向前傳播梯度</li>
+                    <li><strong>更新參數</strong>：使用梯度下降更新權重和偏置</li>
+                </ol>
+            </div>
+
+            <h4>詳細推導範例</h4>
+            <pre><code class="language-python">import numpy as np
+
+class SimpleNN:
+    """
+    簡單的兩層神經網路，用於詳細展示反向傳播過程
+    架構: 輸入層(2) -> 隱藏層(3) -> 輸出層(1)
+    """
+    def __init__(self):
+        # 初始化權重（使用小的隨機值）
+        np.random.seed(42)
+        self.W1 = np.random.randn(2, 3) * 0.5  # 輸入到隱藏層
+        self.b1 = np.zeros((1, 3))
+        self.W2 = np.random.randn(3, 1) * 0.5  # 隱藏層到輸出層
+        self.b2 = np.zeros((1, 1))
+    
+    def sigmoid(self, x):
+        return 1 / (1 + np.exp(-np.clip(x, -500, 500)))
+    
+    def sigmoid_derivative(self, x):
+        return x * (1 - x)
+    
+    def forward(self, X):
+        """前向傳播"""
+        # 隱藏層
+        self.z1 = np.dot(X, self.W1) + self.b1
+        self.a1 = self.sigmoid(self.z1)
+        
+        # 輸出層
+        self.z2 = np.dot(self.a1, self.W2) + self.b2
+        self.a2 = self.sigmoid(self.z2)
+        
+        return self.a2
+    
+    def backward(self, X, y, learning_rate):
+        """反向傳播（詳細步驟）"""
+        m = X.shape[0]
+        
+        # === 輸出層梯度 ===
+        # 損失函數: L = (y - a2)²
+        # dL/da2 = -2(y - a2)
+        # a2 = sigmoid(z2)
+        # da2/dz2 = a2(1 - a2)
+        # dL/dz2 = dL/da2 * da2/dz2
+        delta2 = (self.a2 - y) * self.sigmoid_derivative(self.a2)
+        
+        # 計算 W2 和 b2 的梯度
+        # dL/dW2 = a1^T @ delta2
+        dW2 = np.dot(self.a1.T, delta2) / m
+        db2 = np.sum(delta2, axis=0, keepdims=True) / m
+        
+        # === 隱藏層梯度 ===
+        # delta1 = delta2 @ W2^T * da1/dz1
+        delta1 = np.dot(delta2, self.W2.T) * self.sigmoid_derivative(self.a1)
+        
+        # 計算 W1 和 b1 的梯度
+        dW1 = np.dot(X.T, delta1) / m
+        db1 = np.sum(delta1, axis=0, keepdims=True) / m
+        
+        # === 更新參數 ===
+        self.W2 -= learning_rate * dW2
+        self.b2 -= learning_rate * db2
+        self.W1 -= learning_rate * dW1
+        self.b1 -= learning_rate * db1
+        
+        # 回傳梯度資訊（用於除錯）
+        return {
+            'dW2': dW2, 'db2': db2,
+            'dW1': dW1, 'db1': db1,
+            'delta2': delta2, 'delta1': delta1
+        }
+    
+    def train(self, X, y, epochs, learning_rate=0.5, verbose=True):
+        """訓練網路"""
+        losses = []
+        
+        for epoch in range(epochs):
+            # 前向傳播
+            output = self.forward(X)
+            
+            # 計算損失
+            loss = np.mean((output - y) ** 2)
+            losses.append(loss)
+            
+            # 反向傳播
+            gradients = self.backward(X, y, learning_rate)
+            
+            # 每 500 輪顯示一次詳細資訊
+            if verbose and (epoch + 1) % 500 == 0:
+                print(f"\nEpoch {epoch+1}:")
+                print(f"  損失: {loss:.6f}")
+                print(f"  輸出層梯度範數: {np.linalg.norm(gradients['dW2']):.6f}")
+                print(f"  隱藏層梯度範數: {np.linalg.norm(gradients['dW1']):.6f}")
+        
+        return losses
+
+# 測試
+X = np.array([[0, 0], [0, 1], [1, 0], [1, 1]])
+y = np.array([[0], [1], [1], [0]])  # XOR
+
+nn = SimpleNN()
+
+print("初始預測:")
+initial_pred = nn.forward(X)
+for i in range(len(X)):
+    print(f"輸入: {X[i]}, 預測: {initial_pred[i][0]:.4f}, 真實: {y[i][0]}")
+
+print("\n" + "="*50)
+print("開始訓練...")
+print("="*50)
+
+losses = nn.train(X, y, epochs=2000, learning_rate=0.5)
+
+print("\n" + "="*50)
+print("訓練完成")
+print("="*50)
+
+print("\n最終預測:")
+final_pred = nn.forward(X)
+for i in range(len(X)):
+    print(f"輸入: {X[i]}, 預測: {final_pred[i][0]:.4f}, 真實: {y[i][0]}")
+
+# 視覺化學習曲線
+plt.figure(figsize=(10, 6))
+plt.plot(losses, linewidth=2)
+plt.xlabel('訓練週期')
+plt.ylabel('損失（MSE）')
+plt.title('反向傳播學習曲線')
+plt.grid(True, alpha=0.3)
+plt.yscale('log')
+plt.show()
+</code></pre>
+
+            <div class="note-box">
+                <h4>梯度檢查（Gradient Checking）</h4>
+                <p>用於驗證反向傳播實作是否正確：</p>
+                <pre><code class="language-python">def gradient_check(nn, X, y, epsilon=1e-7):
+    """
+    使用數值微分驗證梯度計算
+    """
+    # 前向傳播
+    output = nn.forward(X)
+    
+    # 反向傳播得到解析梯度
+    gradients = nn.backward(X, y, learning_rate=0)
+    
+    # 數值梯度
+    numerical_grad = np.zeros_like(nn.W2)
+    
+    for i in range(nn.W2.shape[0]):
+        for j in range(nn.W2.shape[1]):
+            # W + epsilon
+            nn.W2[i, j] += epsilon
+            output_plus = nn.forward(X)
+            loss_plus = np.mean((output_plus - y) ** 2)
+            
+            # W - epsilon
+            nn.W2[i, j] -= 2 * epsilon
+            output_minus = nn.forward(X)
+            loss_minus = np.mean((output_minus - y) ** 2)
+            
+            # 數值梯度
+            numerical_grad[i, j] = (loss_plus - loss_minus) / (2 * epsilon)
+            
+            # 還原
+            nn.W2[i, j] += epsilon
+    
+    # 比較
+    diff = np.linalg.norm(gradients['dW2'] - numerical_grad)
+    print(f"梯度差異: {diff}")
+    if diff < 1e-5:
+        print("梯度檢查通過！")
+    else:
+        print("梯度檢查失敗，請檢查反向傳播實作")
+    
+    return diff
+
+# 測試
+nn_test = SimpleNN()
+gradient_check(nn_test, X, y)
+</code></pre>
+            </div>
+        </div>
+
+        <div class="content">
+            <h2>4. PyTorch 深度學習框架</h2>
+            
+            <h3>什麼是 PyTorch？</h3>
+            <p><span class="highlight">PyTorch</span> 是 Facebook 開發的深度學習框架，以靈活性和易用性著稱。</p>
+
+            <h4>安裝與基礎</h4>
+            <pre><code class="language-python"># 安裝 PyTorch
+# !pip install torch torchvision
+
+import torch
+import torch.nn as nn
+import torch.optim as optim
+import numpy as np
+
+# 檢查版本
+print(f"PyTorch 版本: {torch.__version__}")
+
+# 檢查 GPU 是否可用
+device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+print(f"使用設備: {device}")
+</code></pre>
+
+            <h3>張量（Tensor）基礎</h3>
+            <p>張量是 PyTorch 的核心資料結構，類似 NumPy 陣列但支援 GPU 加速。</p>
+
+            <pre><code class="language-python">import torch
+
+# 建立張量
+x = torch.tensor([1, 2, 3, 4, 5])
+print("一維張量:", x)
+
+# 建立矩陣
+matrix = torch.tensor([[1, 2, 3],
+                       [4, 5, 6]])
+print("二維張量:\n", matrix)
+
+# 特殊張量
+zeros = torch.zeros(3, 4)
+ones = torch.ones(2, 3)
+random = torch.randn(2, 3)  # 標準常態分佈
+eye = torch.eye(3)           # 單位矩陣
+
+print("\n零張量:\n", zeros)
+print("\n隨機張量:\n", random)
+
+# 張量運算
+a = torch.tensor([1.0, 2.0, 3.0])
+b = torch.tensor([4.0, 5.0, 6.0])
+
+print("\n加法:", a + b)
+print("乘法:", a * b)
+print("點積:", torch.dot(a, b))
+print("矩陣乘法:", torch.mm(matrix.float(), torch.ones(3, 2)))
+
+# 張量形狀操作
+x = torch.randn(2, 3, 4)
+print("\n原始形狀:", x.shape)
+print("重塑:", x.view(6, 4).shape)
+print("轉置:", x.transpose(0, 1).shape)
+
+# 轉換到 GPU（如果可用）
+if torch.cuda.is_available():
+    x_gpu = x.cuda()
+    print("\nGPU 張量:", x_gpu.device)
+    x_cpu = x_gpu.cpu()
+    print("轉回 CPU:", x_cpu.device)
+
+# 與 NumPy 互轉
+numpy_array = np.array([1, 2, 3])
+tensor_from_numpy = torch.from_numpy(numpy_array)
+numpy_from_tensor = tensor_from_numpy.numpy()
+
+print("\nNumPy 轉 Tensor:", tensor_from_numpy)
+print("Tensor 轉 NumPy:", numpy_from_tensor)
+</code></pre>
+
+            <h3>自動微分（Autograd）</h3>
+            <p>PyTorch 的核心功能，自動計算梯度。</p>
+
+            <pre><code class="language-python">import torch
+
+# 建立需要梯度的張量
+x = torch.tensor([2.0], requires_grad=True)
+y = torch.tensor([3.0], requires_grad=True)
+
+# 定義計算圖
+z = x**2 + 2*x*y + y**2
+print(f"z = {z.item()}")
+
+# 反向傳播計算梯度
+z.backward()
+
+print(f"\n∂z/∂x = {x.grad.item()}")  # 應該是 2x + 2y = 2*2 + 2*3 = 10
+print(f"∂z/∂y = {y.grad.item()}")  # 應該是 2x + 2y = 2*2 + 2*3 = 10
+
+# 更複雜的範例
+x = torch.randn(3, requires_grad=True)
+print(f"\nx = {x}")
+
+y = x * 2
+while y.data.norm() < 1000:
+    y = y * 2
+
+print(f"y = {y}")
+
+# 對標量進行反向傳播
+v = torch.tensor([0.1, 1.0, 0.0001])
+y.backward(v)
+
+print(f"\n梯度: {x.grad}")
+</code></pre>
+
+            <h3>使用 PyTorch 建立神經網路</h3>
+            <pre><code class="language-python">import torch
+import torch.nn as nn
+import torch.optim as optim
+
+# 方法 1: 使用 nn.Sequential
+model_sequential = nn.Sequential(
+    nn.Linear(2, 4),      # 輸入層到隱藏層
+    nn.ReLU(),            # 激活函數
+    nn.Linear(4, 1),      # 隱藏層到輸出層
+    nn.Sigmoid()          # 輸出層激活
+)
+
+print("Sequential 模型:")
+print(model_sequential)
+
+# 方法 2: 自訂類別（更靈活）
+class NeuralNetwork(nn.Module):
+    def __init__(self):
+        super(NeuralNetwork, self).__init__()
+        self.layer1 = nn.Linear(2, 4)
+        self.layer2 = nn.Linear(4, 1)
+        self.relu = nn.ReLU()
+        self.sigmoid = nn.Sigmoid()
+    
+    def forward(self, x):
+        x = self.layer1(x)
+        x = self.relu(x)
+        x = self.layer2(x)
+        x = self.sigmoid(x)
+        return x
+
+model_custom = NeuralNetwork()
+print("\n自訂模型:")
+print(model_custom)
+
+# 查看模型參數
+print("\n模型參數:")
+for name, param in model_custom.named_parameters():
+    print(f"{name}: {param.shape}")
+
+# 計算總參數數量
+total_params = sum(p.numel() for p in model_custom.parameters())
+print(f"\n總參數數量: {total_params}")
+</code></pre>
+
+            <h3>訓練神經網路 - XOR 問題</h3>
+            <pre><code class="language-python">import torch
+import torch.nn as nn
+import torch.optim as optim
+import matplotlib.pyplot as plt
+
+# 準備資料
+X = torch.tensor([[0, 0], [0, 1], [1, 0], [1, 1]], dtype=torch.float32)
+y = torch.tensor([[0], [1], [1], [0]], dtype=torch.float32)
+
+# 定義模型
+class XORNet(nn.Module):
+    def __init__(self):
+        super(XORNet, self).__init__()
+        self.hidden = nn.Linear(2, 4)
+        self.output = nn.Linear(4, 1)
+        self.relu = nn.ReLU()
+        self.sigmoid = nn.Sigmoid()
+    
+    def forward(self, x):
+        x = self.relu(self.hidden(x))
+        x = self.sigmoid(self.output(x))
+        return x
+
+# 建立模型
+model = XORNet()
+
+# 定義損失函數和優化器
+criterion = nn.BCELoss()  # Binary Cross Entropy
+optimizer = optim.SGD(model.parameters(), lr=0.5)
+
+# 訓練
+epochs = 5000
+losses = []
+
+print("開始訓練...")
+for epoch in range(epochs):
+    # 前向傳播
+    outputs = model(X)
+    loss = criterion(outputs, y)
+    
+    # 反向傳播
+    optimizer.zero_grad()  # 清除梯度
+    loss.backward()        # 計算梯度
+    optimizer.step()       # 更新參數
+    
+    losses.append(loss.item())
+    
+    if (epoch + 1) % 500 == 0:
+        print(f"Epoch [{epoch+1}/{epochs}], Loss: {loss.item():.4f}")
+
+print("\n訓練完成！")
+
+# 測試
+with torch.no_grad():  # 不計算梯度
+    predictions = model(X)
+    predicted_labels = (predictions > 0.5).float()
+
+print("\n預測結果:")
+for i in range(len(X)):
+    print(f"輸入: {X[i].numpy()}, 預測: {predictions[i].item():.4f}, "
+          f"標籤: {predicted_labels[i].item():.0f}, 真實: {y[i].item():.0f}")
+
+# 視覺化損失
+plt.figure(figsize=(10, 6))
+plt.plot(losses, linewidth=2)
+plt.xlabel('訓練週期')
+plt.ylabel('損失')
+plt.title('PyTorch 訓練曲線 - XOR 問題')
+plt.grid(True, alpha=0.3)
+plt.yscale('log')
+plt.show()
+</code></pre>
+
+            <div class="tip-box">
+                <h4>PyTorch 訓練流程</h4>
+                <pre><code class="language-python"># 標準訓練迴圈
+for epoch in range(num_epochs):
+    # 1. 前向傳播
+    outputs = model(inputs)
+    loss = criterion(outputs, targets)
+    
+    # 2. 清除舊梯度（重要！）
+    optimizer.zero_grad()
+    
+    # 3. 反向傳播
+    loss.backward()
+    
+    # 4. 更新參數
+    optimizer.step()
+</code></pre>
+            </div>
+        </div>
+
+        <div class="content">
+            <h2>5. 正規化技術</h2>
+            
+            <h3>為什麼需要正規化？</h3>
+            <p>正規化技術用於防止過擬合，提升模型泛化能力。</p>
+
+            <h4>Dropout</h4>
+            <pre><code class="language-python">import torch
+import torch.nn as nn
+
+class DropoutNet(nn.Module):
+    def __init__(self, dropout_rate=0.5):
+        super(DropoutNet, self).__init__()
+        self.layer1 = nn.Linear(784, 256)
+        self.dropout1 = nn.Dropout(dropout_rate)
+        self.layer2 = nn.Linear(256, 128)
+        self.dropout2 = nn.Dropout(dropout_rate)
+        self.layer3 = nn.Linear(128, 10)
+        self.relu = nn.ReLU()
+    
+    def forward(self, x):
+        x = self.relu(self.layer1(x))
+        x = self.dropout1(x)  # 訓練時隨機丟棄神經元
+        x = self.relu(self.layer2(x))
+        x = self.dropout2(x)
+        x = self.layer3(x)
+        return x
+
+model = DropoutNet(dropout_rate=0.5)
+print(model)
+
+# Dropout 在訓練和測試時的行為不同
+model.train()  # 訓練模式：啟用 Dropout
+x_train = torch.randn(1, 784)
+output_train = model(x_train)
+print("\n訓練模式輸出:", output_train.shape)
+
+model.eval()   # 評估模式：停用 Dropout
+output_eval = model(x_train)
+print("評估模式輸出:", output_eval.shape)
+</code></pre>
+
+            <h4>Batch Normalization</h4>
+            <pre><code class="language-python">import torch
+import torch.nn as nn
+
+class BatchNormNet(nn.Module):
+    def __init__(self):
+        super(BatchNormNet, self).__init__()
+        self.layer1 = nn.Linear(784, 256)
+        self.bn1 = nn.BatchNorm1d(256)  # Batch Normalization
+        self.layer2 = nn.Linear(256, 128)
+        self.bn2 = nn.BatchNorm1d(128)
+        self.layer3 = nn.Linear(128, 10)
+        self.relu = nn.ReLU()
+    
+    def forward(self, x):
+        x = self.layer1(x)
+        x = self.bn1(x)  # 標準化
+        x = self.relu(x)
+        
+        x = self.layer2(x)
+        x = self.bn2(x)
+        x = self.relu(x)
+        
+        x = self.layer3(x)
+        return x
+
+model = BatchNormNet()
+print(model)
+
+# 測試
+batch_size = 32
+x = torch.randn(batch_size, 784)
+
+model.train()
+output = model(x)
+print(f"\n輸入形狀: {x.shape}")
+print(f"輸出形狀: {output.shape}")
+</code></pre>
+
+            <h4>L1 和 L2 正規化</h4>
+            <pre><code class="language-python">import torch
+import torch.nn as nn
+import torch.optim as optim
+
+class SimpleNet(nn.Module):
+    def __init__(self):
+        super(SimpleNet, self).__init__()
+        self.fc1 = nn.Linear(10, 5)
+        self.fc2 = nn.Linear(5, 1)
+        self.relu = nn.ReLU()
+    
+    def forward(self, x):
+        x = self.relu(self.fc1(x))
+        x = self.fc2(x)
+        return x
+
+model = SimpleNet()
+
+# L2 正規化（Weight Decay）- 在優化器中設定
+optimizer_l2 = optim.SGD(model.parameters(), lr=0.01, weight_decay=0.01)
+
+# L1 正規化 - 手動添加到損失函數
+def l1_regularization(model, lambda_l1):
+    l1_loss = 0
+    for param in model.parameters():
+        l1_loss += torch.sum(torch.abs(param))
+    return lambda_l1 * l1_loss
+
+# 訓練範例
+criterion = nn.MSELoss()
+optimizer = optim.SGD(model.parameters(), lr=0.01)
+
+X = torch.randn(100, 10)
+y = torch.randn(100, 1)
+
+# 一次訓練迭代
+outputs = model(X)
+mse_loss = criterion(outputs, y)
+
+# 添加 L1 正規化
+lambda_l1 = 0.01
+total_loss = mse_loss + l1_regularization(model, lambda_l1)
+
+optimizer.zero_grad()
+total_loss.backward()
+optimizer.step()
+
+print(f"MSE Loss: {mse_loss.item():.4f}")
+print(f"L1 Regularization: {l1_regularization(model, lambda_l1).item():.4f}")
+print(f"Total Loss: {total_loss.item():.4f}")
+</code></pre>
+
+            <div class="concept-box">
+                <h4>正規化技術比較</h4>
+                <table>
+                    <tr>
+                        <th>技術</th>
+                        <th>作用方式</th>
+                        <th>適用場景</th>
+                    </tr>
+                    <tr>
+                        <td>Dropout</td>
+                        <td>隨機丟棄神經元</td>
+                        <td>全連接層、過擬合嚴重時</td>
+                    </tr>
+                    <tr>
+                        <td>Batch Normalization</td>
+                        <td>標準化層輸出</td>
+                        <td>加速訓練、穩定梯度</td>
+                    </tr>
+                    <tr>
+                        <td>L1 正規化</td>
+                        <td>權重絕對值懲罰</td>
+                        <td>特徵選擇、稀疏模型</td>
+                    </tr>
+                    <tr>
+                        <td>L2 正規化</td>
+                        <td>權重平方懲罰</td>
+                        <td>最常用、防止權重過大</td>
+                    </tr>
+                    <tr>
+                        <td>Early Stopping</td>
+                        <td>監控驗證損失，提前停止</td>
+                        <td>所有場景</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <div class="content">
+            <h2>6. 實戰：MNIST 手寫數字辨識</h2>
+            
+            <h3>載入 MNIST 資料集</h3>
+            <pre><code class="language-python">import torch
+import torch.nn as nn
+import torch.optim as optim
+from torch.utils.data import DataLoader
+from torchvision import datasets, transforms
+import matplotlib.pyplot as plt
+
+# 資料轉換
+transform = transforms.Compose([
+    transforms.ToTensor(),  # 轉換為張量
+    transforms.Normalize((0.1307,), (0.3081,))  # 標準化
+])
+
+# 載入資料集
+train_dataset = datasets.MNIST(root='./data', train=True, 
+                               download=True, transform=transform)
+test_dataset = datasets.MNIST(root='./data', train=False, 
+                              download=True, transform=transform)
+
+# 建立資料載入器
+batch_size = 64
+train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
+test_loader = DataLoader(test_dataset, batch_size=batch_size, shuffle=False)
+
+print(f"訓練集大小: {len(train_dataset)}")
+print(f"測試集大小: {len(test_dataset)}")
+
+# 視覺化部分資料
+fig, axes = plt.subplots(2, 5, figsize=(12, 5))
+for i, ax in enumerate(axes.flat):
+    img, label = train_dataset[i]
+    ax.imshow(img.squeeze(), cmap='gray')
+    ax.set_title(f'標籤: {label}')
+    ax.axis('off')
+plt.tight_layout()
+plt.show()
+</code></pre>
+
+            <h3>建立模型</h3>
+            <pre><code class="language-python">class MNISTNet(nn.Module):
+    def __init__(self):
+        super(MNISTNet, self).__init__()
+        self.flatten = nn.Flatten()
+        
+        # 全連接層
+        self.fc1 = nn.Linear(28 * 28, 512)
+        self.bn1 = nn.BatchNorm1d(512)
+        self.dropout1 = nn.Dropout(0.3)
+        
+        self.fc2 = nn.Linear(512, 256)
+        self.bn2 = nn.BatchNorm1d(256)
+        self.dropout2 = nn.Dropout(0.3)
+        
+        self.fc3 = nn.Linear(256, 10)
+        
+        self.relu = nn.ReLU()
+    
+    def forward(self, x):
+        x = self.flatten(x)
+        
+        x = self.fc1(x)
+        x = self.bn1(x)
+        x = self.relu(x)
+        x = self.dropout1(x)
+        
+        x = self.fc2(x)
+        x = self.bn2(x)
+        x = self.relu(x)
+        x = self.dropout2(x)
+        
+        x = self.fc3(x)
+        return x
+
+# 建立模型
+device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+model = MNISTNet().to(device)
+
+print(model)
+print(f"\n總參數數量: {sum(p.numel() for p in model.parameters()):,}")
+</code></pre>
+
+            <h3>訓練模型</h3>
+            <pre><code class="language-python">import torch.nn.functional as F
+
+# 定義損失函數和優化器
+criterion = nn.CrossEntropyLoss()
+optimizer = optim.Adam(model.parameters(), lr=0.001)
+
+# 訓練函數
+def train(model, device, train_loader, optimizer, epoch):
+    model.train()
+    train_loss = 0
+    correct = 0
+    total = 0
+    
+    for batch_idx, (data, target) in enumerate(train_loader):
+        data, target = data.to(device), target.to(device)
+        
+        # 前向傳播
+        optimizer.zero_grad()
+        output = model(data)
+        loss = criterion(output, target)
+        
+        # 反向傳播
+        loss.backward()
+        optimizer.step()
+        
+        # 統計
+        train_loss += loss.item()
+        _, predicted = output.max(1)
+        total += target.size(0)
+        correct += predicted.eq(target).sum().item()
+        
+        if batch_idx % 100 == 0:
+            print(f'Epoch: {epoch} [{batch_idx * len(data)}/{len(train_loader.dataset)} '
+                  f'({100. * batch_idx / len(train_loader):.0f}%)]\t'
+                  f'Loss: {loss.item():.6f}')
+    
+    accuracy = 100. * correct / total
+    avg_loss = train_loss / len(train_loader)
+    return avg_loss, accuracy
+
+# 測試函數
+def test(model, device, test_loader):
+    model.eval()
+    test_loss = 0
+    correct = 0
+    total = 0
+    
+    with torch.no_grad():
+        for data, target in test_loader:
+            data, target = data.to(device), target.to(device)
+            output = model(data)
+            test_loss += criterion(output, target).item()
+            
+            _, predicted = output.max(1)
+            total += target.size(0)
+            correct += predicted.eq(target).sum().item()
+    
+    test_loss /= len(test_loader)
+    accuracy = 100. * correct / total
+    
+    print(f'\nTest set: Average loss: {test_loss:.4f}, '
+          f'Accuracy: {correct}/{total} ({accuracy:.2f}%)\n')
+    
+    return test_loss, accuracy
+
+# 訓練模型
+epochs = 5
+train_losses = []
+train_accs = []
+test_losses = []
+test_accs = []
+
+print("開始訓練...")
+for epoch in range(1, epochs + 1):
+    train_loss, train_acc = train(model, device, train_loader, optimizer, epoch)
+    test_loss, test_acc = test(model, device, test_loader)
+    
+    train_losses.append(train_loss)
+    train_accs.append(train_acc)
+    test_losses.append(test_loss)
+    test_accs.append(test_acc)
+
+print("訓練完成！")
+</code></pre>
+
+            <h3>視覺化結果</h3>
+            <pre><code class="language-python"># 繪製訓練曲線
+fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(14, 5))
+
+# 損失曲線
+ax1.plot(train_losses, label='訓練損失', linewidth=2)
+ax1.plot(test_losses, label='測試損失', linewidth=2)
+ax1.set_xlabel('Epoch')
+ax1.set_ylabel('損失')
+ax1.set_title('訓練與測試損失')
+ax1.legend()
+ax1.grid(True, alpha=0.3)
+
+# 準確率曲線
+ax2.plot(train_accs, label='訓練準確率', linewidth=2)
+ax2.plot(test_accs, label='測試準確率', linewidth=2)
+ax2.set_xlabel('Epoch')
+ax2.set_ylabel('準確率 (%)')
+ax2.set_title('訓練與測試準確率')
+ax2.legend()
+ax2.grid(True, alpha=0.3)
+
+plt.tight_layout()
+plt.show()
+
+# 測試預測
+model.eval()
+fig, axes = plt.subplots(2, 5, figsize=(12, 5))
+
+with torch.no_grad():
+    for i, ax in enumerate(axes.flat):
+        img, label = test_dataset[i]
+        img_input = img.unsqueeze(0).to(device)
+        output = model(img_input)
+        _, predicted = output.max(1)
+        
+        ax.imshow(img.squeeze(), cmap='gray')
+        ax.set_title(f'真實: {label}, 預測: {predicted.item()}')
+        ax.axis('off')
+
+plt.tight_layout()
+plt.show()
+
+# 混淆矩陣
+from sklearn.metrics import confusion_matrix
+import seaborn as sns
+
+all_preds = []
+all_labels = []
+
+model.eval()
+with torch.no_grad():
+    for data, target in test_loader:
+        data = data.to(device)
+        output = model(data)
+        _, predicted = output.max(1)
+        all_preds.extend(predicted.cpu().numpy())
+        all_labels.extend(target.numpy())
+
+cm = confusion_matrix(all_labels, all_preds)
+
+plt.figure(figsize=(10, 8))
+sns.heatmap(cm, annot=True, fmt='d', cmap='Blues')
+plt.title('MNIST 混淆矩陣')
+plt.ylabel('真實標籤')
+plt.xlabel('預測標籤')
+plt.show()
+
+# 儲存模型
+torch.save(model.state_dict(), 'mnist_model.pth')
+print("\n模型已儲存至 mnist_model.pth")
+
+# 載入模型
+model_loaded = MNISTNet().to(device)
+model_loaded.load_state_dict(torch.load('mnist_model.pth'))
+print("模型載入成功")
+</code></pre>
+        </div>
+
+        <div class="content">
+            <div class="exercise-section">
+                <h3>本週練習題</h3>
+                
+                <h4>基礎練習（必做）</h4>
+                <ol>
+                    <li>
+                        <strong>從零實現神經網路</strong>
+                        <ul>
+                            <li>不使用任何框架，純 NumPy 實現</li>
+                            <li>包含前向傳播和反向傳播</li>
+                            <li>實作梯度檢查</li>
+                            <li>訓練解決 XOR 問題</li>
+                        </ul>
+                    </li>
+                    
+                    <li>
+                        <strong>激活函數實驗</strong>
+                        <ul>
+                            <li>實作所有常見激活函數</li>
+                            <li>比較不同激活函數在同一問題上的表現</li>
+                            <li>視覺化激活函數及其導數</li>
+                            <li>分析梯度消失問題</li>
+                        </ul>
+                    </li>
+                    
+                    <li>
+                        <strong>PyTorch 基礎練習</strong>
+                        <ul>
+                            <li>熟悉張量操作</li>
+                            <li>理解自動微分機制</li>
+                            <li>使用 nn.Module 建立模型</li>
+                            <li>實作完整訓練流程</li>
+                        </ul>
+                    </li>
+                </ol>
+
+                <h4>進階練習</h4>
+                <ol start="4">
+                    <li>
+                        <strong>改進 MNIST 分類器</strong>
+                        <ul>
+                            <li>嘗試不同的網路架構</li>
+                            <li>實驗各種正規化技術</li>
+                            <li>調整超參數（學習率、batch size 等）</li>
+                            <li>達到 99% 以上測試準確率</li>
+                        </ul>
+                    </li>
+                    
+                    <li>
+                        <strong>實作 Fashion-MNIST 分類</strong>
+                        <ul>
+                            <li>使用 Fashion-MNIST 資料集</li>
+                            <li>設計深層神經網路</li>
+                            <li>使用資料增強</li>
+                            <li>視覺化學習過程</li>
+                        </ul>
+                    </li>
+                </ol>
+
+                <h4>挑戰練習</h4>
+                <ol start="6">
+                    <li>
+                        <strong>自訂層和損失函數</strong>
+                        <ul>
+                            <li>實作自訂的神經網路層</li>
+                            <li>實作自訂損失函數</li>
+                            <li>整合到 PyTorch 訓練流程</li>
+                            <li>驗證梯度計算正確性</li>
+                        </ul>
+                    </li>
+                    
+                    <li>
+                        <strong>視覺化神經網路</strong>
+                        <ul>
+                            <li>視覺化權重矩陣</li>
+                            <li>繪製激活值分佈</li>
+                            <li>分析梯度流動</li>
+                            <li>視覺化特徵學習過程</li>
+                        </ul>
+                    </li>
+                </ol>
+            </div>
+        </div>
+
+        <div class="content">
+            <h2>本週總結</h2>
+            
+            <h3>重點回顧</h3>
+            <ul>
+                <li>理解神經網路的基本原理</li>
+                <li>掌握反向傳播演算法</li>
+                <li>熟悉各種激活函數</li>
+                <li>學會使用 PyTorch 框架</li>
+                <li>掌握正規化技術</li>
+                <li>完成 MNIST 手寫數字辨識</li>
+            </ul>
+
+            <h3>關鍵概念</h3>
+            <ul>
+                <li><strong>前向傳播</strong> - 資料通過網路計算輸出</li>
+                <li><strong>反向傳播</strong> - 使用鏈式法則計算梯度</li>
+                <li><strong>激活函數</strong> - 引入非線性，首選 ReLU</li>
+                <li><strong>正規化</strong> - 防止過擬合，常用 Dropout 和 BN</li>
+                <li><strong>自動微分</strong> - PyTorch 的核心功能</li>
+            </ul>
+
+            <h3>下週預告</h3>
+            <div class="note-box">
+                <h4>Week 5 - 卷積神經網路（CNN）</h4>
+                <p>下週將學習電腦視覺的核心技術：</p>
+                <ul>
+                    <li>卷積層、池化層原理</li>
+                    <li>經典 CNN 架構（LeNet、VGG、ResNet）</li>
+                    <li>遷移學習與預訓練模型</li>
+                    <li>資料增強技術</li>
+                    <li>實戰：影像分類與物件偵測</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="nav-buttons">
+            <a href="llm-week3.html" class="btn btn-secondary">Week 3：機器學習入門</a>
+            <a href="llm-week5.html" class="btn">Week 5：卷積神經網路</a>
+        </div>
+
+        <footer>
+            <p>LLM 與 AI/ML 課程 Week 4</p>
+            <p>神經網路 · 反向傳播 · 激活函數 · PyTorch · MNIST</p>
+            <p style="font-size: 0.9em; color: #95a5a6;">© 2025 All Rights Reserved</p>
+        </footer>
+    </div>
+</body>
+</html>

@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LLM 與 AI/ML 課程 - 16週完整教學</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft JhengHei', Arial, sans-serif;
+            background: #f8f9fa;
+            color: #1a1a1a;
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        header {
+            background: linear-gradient(to right, #2c3e50, #34495e);
+            color: white;
+            padding: 80px 20px;
+            margin-bottom: 60px;
+            border-bottom: 4px solid #3498db;
+        }
+
+        header h1 {
+            font-size: 2.8em;
+            margin-bottom: 16px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        header .subtitle {
+            font-size: 1.2em;
+            opacity: 0.95;
+            margin-bottom: 12px;
+            font-weight: 400;
+        }
+
+        header .tagline {
+            font-size: 1.05em;
+            opacity: 0.85;
+            font-weight: 300;
+        }
+
+        .info-section {
+            background: white;
+            border-radius: 8px;
+            padding: 48px;
+            margin-bottom: 32px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            border: 1px solid #e0e0e0;
+        }
+
+        .info-section h2 {
+            color: #1a1a1a;
+            margin-bottom: 24px;
+            font-size: 1.8em;
+            font-weight: 700;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 12px;
+        }
+
+        .info-section h3 {
+            color: #2c3e50;
+            margin: 32px 0 16px 0;
+            font-size: 1.4em;
+            font-weight: 600;
+        }
+
+        .info-section p {
+            line-height: 1.8;
+            color: #4a4a4a;
+            margin-bottom: 16px;
+            font-size: 1.05em;
+        }
+
+        .info-section ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .info-section li {
+            margin: 12px 0;
+            padding-left: 24px;
+            position: relative;
+            color: #4a4a4a;
+            line-height: 1.6;
+        }
+
+        .info-section li:before {
+            content: "•";
+            position: absolute;
+            left: 8px;
+            color: #3498db;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+
+        .weeks-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 24px;
+            margin-bottom: 48px;
+        }
+
+        .week-card {
+            background: white;
+            border-radius: 8px;
+            padding: 28px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+            border: 1px solid #e0e0e0;
+            border-left: 4px solid #3498db;
+        }
+
+        .week-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.12);
+            border-left-color: #2980b9;
+        }
+
+        .week-number {
+            font-size: 1.1em;
+            font-weight: 700;
+            color: #3498db;
+            margin-bottom: 12px;
+            letter-spacing: 0.5px;
+        }
+
+        .week-title {
+            font-size: 1.25em;
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 12px;
+            line-height: 1.4;
+        }
+
+        .week-topics {
+            color: #6c757d;
+            font-size: 0.95em;
+            line-height: 1.6;
+        }
+
+        .status {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-size: 0.85em;
+            font-weight: 600;
+            margin-top: 12px;
+        }
+
+        .status.completed {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status.progress {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status.upcoming {
+            background: #e2e3e5;
+            color: #383d41;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 24px;
+            margin: 32px 0;
+        }
+
+        .feature-card {
+            background: #f8f9fa;
+            padding: 28px;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+            border-left: 3px solid #3498db;
+        }
+
+        .feature-card h4 {
+            color: #2c3e50;
+            margin-bottom: 16px;
+            font-size: 1.15em;
+            font-weight: 600;
+        }
+
+        .feature-card ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .feature-card li {
+            padding: 8px 0;
+            padding-left: 20px;
+            position: relative;
+            color: #4a4a4a;
+        }
+
+        .feature-card li::before {
+            content: "›";
+            position: absolute;
+            left: 0;
+            color: #3498db;
+            font-weight: bold;
+            font-size: 1.3em;
+        }
+
+        .tech-stack {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin: 24px 0;
+        }
+
+        .tech-badge {
+            background: #2c3e50;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 4px;
+            font-size: 0.9em;
+            font-weight: 500;
+            letter-spacing: 0.3px;
+        }
+
+        footer {
+            text-align: center;
+            color: #6c757d;
+            padding: 48px 20px;
+            margin-top: 64px;
+            border-top: 1px solid #dee2e6;
+            background: white;
+        }
+
+        footer p:first-child {
+            font-size: 1.1em;
+            color: #2c3e50;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        footer p:last-child {
+            font-size: 0.95em;
+            color: #6c757d;
+        }
+
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 2em;
+            }
+            
+            .weeks-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .info-section {
+                padding: 32px 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>LLM 與 AI/ML 課程</h1>
+            <div class="subtitle">16 週系統化學習路徑｜從基礎到進階完整教學</div>
+            <div class="tagline">打造 AI 時代的核心競爭力</div>
+        </header>
+
+        <div class="info-section">
+            <h2>關於本課程</h2>
+            <p style="font-size: 1.1em;">
+                本課程專為想要深入學習大型語言模型（LLM）和人工智慧/機器學習的學習者設計。
+                從基礎數學和 Python 開始，逐步進階到 LLM 應用開發、微調和部署。
+                通過系統化的學習路徑，你將掌握從理論到實踐的完整 AI/ML 技能。
+            </p>
+
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <h4>課程特色</h4>
+                    <ul>
+                        <li>理論與實踐結合</li>
+                        <li>項目驅動學習</li>
+                        <li>最新技術追蹤</li>
+                        <li>完整技能樹培養</li>
+                    </ul>
+                </div>
+
+                <div class="feature-card">
+                    <h4>學習時間</h4>
+                    <ul>
+                        <li>建議每週 10-15 小時</li>
+                        <li>理論學習 3-4 小時</li>
+                        <li>程式實作 4-5 小時</li>
+                        <li>專案練習 3-4 小時</li>
+                    </ul>
+                </div>
+
+                <div class="feature-card">
+                    <h4>適合對象</h4>
+                    <ul>
+                        <li>有 Python 基礎的開發者</li>
+                        <li>想轉型 AI 的工程師</li>
+                        <li>對 LLM 感興趣的學生</li>
+                        <li>需整合 AI 的 PM</li>
+                    </ul>
+                </div>
+
+                <div class="feature-card">
+                    <h4>學習成果</h4>
+                    <ul>
+                        <li>建立 ML Pipeline</li>
+                        <li>開發 LLM 應用</li>
+                        <li>微調語言模型</li>
+                        <li>部署 AI 服務</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="info-section">
+            <h2>技術棧</h2>
+            <div class="tech-stack">
+                <span class="tech-badge">Python</span>
+                <span class="tech-badge">PyTorch</span>
+                <span class="tech-badge">TensorFlow</span>
+                <span class="tech-badge">HuggingFace</span>
+                <span class="tech-badge">LangChain</span>
+                <span class="tech-badge">OpenAI API</span>
+                <span class="tech-badge">LlamaIndex</span>
+                <span class="tech-badge">FastAPI</span>
+                <span class="tech-badge">Docker</span>
+                <span class="tech-badge">NumPy</span>
+                <span class="tech-badge">Pandas</span>
+                <span class="tech-badge">Scikit-learn</span>
+            </div>
+        </div>
+
+        <div class="info-section">
+            <h2>課程大綱</h2>
+
+            <h3>第一階段：基礎準備 (Week 1-4)</h3>
+            <p>建立 AI/ML 的數學基礎和機器學習核心概念，掌握深度學習基本原理。</p>
+            
+            <div class="weeks-grid">
+                <a href="llm-week1.html" class="week-card">
+                    <div class="week-number">Week 1</div>
+                    <div class="week-title">Python 與數據處理基礎</div>
+                    <div class="week-topics">
+                        NumPy、Pandas、Matplotlib、Jupyter Notebook、探索性資料分析
+                    </div>
+                    <span class="status completed">已完成</span>
+                </a>
+
+                <a href="llm-week2.html" class="week-card">
+                    <div class="week-number">Week 2</div>
+                    <div class="week-title">機器學習數學基礎</div>
+                    <div class="week-topics">
+                        線性代數、微積分、機率統計、最佳化、梯度下降
+                    </div>
+                    <span class="status upcoming">準備中</span>
+                </a>
+
+                <a href="llm-week3.html" class="week-card">
+                    <div class="week-number">Week 3</div>
+                    <div class="week-title">機器學習入門</div>
+                    <div class="week-topics">
+                        監督式學習、非監督式學習、Scikit-learn、模型評估
+                    </div>
+                    <span class="status upcoming">準備中</span>
+                </a>
+
+                <a href="llm-week4.html" class="week-card">
+                    <div class="week-number">Week 4</div>
+                    <div class="week-title">深度學習基礎</div>
+                    <div class="week-topics">
+                        神經網路、反向傳播、PyTorch 基礎、MNIST 實戰
+                    </div>
+                    <span class="status upcoming">準備中</span>
+                </a>
+            </div>
+
+            <h3>第二階段：深度學習進階 (Week 5-8)</h3>
+            <p>深入學習 CNN、RNN、Transformer 等現代深度學習架構，掌握 NLP 基礎技術。</p>
+            
+            <div class="weeks-grid">
+                <a href="llm-week5.html" class="week-card">
+                    <div class="week-number">Week 5</div>
+                    <div class="week-title">卷積神經網路 (CNN)</div>
+                    <div class="week-topics">
+                        CNN 架構、ResNet、遷移學習、影像分類實戰
+                    </div>
+                    <span class="status upcoming">準備中</span>
+                </a>
+
+                <a href="llm-week6.html" class="week-card">
+                    <div class="week-number">Week 6</div>
+                    <div class="week-title">循環神經網路 (RNN)</div>
+                    <div class="week-topics">
+                        RNN、LSTM、GRU、Seq2Seq、注意力機制
+                    </div>
+                    <span class="status upcoming">準備中</span>
+                </a>
+
+                <a href="llm-week7.html" class="week-card">
+                    <div class="week-number">Week 7</div>
+                    <div class="week-title">Transformer 架構詳解</div>
+                    <div class="week-topics">
+                        Self-Attention、Multi-Head Attention、從零實現 Transformer
+                    </div>
+                    <span class="status upcoming">準備中</span>
+                </a>
+
+                <a href="llm-week8.html" class="week-card">
+                    <div class="week-number">Week 8</div>
+                    <div class="week-title">NLP 基礎與詞嵌入</div>
+                    <div class="week-topics">
+                        Word2Vec、GloVe、BERT、文本分類、情感分析
+                    </div>
+                    <span class="status upcoming">準備中</span>
+                </a>
+            </div>
+
+            <h3>第三階段：大型語言模型 (Week 9-12)</h3>
+            <p>深入理解 LLM 原理，掌握 Prompt Engineering、API 開發和模型微調技術。</p>
+            
+            <div class="weeks-grid">
+                <a href="llm-week9.html" class="week-card">
+                    <div class="week-number">Week 9</div>
+                    <div class="week-title">LLM 原理與架構</div>
+                    <div class="week-topics">
+                        GPT 系列、自回歸語言模型、預訓練與微調、Tokenization
+                    </div>
+                    <span class="status upcoming">準備中</span>
+                </a>
+
+                <a href="llm-week10.html" class="week-card">
+                    <div class="week-number">Week 10</div>
+                    <div class="week-title">Prompt Engineering</div>
+                    <div class="week-topics">
+                        Few-shot Learning、Chain-of-Thought、ReAct、提示優化
+                    </div>
+                    <span class="status upcoming">準備中</span>
+                </a>
+
+                <a href="llm-week11.html" class="week-card">
+                    <div class="week-number">Week 11</div>
+                    <div class="week-title">LLM API 與應用開發</div>
+                    <div class="week-topics">
+                        OpenAI API、LangChain、RAG、智能問答系統
+                    </div>
+                    <span class="status upcoming">準備中</span>
+                </a>
+
+                <a href="llm-week12.html" class="week-card">
+                    <div class="week-number">Week 12</div>
+                    <div class="week-title">LLM 微調技術</div>
+                    <div class="week-topics">
+                        LoRA、QLoRA、PEFT、指令微調、領域適配
+                    </div>
+                    <span class="status upcoming">準備中</span>
+                </a>
+            </div>
+
+            <h3>第四階段：進階應用與部署 (Week 13-16)</h3>
+            <p>學習 AI Agent 開發、多模態 AI、模型評估和生產環境部署。</p>
+            
+            <div class="weeks-grid">
+                <a href="llm-week13.html" class="week-card">
+                    <div class="week-number">Week 13</div>
+                    <div class="week-title">LLM Agent 開發</div>
+                    <div class="week-topics">
+                        Agent 架構、Tool Use、ReAct、AutoGPT、記憶系統
+                    </div>
+                    <span class="status upcoming">準備中</span>
+                </a>
+
+                <a href="llm-week14.html" class="week-card">
+                    <div class="week-number">Week 14</div>
+                    <div class="week-title">多模態 AI</div>
+                    <div class="week-topics">
+                        CLIP、Stable Diffusion、GPT-4V、Whisper、影像描述生成
+                    </div>
+                    <span class="status upcoming">準備中</span>
+                </a>
+
+                <a href="llm-week15.html" class="week-card">
+                    <div class="week-number">Week 15</div>
+                    <div class="week-title">LLM 評估與安全</div>
+                    <div class="week-topics">
+                        評估指標、幻覺問題、模型對齊、RLHF、安全防護
+                    </div>
+                    <span class="status upcoming">準備中</span>
+                </a>
+
+                <a href="llm-week16.html" class="week-card">
+                    <div class="week-number">Week 16</div>
+                    <div class="week-title">LLM 部署與優化</div>
+                    <div class="week-topics">
+                        模型量化、推理優化、API 服務、監控與日誌、成本優化
+                    </div>
+                    <span class="status upcoming">準備中</span>
+                </a>
+            </div>
+        </div>
+
+        <div class="info-section">
+            <h2>學習建議</h2>
+            <ul>
+                <li><strong>動手實作</strong>：不要只看不做，一定要親自寫代碼</li>
+                <li><strong>理解原理</strong>：不要只會調用 API，要理解背後的原理</li>
+                <li><strong>持續學習</strong>：AI 領域發展快速，保持學習熱情</li>
+                <li><strong>做好筆記</strong>：記錄重要概念和常見問題</li>
+                <li><strong>參與社群</strong>：加入技術社群，與他人交流學習</li>
+                <li><strong>完成專案</strong>：每週都要完成實戰專案</li>
+            </ul>
+        </div>
+
+        <div class="info-section">
+            <h2>前置知識要求</h2>
+            <ul>
+                <li>Python 程式設計基礎（變數、函數、類別、檔案處理）</li>
+                <li>基礎數學（高中程度數學即可，課程會補充）</li>
+                <li>基本的 Linux 指令操作</li>
+                <li>Git 版本控制基礎</li>
+                <li>機器學習經驗（加分但非必要）</li>
+            </ul>
+        </div>
+
+        <footer>
+            <p>LLM 與 AI/ML 課程</p>
+            <p>從零開始，打造 AI 時代的核心競爭力</p>
+        </footer>
+    </div>
+</body>
+</html>

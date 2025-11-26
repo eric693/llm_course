@@ -1,0 +1,1702 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Week 6 - 循環神經網路（RNN） | LLM 與 AI/ML 課程</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft JhengHei', Arial, sans-serif;
+            background: #f8f9fa;
+            color: #1a1a1a;
+            line-height: 1.7;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .nav {
+            background: white;
+            padding: 16px 28px;
+            border-radius: 8px;
+            margin-bottom: 32px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            border: 1px solid #e0e0e0;
+        }
+
+        .nav a {
+            color: #3498db;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 8px 16px;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+        }
+
+        .nav a:hover {
+            background: #ecf0f1;
+            color: #2980b9;
+        }
+
+        .nav span {
+            color: #6c757d;
+            font-weight: 500;
+        }
+
+        header {
+            background: linear-gradient(to right, #2c3e50, #34495e);
+            color: white;
+            padding: 56px 40px;
+            border-radius: 8px;
+            margin-bottom: 32px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            border-bottom: 3px solid #3498db;
+        }
+
+        header h1 {
+            font-size: 2.2em;
+            margin-bottom: 12px;
+            font-weight: 700;
+        }
+
+        header .subtitle {
+            font-size: 1.05em;
+            opacity: 0.9;
+            font-weight: 400;
+        }
+
+        .content {
+            background: white;
+            border-radius: 8px;
+            padding: 48px;
+            margin-bottom: 32px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            border: 1px solid #e0e0e0;
+        }
+
+        .content h2 {
+            color: #1a1a1a;
+            font-size: 1.9em;
+            margin-bottom: 24px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #3498db;
+            font-weight: 700;
+        }
+
+        .content h3 {
+            color: #2c3e50;
+            font-size: 1.5em;
+            margin: 36px 0 16px 0;
+            font-weight: 600;
+        }
+
+        .content h4 {
+            color: #34495e;
+            font-size: 1.2em;
+            margin: 24px 0 12px 0;
+            font-weight: 600;
+        }
+
+        .content p {
+            margin-bottom: 16px;
+            line-height: 1.8;
+            color: #4a4a4a;
+        }
+
+        pre[class*="language-"] {
+            margin: 24px 0;
+            border-radius: 6px;
+            border: 1px solid #d0d7de;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+        }
+
+        code[class*="language-"] {
+            font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
+            font-size: 0.92em;
+            line-height: 1.6;
+        }
+
+        .note-box {
+            background: #e3f2fd;
+            border-left: 4px solid #2196f3;
+            padding: 20px 24px;
+            margin: 24px 0;
+            border-radius: 4px;
+        }
+
+        .note-box h4 {
+            color: #1565c0;
+            margin-top: 0;
+            margin-bottom: 12px;
+            font-size: 1.1em;
+        }
+
+        .warning-box {
+            background: #fff3e0;
+            border-left: 4px solid #ff9800;
+            padding: 20px 24px;
+            margin: 24px 0;
+            border-radius: 4px;
+        }
+
+        .warning-box h4 {
+            color: #e65100;
+            margin-top: 0;
+            margin-bottom: 12px;
+            font-size: 1.1em;
+        }
+
+        .tip-box {
+            background: #f1f8e9;
+            border-left: 4px solid #8bc34a;
+            padding: 20px 24px;
+            margin: 24px 0;
+            border-radius: 4px;
+        }
+
+        .tip-box h4 {
+            color: #558b2f;
+            margin-top: 0;
+            margin-bottom: 12px;
+            font-size: 1.1em;
+        }
+
+        .concept-box {
+            background: #f3e5f5;
+            border-left: 4px solid #9c27b0;
+            padding: 20px 24px;
+            margin: 24px 0;
+            border-radius: 4px;
+        }
+
+        .concept-box h4 {
+            color: #6a1b9a;
+            margin-top: 0;
+            margin-bottom: 12px;
+            font-size: 1.1em;
+        }
+
+        .exercise-section {
+            background: #fafafa;
+            border: 1px solid #e0e0e0;
+            padding: 32px;
+            margin: 32px 0;
+            border-radius: 8px;
+        }
+
+        .exercise-section h3 {
+            color: #2c3e50;
+            margin-top: 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 24px 0;
+            background: white;
+        }
+
+        table th,
+        table td {
+            padding: 14px 16px;
+            text-align: left;
+            border: 1px solid #dee2e6;
+        }
+
+        table th {
+            background: #2c3e50;
+            color: white;
+            font-weight: 600;
+        }
+
+        table tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+
+        ul, ol {
+            margin-left: 28px;
+            margin-top: 12px;
+            margin-bottom: 16px;
+        }
+
+        li {
+            margin: 10px 0;
+            line-height: 1.7;
+            color: #4a4a4a;
+        }
+
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 48px;
+            gap: 16px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 28px;
+            background: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            border: none;
+        }
+
+        .btn:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
+        }
+
+        .btn-secondary {
+            background: #95a5a6;
+        }
+
+        .btn-secondary:hover {
+            background: #7f8c8d;
+            box-shadow: 0 4px 12px rgba(149, 165, 166, 0.3);
+        }
+
+        .highlight {
+            background: #fff9c4;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-weight: 500;
+        }
+
+        footer {
+            text-align: center;
+            padding: 32px 0;
+            color: #6c757d;
+            margin-top: 48px;
+            border-top: 1px solid #dee2e6;
+        }
+
+        footer p {
+            margin: 8px 0;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 12px;
+            }
+
+            .content {
+                padding: 24px 20px;
+            }
+
+            header {
+                padding: 32px 24px;
+            }
+
+            header h1 {
+                font-size: 1.8em;
+            }
+
+            .nav-buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="nav">
+            <a href="llm-week5.html">Week 5</a>
+            <span>Week 6 / 16</span>
+            <a href="llm-week7.html">Week 7</a>
+        </div>
+
+        <header>
+            <h1>Week 6 - 循環神經網路（RNN）</h1>
+            <div class="subtitle">掌握序列資料處理與 LSTM、GRU 架構</div>
+        </header>
+
+        <div class="content">
+            <h2>本週學習內容</h2>
+            <ul>
+                <li>RNN 基本原理與架構</li>
+                <li>LSTM 與 GRU 詳解</li>
+                <li>序列到序列模型（Seq2Seq）</li>
+                <li>注意力機制（Attention）</li>
+                <li>實戰：文本生成與情感分析</li>
+            </ul>
+
+            <div class="concept-box">
+                <h4>為什麼需要 RNN？</h4>
+                <p>處理序列資料（文本、語音、時間序列）時，RNN 具有獨特優勢：</p>
+                <ul>
+                    <li><strong>記憶能力</strong> - 保留過去的資訊，理解上下文</li>
+                    <li><strong>變長輸入</strong> - 可處理不同長度的序列</li>
+                    <li><strong>參數共享</strong> - 時間步之間共享參數</li>
+                    <li><strong>序列建模</strong> - 捕捉時間依賴關係</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="content">
+            <h2>1. RNN 基本原理</h2>
+            
+            <h3>RNN 的基本結構</h3>
+            <p><span class="highlight">循環神經網路（RNN）</span>透過隱藏狀態在時間步之間傳遞資訊，形成記憶機制。</p>
+
+            <div class="note-box">
+                <h4>RNN 的核心思想</h4>
+                <p>在每個時間步 t：</p>
+                <ul>
+                    <li>輸入：當前時刻的輸入 x_t 和上一時刻的隱藏狀態 h_{t-1}</li>
+                    <li>計算：h_t = tanh(W_hh * h_{t-1} + W_xh * x_t + b_h)</li>
+                    <li>輸出：y_t = W_hy * h_t + b_y</li>
+                </ul>
+            </div>
+
+            <pre><code class="language-python">import numpy as np
+import matplotlib.pyplot as plt
+
+class SimpleRNN:
+    """簡單的 RNN 實作"""
+    def __init__(self, input_size, hidden_size, output_size):
+        # 初始化權重
+        self.hidden_size = hidden_size
+        
+        # 輸入到隱藏層
+        self.W_xh = np.random.randn(input_size, hidden_size) * 0.01
+        # 隱藏層到隱藏層
+        self.W_hh = np.random.randn(hidden_size, hidden_size) * 0.01
+        # 隱藏層到輸出層
+        self.W_hy = np.random.randn(hidden_size, output_size) * 0.01
+        
+        # 偏置
+        self.b_h = np.zeros((1, hidden_size))
+        self.b_y = np.zeros((1, output_size))
+    
+    def forward(self, inputs):
+        """
+        前向傳播
+        inputs: 序列輸入 (seq_len, batch_size, input_size)
+        """
+        seq_len = len(inputs)
+        batch_size = inputs[0].shape[0]
+        
+        # 儲存所有時間步的隱藏狀態和輸出
+        h = np.zeros((batch_size, self.hidden_size))
+        self.hidden_states = []
+        outputs = []
+        
+        for t in range(seq_len):
+            # 計算當前時刻的隱藏狀態
+            h = np.tanh(np.dot(inputs[t], self.W_xh) + 
+                       np.dot(h, self.W_hh) + self.b_h)
+            
+            # 計算輸出
+            y = np.dot(h, self.W_hy) + self.b_y
+            
+            self.hidden_states.append(h)
+            outputs.append(y)
+        
+        return outputs, self.hidden_states
+
+# 測試簡單 RNN
+input_size = 5
+hidden_size = 10
+output_size = 3
+seq_len = 8
+batch_size = 2
+
+rnn = SimpleRNN(input_size, hidden_size, output_size)
+
+# 建立隨機輸入序列
+inputs = [np.random.randn(batch_size, input_size) for _ in range(seq_len)]
+
+# 前向傳播
+outputs, hidden_states = rnn.forward(inputs)
+
+print(f"輸入序列長度: {seq_len}")
+print(f"每個時間步輸入形狀: {inputs[0].shape}")
+print(f"每個時間步輸出形狀: {outputs[0].shape}")
+print(f"每個時間步隱藏狀態形狀: {hidden_states[0].shape}")
+
+# 視覺化隱藏狀態
+hidden_states_array = np.array(hidden_states)[:, 0, :]  # 取第一個樣本
+
+plt.figure(figsize=(12, 6))
+plt.imshow(hidden_states_array.T, cmap='coolwarm', aspect='auto')
+plt.colorbar(label='激活值')
+plt.xlabel('時間步')
+plt.ylabel('隱藏單元')
+plt.title('RNN 隱藏狀態視覺化')
+plt.show()
+</code></pre>
+
+            <h3>RNN 的變體</h3>
+            <table>
+                <tr>
+                    <th>類型</th>
+                    <th>描述</th>
+                    <th>應用場景</th>
+                </tr>
+                <tr>
+                    <td>One-to-One</td>
+                    <td>單輸入單輸出</td>
+                    <td>一般的分類/回歸</td>
+                </tr>
+                <tr>
+                    <td>One-to-Many</td>
+                    <td>單輸入多輸出</td>
+                    <td>圖片描述生成</td>
+                </tr>
+                <tr>
+                    <td>Many-to-One</td>
+                    <td>多輸入單輸出</td>
+                    <td>情感分析、文本分類</td>
+                </tr>
+                <tr>
+                    <td>Many-to-Many</td>
+                    <td>多輸入多輸出（同步）</td>
+                    <td>影片分類（每幀標註）</td>
+                </tr>
+                <tr>
+                    <td>Many-to-Many</td>
+                    <td>多輸入多輸出（非同步）</td>
+                    <td>機器翻譯、文本摘要</td>
+                </tr>
+            </table>
+
+            <div class="warning-box">
+                <h4>標準 RNN 的問題</h4>
+                <ul>
+                    <li><strong>梯度消失</strong> - 長序列訓練困難，無法記住遠距離資訊</li>
+                    <li><strong>梯度爆炸</strong> - 梯度過大導致不穩定（可用梯度裁剪解決）</li>
+                    <li><strong>長期依賴</strong> - 難以捕捉長距離的依賴關係</li>
+                </ul>
+                <p>這些問題促使了 LSTM 和 GRU 的發展。</p>
+            </div>
+        </div>
+
+        <div class="content">
+            <h2>2. LSTM（長短期記憶網路）</h2>
+            
+            <h3>LSTM 架構</h3>
+            <p><span class="highlight">LSTM</span> 透過引入記憶細胞和三個閘門機制，解決了標準 RNN 的長期依賴問題。</p>
+
+            <div class="concept-box">
+                <h4>LSTM 的三個閘門</h4>
+                <ul>
+                    <li><strong>遺忘閘門（Forget Gate）</strong> - 決定要遺忘哪些資訊<br>
+                        f_t = σ(W_f · [h_{t-1}, x_t] + b_f)</li>
+                    <li><strong>輸入閘門（Input Gate）</strong> - 決定要添加哪些新資訊<br>
+                        i_t = σ(W_i · [h_{t-1}, x_t] + b_i)<br>
+                        C̃_t = tanh(W_C · [h_{t-1}, x_t] + b_C)</li>
+                    <li><strong>輸出閘門（Output Gate）</strong> - 決定輸出什麼資訊<br>
+                        o_t = σ(W_o · [h_{t-1}, x_t] + b_o)</li>
+                </ul>
+                <p><strong>更新細胞狀態</strong>：C_t = f_t ⊙ C_{t-1} + i_t ⊙ C̃_t</p>
+                <p><strong>計算隱藏狀態</strong>：h_t = o_t ⊙ tanh(C_t)</p>
+            </div>
+
+            <pre><code class="language-python">import torch
+import torch.nn as nn
+
+# PyTorch 內建的 LSTM
+class LSTMModel(nn.Module):
+    def __init__(self, input_size, hidden_size, num_layers, output_size):
+        super(LSTMModel, self).__init__()
+        
+        self.hidden_size = hidden_size
+        self.num_layers = num_layers
+        
+        # LSTM 層
+        self.lstm = nn.LSTM(input_size, hidden_size, num_layers, 
+                           batch_first=True)
+        
+        # 全連接層
+        self.fc = nn.Linear(hidden_size, output_size)
+    
+    def forward(self, x):
+        # 初始化隱藏狀態和細胞狀態
+        h0 = torch.zeros(self.num_layers, x.size(0), self.hidden_size).to(x.device)
+        c0 = torch.zeros(self.num_layers, x.size(0), self.hidden_size).to(x.device)
+        
+        # LSTM 前向傳播
+        # out: (batch_size, seq_len, hidden_size)
+        out, (hn, cn) = self.lstm(x, (h0, c0))
+        
+        # 取最後一個時間步的輸出
+        out = self.fc(out[:, -1, :])
+        
+        return out
+
+# 建立模型
+input_size = 10
+hidden_size = 128
+num_layers = 2
+output_size = 5
+
+model = LSTMModel(input_size, hidden_size, num_layers, output_size)
+print(model)
+
+# 測試
+batch_size = 32
+seq_len = 20
+x = torch.randn(batch_size, seq_len, input_size)
+output = model(x)
+
+print(f"\n輸入形狀: {x.shape}")
+print(f"輸出形狀: {output.shape}")
+print(f"模型參數量: {sum(p.numel() for p in model.parameters()):,}")
+</code></pre>
+
+            <h3>從零實現 LSTM</h3>
+            <pre><code class="language-python">import numpy as np
+
+class LSTMCell:
+    """單個 LSTM 細胞的實作"""
+    def __init__(self, input_size, hidden_size):
+        self.input_size = input_size
+        self.hidden_size = hidden_size
+        
+        # 初始化權重（簡化版，實際應該用更好的初始化）
+        scale = 0.01
+        
+        # 遺忘閘門
+        self.W_f = np.random.randn(input_size + hidden_size, hidden_size) * scale
+        self.b_f = np.zeros((1, hidden_size))
+        
+        # 輸入閘門
+        self.W_i = np.random.randn(input_size + hidden_size, hidden_size) * scale
+        self.b_i = np.zeros((1, hidden_size))
+        
+        # 候選細胞狀態
+        self.W_c = np.random.randn(input_size + hidden_size, hidden_size) * scale
+        self.b_c = np.zeros((1, hidden_size))
+        
+        # 輸出閘門
+        self.W_o = np.random.randn(input_size + hidden_size, hidden_size) * scale
+        self.b_o = np.zeros((1, hidden_size))
+    
+    def sigmoid(self, x):
+        return 1 / (1 + np.exp(-np.clip(x, -500, 500)))
+    
+    def forward(self, x, h_prev, c_prev):
+        """
+        前向傳播
+        x: 當前輸入 (batch_size, input_size)
+        h_prev: 前一時刻隱藏狀態 (batch_size, hidden_size)
+        c_prev: 前一時刻細胞狀態 (batch_size, hidden_size)
+        """
+        # 合併輸入和前一時刻隱藏狀態
+        combined = np.concatenate([x, h_prev], axis=1)
+        
+        # 遺忘閘門
+        f_t = self.sigmoid(np.dot(combined, self.W_f) + self.b_f)
+        
+        # 輸入閘門
+        i_t = self.sigmoid(np.dot(combined, self.W_i) + self.b_i)
+        
+        # 候選細胞狀態
+        c_tilde = np.tanh(np.dot(combined, self.W_c) + self.b_c)
+        
+        # 更新細胞狀態
+        c_t = f_t * c_prev + i_t * c_tilde
+        
+        # 輸出閘門
+        o_t = self.sigmoid(np.dot(combined, self.W_o) + self.b_o)
+        
+        # 計算隱藏狀態
+        h_t = o_t * np.tanh(c_t)
+        
+        # 儲存中間值（用於反向傳播）
+        self.cache = (x, h_prev, c_prev, f_t, i_t, c_tilde, c_t, o_t, combined)
+        
+        return h_t, c_t
+
+# 測試 LSTM Cell
+input_size = 5
+hidden_size = 10
+batch_size = 3
+
+lstm_cell = LSTMCell(input_size, hidden_size)
+
+x = np.random.randn(batch_size, input_size)
+h_prev = np.zeros((batch_size, hidden_size))
+c_prev = np.zeros((batch_size, hidden_size))
+
+h_t, c_t = lstm_cell.forward(x, h_prev, c_prev)
+
+print(f"輸入形狀: {x.shape}")
+print(f"隱藏狀態形狀: {h_t.shape}")
+print(f"細胞狀態形狀: {c_t.shape}")
+</code></pre>
+
+            <h3>視覺化 LSTM 的閘門</h3>
+            <pre><code class="language-python">import matplotlib.pyplot as plt
+
+# 模擬序列處理
+seq_len = 50
+lstm_cell = LSTMCell(input_size=1, hidden_size=1)
+
+# 建立測試序列（正弦波）
+x_seq = np.sin(np.linspace(0, 4*np.pi, seq_len)).reshape(-1, 1, 1)
+
+h = np.zeros((1, 1))
+c = np.zeros((1, 1))
+
+# 儲存閘門值
+forget_gates = []
+input_gates = []
+output_gates = []
+cell_states = []
+hidden_states = []
+
+for t in range(seq_len):
+    h, c = lstm_cell.forward(x_seq[t], h, c)
+    
+    # 從 cache 中提取閘門值
+    f_t, i_t, _, _, o_t = lstm_cell.cache[3], lstm_cell.cache[4], lstm_cell.cache[5], lstm_cell.cache[6], lstm_cell.cache[7]
+    
+    forget_gates.append(f_t[0, 0])
+    input_gates.append(i_t[0, 0])
+    output_gates.append(o_t[0, 0])
+    cell_states.append(c[0, 0])
+    hidden_states.append(h[0, 0])
+
+# 繪圖
+fig, axes = plt.subplots(3, 1, figsize=(14, 10))
+
+# 輸入與隱藏狀態
+axes[0].plot(x_seq.squeeze(), label='輸入（正弦波）', linewidth=2)
+axes[0].plot(hidden_states, label='隱藏狀態', linewidth=2)
+axes[0].set_title('輸入與隱藏狀態')
+axes[0].legend()
+axes[0].grid(True, alpha=0.3)
+
+# 閘門激活值
+axes[1].plot(forget_gates, label='遺忘閘門', linewidth=2)
+axes[1].plot(input_gates, label='輸入閘門', linewidth=2)
+axes[1].plot(output_gates, label='輸出閘門', linewidth=2)
+axes[1].set_title('LSTM 閘門激活值')
+axes[1].set_ylim(0, 1)
+axes[1].legend()
+axes[1].grid(True, alpha=0.3)
+
+# 細胞狀態
+axes[2].plot(cell_states, label='細胞狀態', linewidth=2, color='purple')
+axes[2].set_title('細胞狀態')
+axes[2].legend()
+axes[2].grid(True, alpha=0.3)
+
+plt.tight_layout()
+plt.show()
+</code></pre>
+        </div>
+
+        <div class="content">
+            <h2>3. GRU（門控循環單元）</h2>
+            
+            <h3>GRU 架構</h3>
+            <p><span class="highlight">GRU</span> 是 LSTM 的簡化版本，只有兩個閘門，參數更少但性能相當。</p>
+
+            <div class="concept-box">
+                <h4>GRU 的兩個閘門</h4>
+                <ul>
+                    <li><strong>重置閘門（Reset Gate）</strong> - 決定要遺忘多少過去資訊<br>
+                        r_t = σ(W_r · [h_{t-1}, x_t] + b_r)</li>
+                    <li><strong>更新閘門（Update Gate）</strong> - 決定要保留多少過去資訊<br>
+                        z_t = σ(W_z · [h_{t-1}, x_t] + b_z)</li>
+                </ul>
+                <p><strong>候選隱藏狀態</strong>：h̃_t = tanh(W_h · [r_t ⊙ h_{t-1}, x_t] + b_h)</p>
+                <p><strong>更新隱藏狀態</strong>：h_t = (1 - z_t) ⊙ h_{t-1} + z_t ⊙ h̃_t</p>
+            </div>
+
+            <pre><code class="language-python">import torch
+import torch.nn as nn
+
+class GRUModel(nn.Module):
+    def __init__(self, input_size, hidden_size, num_layers, output_size):
+        super(GRUModel, self).__init__()
+        
+        self.hidden_size = hidden_size
+        self.num_layers = num_layers
+        
+        # GRU 層
+        self.gru = nn.GRU(input_size, hidden_size, num_layers, 
+                         batch_first=True)
+        
+        # 全連接層
+        self.fc = nn.Linear(hidden_size, output_size)
+    
+    def forward(self, x):
+        # 初始化隱藏狀態
+        h0 = torch.zeros(self.num_layers, x.size(0), self.hidden_size).to(x.device)
+        
+        # GRU 前向傳播
+        out, hn = self.gru(x, h0)
+        
+        # 取最後一個時間步的輸出
+        out = self.fc(out[:, -1, :])
+        
+        return out
+
+# 建立模型
+model = GRUModel(input_size=10, hidden_size=128, num_layers=2, output_size=5)
+print(model)
+
+# 比較參數量
+lstm_model = LSTMModel(10, 128, 2, 5)
+gru_model = GRUModel(10, 128, 2, 5)
+
+lstm_params = sum(p.numel() for p in lstm_model.parameters())
+gru_params = sum(p.numel() for p in gru_model.parameters())
+
+print(f"\nLSTM 參數量: {lstm_params:,}")
+print(f"GRU 參數量: {gru_params:,}")
+print(f"GRU 比 LSTM 少: {(1 - gru_params/lstm_params)*100:.1f}%")
+</code></pre>
+
+            <h3>LSTM vs GRU 比較</h3>
+            <table>
+                <tr>
+                    <th>特性</th>
+                    <th>LSTM</th>
+                    <th>GRU</th>
+                </tr>
+                <tr>
+                    <td>閘門數量</td>
+                    <td>3 個（遺忘、輸入、輸出）</td>
+                    <td>2 個（重置、更新）</td>
+                </tr>
+                <tr>
+                    <td>狀態</td>
+                    <td>隱藏狀態 + 細胞狀態</td>
+                    <td>只有隱藏狀態</td>
+                </tr>
+                <tr>
+                    <td>參數量</td>
+                    <td>較多</td>
+                    <td>較少（約少 25%）</td>
+                </tr>
+                <tr>
+                    <td>訓練速度</td>
+                    <td>較慢</td>
+                    <td>較快</td>
+                </tr>
+                <tr>
+                    <td>性能</td>
+                    <td>某些任務更好</td>
+                    <td>某些任務更好</td>
+                </tr>
+                <tr>
+                    <td>適用場景</td>
+                    <td>長序列、複雜依賴</td>
+                    <td>短序列、資源受限</td>
+                </tr>
+            </table>
+
+            <div class="tip-box">
+                <h4>如何選擇 LSTM 或 GRU？</h4>
+                <ul>
+                    <li><strong>資料量大</strong> - 優先嘗試 LSTM</li>
+                    <li><strong>資源受限</strong> - 優先嘗試 GRU</li>
+                    <li><strong>序列較短</strong> - GRU 通常足夠</li>
+                    <li><strong>實際應用</strong> - 兩者都試試，選表現更好的</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="content">
+            <h2>4. 序列到序列模型（Seq2Seq）</h2>
+            
+            <h3>Seq2Seq 架構</h3>
+            <p><span class="highlight">Seq2Seq</span> 模型由編碼器（Encoder）和解碼器（Decoder）組成，用於處理輸入輸出長度不同的序列轉換任務。</p>
+
+            <pre><code class="language-python">import torch
+import torch.nn as nn
+import torch.nn.functional as F
+
+class Encoder(nn.Module):
+    def __init__(self, input_size, embedding_size, hidden_size, num_layers):
+        super(Encoder, self).__init__()
+        
+        self.hidden_size = hidden_size
+        self.num_layers = num_layers
+        
+        self.embedding = nn.Embedding(input_size, embedding_size)
+        self.lstm = nn.LSTM(embedding_size, hidden_size, num_layers, 
+                           batch_first=True)
+    
+    def forward(self, x):
+        # x: (batch_size, seq_len)
+        embedded = self.embedding(x)  # (batch_size, seq_len, embedding_size)
+        
+        outputs, (hidden, cell) = self.lstm(embedded)
+        
+        return hidden, cell
+
+class Decoder(nn.Module):
+    def __init__(self, output_size, embedding_size, hidden_size, num_layers):
+        super(Decoder, self).__init__()
+        
+        self.hidden_size = hidden_size
+        self.num_layers = num_layers
+        
+        self.embedding = nn.Embedding(output_size, embedding_size)
+        self.lstm = nn.LSTM(embedding_size, hidden_size, num_layers, 
+                           batch_first=True)
+        self.fc = nn.Linear(hidden_size, output_size)
+    
+    def forward(self, x, hidden, cell):
+        # x: (batch_size, 1)
+        embedded = self.embedding(x)  # (batch_size, 1, embedding_size)
+        
+        outputs, (hidden, cell) = self.lstm(embedded, (hidden, cell))
+        
+        predictions = self.fc(outputs.squeeze(1))  # (batch_size, output_size)
+        
+        return predictions, hidden, cell
+
+class Seq2Seq(nn.Module):
+    def __init__(self, encoder, decoder, device):
+        super(Seq2Seq, self).__init__()
+        
+        self.encoder = encoder
+        self.decoder = decoder
+        self.device = device
+    
+    def forward(self, source, target, teacher_forcing_ratio=0.5):
+        """
+        source: 源序列 (batch_size, source_len)
+        target: 目標序列 (batch_size, target_len)
+        teacher_forcing_ratio: 教師強制比例
+        """
+        batch_size = source.shape[0]
+        target_len = target.shape[1]
+        target_vocab_size = self.decoder.fc.out_features
+        
+        # 儲存解碼器輸出
+        outputs = torch.zeros(batch_size, target_len, target_vocab_size).to(self.device)
+        
+        # 編碼
+        hidden, cell = self.encoder(source)
+        
+        # 解碼器的第一個輸入（通常是 <SOS> token）
+        decoder_input = target[:, 0].unsqueeze(1)
+        
+        for t in range(1, target_len):
+            # 解碼一步
+            output, hidden, cell = self.decoder(decoder_input, hidden, cell)
+            outputs[:, t, :] = output
+            
+            # 教師強制：有一定機率使用真實目標作為下一個輸入
+            teacher_force = torch.rand(1).item() < teacher_forcing_ratio
+            
+            if teacher_force:
+                decoder_input = target[:, t].unsqueeze(1)
+            else:
+                decoder_input = output.argmax(1).unsqueeze(1)
+        
+        return outputs
+
+# 建立 Seq2Seq 模型
+INPUT_DIM = 5000   # 源語言詞彙量
+OUTPUT_DIM = 5000  # 目標語言詞彙量
+ENC_EMB_DIM = 256
+DEC_EMB_DIM = 256
+HID_DIM = 512
+N_LAYERS = 2
+
+device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+
+encoder = Encoder(INPUT_DIM, ENC_EMB_DIM, HID_DIM, N_LAYERS)
+decoder = Decoder(OUTPUT_DIM, DEC_EMB_DIM, HID_DIM, N_LAYERS)
+model = Seq2Seq(encoder, decoder, device).to(device)
+
+print(model)
+print(f"\n模型參數量: {sum(p.numel() for p in model.parameters()):,}")
+
+# 測試
+batch_size = 32
+src_len = 10
+trg_len = 12
+
+src = torch.randint(0, INPUT_DIM, (batch_size, src_len)).to(device)
+trg = torch.randint(0, OUTPUT_DIM, (batch_size, trg_len)).to(device)
+
+output = model(src, trg)
+print(f"\n輸入形狀: {src.shape}")
+print(f"目標形狀: {trg.shape}")
+print(f"輸出形狀: {output.shape}")
+</code></pre>
+
+            <div class="note-box">
+                <h4>教師強制（Teacher Forcing）</h4>
+                <p>訓練時的技巧：</p>
+                <ul>
+                    <li><strong>使用真實目標</strong> - 解碼時用真實的前一個 token 作為輸入</li>
+                    <li><strong>加速收斂</strong> - 模型學習更快</li>
+                    <li><strong>曝光偏差</strong> - 訓練和推理時的差異，可能導致錯誤累積</li>
+                    <li><strong>折衷方案</strong> - 使用漸進式教師強制比例</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="content">
+            <h2>5. 注意力機制（Attention）</h2>
+            
+            <h3>注意力的動機</h3>
+            <p>標準 Seq2Seq 將整個源序列壓縮成一個固定長度的向量（context vector），對於長序列會丟失資訊。<span class="highlight">注意力機制</span>讓解碼器在每個時間步都能關注源序列的不同部分。</p>
+
+            <pre><code class="language-python">import torch
+import torch.nn as nn
+import torch.nn.functional as F
+
+class Attention(nn.Module):
+    def __init__(self, hidden_size):
+        super(Attention, self).__init__()
+        
+        self.hidden_size = hidden_size
+        
+        # 注意力權重計算
+        self.attn = nn.Linear(hidden_size * 2, hidden_size)
+        self.v = nn.Linear(hidden_size, 1, bias=False)
+    
+    def forward(self, hidden, encoder_outputs):
+        """
+        hidden: 解碼器隱藏狀態 (batch_size, hidden_size)
+        encoder_outputs: 編碼器所有時間步的輸出 (batch_size, src_len, hidden_size)
+        """
+        batch_size = encoder_outputs.shape[0]
+        src_len = encoder_outputs.shape[1]
+        
+        # 重複解碼器隱藏狀態
+        hidden = hidden.unsqueeze(1).repeat(1, src_len, 1)
+        # hidden: (batch_size, src_len, hidden_size)
+        
+        # 計算能量（energy）
+        energy = torch.tanh(self.attn(torch.cat((hidden, encoder_outputs), dim=2)))
+        # energy: (batch_size, src_len, hidden_size)
+        
+        # 計算注意力分數
+        attention = self.v(energy).squeeze(2)
+        # attention: (batch_size, src_len)
+        
+        # Softmax 得到注意力權重
+        return F.softmax(attention, dim=1)
+
+class AttentionDecoder(nn.Module):
+    def __init__(self, output_size, embedding_size, hidden_size, num_layers):
+        super(AttentionDecoder, self).__init__()
+        
+        self.output_size = output_size
+        self.hidden_size = hidden_size
+        self.num_layers = num_layers
+        
+        self.embedding = nn.Embedding(output_size, embedding_size)
+        self.attention = Attention(hidden_size)
+        
+        # LSTM 輸入包含嵌入和上下文向量
+        self.lstm = nn.LSTM(embedding_size + hidden_size, hidden_size, 
+                           num_layers, batch_first=True)
+        
+        self.fc = nn.Linear(hidden_size, output_size)
+    
+    def forward(self, x, hidden, cell, encoder_outputs):
+        """
+        x: (batch_size, 1)
+        hidden: (num_layers, batch_size, hidden_size)
+        cell: (num_layers, batch_size, hidden_size)
+        encoder_outputs: (batch_size, src_len, hidden_size)
+        """
+        # 嵌入
+        embedded = self.embedding(x)  # (batch_size, 1, embedding_size)
+        
+        # 計算注意力權重
+        attention_weights = self.attention(hidden[-1], encoder_outputs)
+        # attention_weights: (batch_size, src_len)
+        
+        # 計算上下文向量（加權和）
+        attention_weights = attention_weights.unsqueeze(1)
+        # attention_weights: (batch_size, 1, src_len)
+        
+        context = torch.bmm(attention_weights, encoder_outputs)
+        # context: (batch_size, 1, hidden_size)
+        
+        # 合併嵌入和上下文
+        lstm_input = torch.cat((embedded, context), dim=2)
+        # lstm_input: (batch_size, 1, embedding_size + hidden_size)
+        
+        # LSTM
+        output, (hidden, cell) = self.lstm(lstm_input, (hidden, cell))
+        
+        # 預測
+        prediction = self.fc(output.squeeze(1))
+        
+        return prediction, hidden, cell, attention_weights.squeeze(1)
+
+# 建立帶注意力的編碼器
+class AttentionEncoder(nn.Module):
+    def __init__(self, input_size, embedding_size, hidden_size, num_layers):
+        super(AttentionEncoder, self).__init__()
+        
+        self.hidden_size = hidden_size
+        self.num_layers = num_layers
+        
+        self.embedding = nn.Embedding(input_size, embedding_size)
+        self.lstm = nn.LSTM(embedding_size, hidden_size, num_layers, 
+                           batch_first=True)
+    
+    def forward(self, x):
+        embedded = self.embedding(x)
+        outputs, (hidden, cell) = self.lstm(embedded)
+        
+        # 返回所有時間步的輸出（用於注意力）
+        return outputs, hidden, cell
+
+# 測試注意力機制
+INPUT_DIM = 5000
+OUTPUT_DIM = 5000
+ENC_EMB_DIM = 256
+DEC_EMB_DIM = 256
+HID_DIM = 512
+N_LAYERS = 2
+
+encoder = AttentionEncoder(INPUT_DIM, ENC_EMB_DIM, HID_DIM, N_LAYERS)
+decoder = AttentionDecoder(OUTPUT_DIM, DEC_EMB_DIM, HID_DIM, N_LAYERS)
+
+# 測試
+batch_size = 32
+src_len = 10
+
+src = torch.randint(0, INPUT_DIM, (batch_size, src_len))
+encoder_outputs, hidden, cell = encoder(src)
+
+print(f"編碼器輸出形狀: {encoder_outputs.shape}")
+print(f"隱藏狀態形狀: {hidden.shape}")
+
+# 解碼一步
+trg = torch.randint(0, OUTPUT_DIM, (batch_size, 1))
+output, hidden, cell, attn_weights = decoder(trg, hidden, cell, encoder_outputs)
+
+print(f"\n解碼器輸出形狀: {output.shape}")
+print(f"注意力權重形狀: {attn_weights.shape}")
+
+# 視覺化注意力權重
+import matplotlib.pyplot as plt
+
+plt.figure(figsize=(10, 6))
+plt.imshow(attn_weights[0:5].detach().numpy(), cmap='Blues', aspect='auto')
+plt.colorbar(label='注意力權重')
+plt.xlabel('源序列位置')
+plt.ylabel('樣本')
+plt.title('注意力權重視覺化')
+plt.show()
+</code></pre>
+
+            <div class="concept-box">
+                <h4>注意力機制的優勢</h4>
+                <ul>
+                    <li><strong>處理長序列</strong> - 不再受限於固定長度的上下文向量</li>
+                    <li><strong>可解釋性</strong> - 注意力權重顯示模型關注哪些部分</li>
+                    <li><strong>對齊資訊</strong> - 自動學習源序列和目標序列的對齊</li>
+                    <li><strong>性能提升</strong> - 顯著改善機器翻譯等任務的效果</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="content">
+            <h2>6. 實戰：情感分析</h2>
+            
+            <h3>資料準備</h3>
+            <pre><code class="language-python">import torch
+import torch.nn as nn
+import torch.optim as optim
+from torch.utils.data import Dataset, DataLoader
+import numpy as np
+
+# 簡化的情感分析資料集
+class SentimentDataset(Dataset):
+    def __init__(self, texts, labels, vocab, max_len=50):
+        self.texts = texts
+        self.labels = labels
+        self.vocab = vocab
+        self.max_len = max_len
+    
+    def __len__(self):
+        return len(self.texts)
+    
+    def __getitem__(self, idx):
+        text = self.texts[idx]
+        label = self.labels[idx]
+        
+        # 文字轉索引
+        indices = [self.vocab.get(word, 0) for word in text.split()]
+        
+        # 填充或截斷
+        if len(indices) < self.max_len:
+            indices += [0] * (self.max_len - len(indices))
+        else:
+            indices = indices[:self.max_len]
+        
+        return torch.tensor(indices), torch.tensor(label)
+
+# 建立簡單資料集
+texts = [
+    "this movie is great and wonderful",
+    "i really enjoyed watching this film",
+    "terrible movie waste of time",
+    "boring and disappointing",
+    "absolutely fantastic must watch",
+    "the worst film i have ever seen",
+    "amazing story and great acting",
+    "not worth watching at all"
+]
+
+labels = [1, 1, 0, 0, 1, 0, 1, 0]  # 1: 正面, 0: 負面
+
+# 建立詞彙表
+all_words = set()
+for text in texts:
+    all_words.update(text.split())
+
+vocab = {word: idx+1 for idx, word in enumerate(all_words)}
+vocab['<PAD>'] = 0  # 填充標記
+
+print(f"詞彙量: {len(vocab)}")
+print(f"資料量: {len(texts)}")
+
+# 建立資料集和載入器
+dataset = SentimentDataset(texts, labels, vocab, max_len=10)
+dataloader = DataLoader(dataset, batch_size=2, shuffle=True)
+
+# 測試
+for batch_texts, batch_labels in dataloader:
+    print(f"文字形狀: {batch_texts.shape}")
+    print(f"標籤形狀: {batch_labels.shape}")
+    break
+</code></pre>
+
+            <h3>建立情感分析模型</h3>
+            <pre><code class="language-python">class SentimentLSTM(nn.Module):
+    def __init__(self, vocab_size, embedding_dim, hidden_dim, output_dim, 
+                 n_layers, dropout):
+        super(SentimentLSTM, self).__init__()
+        
+        # 嵌入層
+        self.embedding = nn.Embedding(vocab_size, embedding_dim, padding_idx=0)
+        
+        # LSTM 層
+        self.lstm = nn.LSTM(embedding_dim, hidden_dim, n_layers, 
+                           batch_first=True, dropout=dropout, bidirectional=True)
+        
+        # 全連接層
+        self.fc = nn.Linear(hidden_dim * 2, output_dim)  # *2 因為雙向
+        
+        self.dropout = nn.Dropout(dropout)
+    
+    def forward(self, text):
+        # text: (batch_size, seq_len)
+        
+        # 嵌入
+        embedded = self.dropout(self.embedding(text))
+        # embedded: (batch_size, seq_len, embedding_dim)
+        
+        # LSTM
+        output, (hidden, cell) = self.lstm(embedded)
+        # output: (batch_size, seq_len, hidden_dim * 2)
+        # hidden: (n_layers * 2, batch_size, hidden_dim)
+        
+        # 合併雙向 LSTM 的最後隱藏狀態
+        hidden = self.dropout(torch.cat((hidden[-2,:,:], hidden[-1,:,:]), dim=1))
+        # hidden: (batch_size, hidden_dim * 2)
+        
+        # 全連接層
+        output = self.fc(hidden)
+        
+        return output
+
+# 建立模型
+VOCAB_SIZE = len(vocab)
+EMBEDDING_DIM = 100
+HIDDEN_DIM = 128
+OUTPUT_DIM = 2  # 二元分類
+N_LAYERS = 2
+DROPOUT = 0.5
+
+model = SentimentLSTM(VOCAB_SIZE, EMBEDDING_DIM, HIDDEN_DIM, 
+                     OUTPUT_DIM, N_LAYERS, DROPOUT)
+
+print(model)
+print(f"\n模型參數量: {sum(p.numel() for p in model.parameters()):,}")
+
+# 測試前向傳播
+sample_text = torch.randint(0, VOCAB_SIZE, (4, 10))
+output = model(sample_text)
+print(f"\n輸入形狀: {sample_text.shape}")
+print(f"輸出形狀: {output.shape}")
+</code></pre>
+
+            <h3>訓練模型</h3>
+            <pre><code class="language-python">import torch.nn.functional as F
+
+def train_model(model, dataloader, optimizer, criterion, device):
+    model.train()
+    epoch_loss = 0
+    epoch_acc = 0
+    
+    for texts, labels in dataloader:
+        texts, labels = texts.to(device), labels.to(device)
+        
+        optimizer.zero_grad()
+        
+        # 前向傳播
+        predictions = model(texts)
+        
+        # 計算損失
+        loss = criterion(predictions, labels)
+        
+        # 計算準確率
+        acc = ((predictions.argmax(1) == labels).float().mean())
+        
+        # 反向傳播
+        loss.backward()
+        optimizer.step()
+        
+        epoch_loss += loss.item()
+        epoch_acc += acc.item()
+    
+    return epoch_loss / len(dataloader), epoch_acc / len(dataloader)
+
+def evaluate_model(model, dataloader, criterion, device):
+    model.eval()
+    epoch_loss = 0
+    epoch_acc = 0
+    
+    with torch.no_grad():
+        for texts, labels in dataloader:
+            texts, labels = texts.to(device), labels.to(device)
+            
+            predictions = model(texts)
+            loss = criterion(predictions, labels)
+            acc = ((predictions.argmax(1) == labels).float().mean())
+            
+            epoch_loss += loss.item()
+            epoch_acc += acc.item()
+    
+    return epoch_loss / len(dataloader), epoch_acc / len(dataloader)
+
+# 訓練設定
+device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+model = model.to(device)
+
+optimizer = optim.Adam(model.parameters(), lr=0.001)
+criterion = nn.CrossEntropyLoss()
+
+# 訓練
+num_epochs = 50
+train_losses = []
+train_accs = []
+
+print("開始訓練...")
+for epoch in range(num_epochs):
+    train_loss, train_acc = train_model(model, dataloader, optimizer, criterion, device)
+    
+    train_losses.append(train_loss)
+    train_accs.append(train_acc)
+    
+    if (epoch + 1) % 10 == 0:
+        print(f'Epoch {epoch+1}/{num_epochs}:')
+        print(f'  Train Loss: {train_loss:.4f}, Acc: {train_acc*100:.2f}%')
+
+print("\n訓練完成！")
+
+# 視覺化訓練過程
+fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(14, 5))
+
+ax1.plot(train_losses, linewidth=2)
+ax1.set_xlabel('Epoch')
+ax1.set_ylabel('損失')
+ax1.set_title('訓練損失')
+ax1.grid(True, alpha=0.3)
+
+ax2.plot(train_accs, linewidth=2)
+ax2.set_xlabel('Epoch')
+ax2.set_ylabel('準確率')
+ax2.set_title('訓練準確率')
+ax2.grid(True, alpha=0.3)
+
+plt.tight_layout()
+plt.show()
+</code></pre>
+
+            <h3>預測與分析</h3>
+            <pre><code class="language-python">def predict_sentiment(model, text, vocab, max_len=10, device='cpu'):
+    """預測單個文本的情感"""
+    model.eval()
+    
+    # 文字轉索引
+    indices = [vocab.get(word, 0) for word in text.split()]
+    
+    # 填充或截斷
+    if len(indices) < max_len:
+        indices += [0] * (max_len - len(indices))
+    else:
+        indices = indices[:max_len]
+    
+    # 轉換為張量
+    text_tensor = torch.tensor([indices]).to(device)
+    
+    with torch.no_grad():
+        output = model(text_tensor)
+        prediction = output.argmax(1).item()
+        probabilities = F.softmax(output, dim=1)
+    
+    sentiment = "正面" if prediction == 1 else "負面"
+    confidence = probabilities[0][prediction].item()
+    
+    return sentiment, confidence
+
+# 測試預測
+test_texts = [
+    "this is a great movie",
+    "terrible and boring",
+    "absolutely wonderful experience",
+    "waste of time and money"
+]
+
+print("情感分析預測:")
+for text in test_texts:
+    sentiment, confidence = predict_sentiment(model, text, vocab, device=device)
+    print(f"文本: '{text}'")
+    print(f"預測: {sentiment} (信心: {confidence*100:.2f}%)\n")
+</code></pre>
+        </div>
+
+        <div class="content">
+            <h2>7. 實戰：文本生成</h2>
+            
+            <h3>字符級 RNN 文本生成</h3>
+            <pre><code class="language-python">import torch
+import torch.nn as nn
+import numpy as np
+
+class CharRNN(nn.Module):
+    def __init__(self, vocab_size, embedding_dim, hidden_dim, n_layers):
+        super(CharRNN, self).__init__()
+        
+        self.hidden_dim = hidden_dim
+        self.n_layers = n_layers
+        
+        self.embedding = nn.Embedding(vocab_size, embedding_dim)
+        self.lstm = nn.LSTM(embedding_dim, hidden_dim, n_layers, batch_first=True)
+        self.fc = nn.Linear(hidden_dim, vocab_size)
+    
+    def forward(self, x, hidden):
+        # x: (batch_size, seq_len)
+        embedded = self.embedding(x)
+        output, hidden = self.lstm(embedded, hidden)
+        output = self.fc(output)
+        return output, hidden
+    
+    def init_hidden(self, batch_size, device):
+        hidden = torch.zeros(self.n_layers, batch_size, self.hidden_dim).to(device)
+        cell = torch.zeros(self.n_layers, batch_size, self.hidden_dim).to(device)
+        return (hidden, cell)
+
+# 準備訓練資料
+text = """To be, or not to be, that is the question:
+Whether 'tis nobler in the mind to suffer
+The slings and arrows of outrageous fortune,
+Or to take arms against a sea of troubles
+And by opposing end them."""
+
+# 建立字符到索引的映射
+chars = sorted(list(set(text)))
+char_to_idx = {ch: i for i, ch in enumerate(chars)}
+idx_to_char = {i: ch for i, ch in enumerate(chars)}
+
+print(f"唯一字符數: {len(chars)}")
+print(f"文本長度: {len(text)}")
+
+# 將文本轉換為索引序列
+text_indices = [char_to_idx[ch] for ch in text]
+
+# 建立訓練序列
+seq_length = 50
+sequences = []
+targets = []
+
+for i in range(0, len(text_indices) - seq_length):
+    sequences.append(text_indices[i:i+seq_length])
+    targets.append(text_indices[i+1:i+seq_length+1])
+
+print(f"\n訓練序列數量: {len(sequences)}")
+
+# 建立模型
+VOCAB_SIZE = len(chars)
+EMBEDDING_DIM = 64
+HIDDEN_DIM = 128
+N_LAYERS = 2
+
+model = CharRNN(VOCAB_SIZE, EMBEDDING_DIM, HIDDEN_DIM, N_LAYERS)
+device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+model = model.to(device)
+
+print(f"\n模型參數量: {sum(p.numel() for p in model.parameters()):,}")
+
+# 訓練
+criterion = nn.CrossEntropyLoss()
+optimizer = torch.optim.Adam(model.parameters(), lr=0.002)
+
+num_epochs = 100
+batch_size = 32
+
+print("\n開始訓練...")
+for epoch in range(num_epochs):
+    model.train()
+    total_loss = 0
+    
+    # 隨機打亂序列
+    indices = np.random.permutation(len(sequences))
+    
+    for i in range(0, len(sequences), batch_size):
+        batch_indices = indices[i:i+batch_size]
+        
+        batch_sequences = torch.tensor([sequences[j] for j in batch_indices]).to(device)
+        batch_targets = torch.tensor([targets[j] for j in batch_indices]).to(device)
+        
+        # 初始化隱藏狀態
+        hidden = model.init_hidden(len(batch_indices), device)
+        
+        optimizer.zero_grad()
+        
+        # 前向傳播
+        output, hidden = model(batch_sequences, hidden)
+        
+        # 計算損失
+        loss = criterion(output.view(-1, VOCAB_SIZE), batch_targets.view(-1))
+        
+        # 反向傳播
+        loss.backward()
+        torch.nn.utils.clip_grad_norm_(model.parameters(), 5)
+        optimizer.step()
+        
+        total_loss += loss.item()
+    
+    if (epoch + 1) % 10 == 0:
+        avg_loss = total_loss / (len(sequences) / batch_size)
+        print(f'Epoch {epoch+1}/{num_epochs}, Loss: {avg_loss:.4f}')
+
+print("\n訓練完成！")
+</code></pre>
+
+            <h3>生成文本</h3>
+            <pre><code class="language-python">def generate_text(model, start_text, char_to_idx, idx_to_char, 
+                 length=200, temperature=1.0, device='cpu'):
+    """
+    生成文本
+    temperature: 控制隨機性，越高越隨機
+    """
+    model.eval()
+    
+    # 初始化
+    chars = [ch for ch in start_text]
+    hidden = model.init_hidden(1, device)
+    
+    # 將起始文本轉換為索引
+    input_seq = torch.tensor([[char_to_idx[ch] for ch in start_text]]).to(device)
+    
+    # 預熱隱藏狀態
+    with torch.no_grad():
+        output, hidden = model(input_seq, hidden)
+    
+    # 生成新字符
+    for _ in range(length):
+        # 取最後一個輸出
+        output_dist = output[0, -1, :] / temperature
+        probs = torch.softmax(output_dist, dim=0).cpu().numpy()
+        
+        # 根據機率分佈採樣
+        char_idx = np.random.choice(len(probs), p=probs)
+        chars.append(idx_to_char[char_idx])
+        
+        # 準備下一個輸入
+        input_seq = torch.tensor([[char_idx]]).to(device)
+        
+        with torch.no_grad():
+            output, hidden = model(input_seq, hidden)
+    
+    return ''.join(chars)
+
+# 生成文本（不同溫度）
+start_text = "To be"
+
+print("生成的文本:\n")
+
+temperatures = [0.5, 1.0, 1.5]
+for temp in temperatures:
+    generated = generate_text(model, start_text, char_to_idx, idx_to_char, 
+                             length=200, temperature=temp, device=device)
+    print(f"溫度 = {temp}:")
+    print(generated)
+    print("\n" + "="*80 + "\n")
+</code></pre>
+
+            <div class="tip-box">
+                <h4>文本生成的溫度參數</h4>
+                <ul>
+                    <li><strong>低溫度（0.5）</strong> - 更確定性，重複性高，但更連貫</li>
+                    <li><strong>中溫度（1.0）</strong> - 平衡，較自然</li>
+                    <li><strong>高溫度（1.5+）</strong> - 更隨機，更有創意，但可能不連貫</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="content">
+            <div class="exercise-section">
+                <h3>本週練習題</h3>
+                
+                <h4>基礎練習（必做）</h4>
+                <ol>
+                    <li>
+                        <strong>從零實現 RNN</strong>
+                        <ul>
+                            <li>純 NumPy 實現 RNN 前向傳播</li>
+                            <li>實現反向傳播（BPTT）</li>
+                            <li>在簡單序列預測任務上測試</li>
+                            <li>視覺化隱藏狀態</li>
+                        </ul>
+                    </li>
+                    
+                    <li>
+                        <strong>LSTM 情感分析</strong>
+                        <ul>
+                            <li>使用 IMDb 或其他情感分析資料集</li>
+                            <li>實作資料預處理（分詞、建立詞彙表）</li>
+                            <li>訓練 LSTM 模型</li>
+                            <li>達到 85% 以上準確率</li>
+                        </ul>
+                    </li>
+                    
+                    <li>
+                        <strong>比較 RNN、LSTM、GRU</strong>
+                        <ul>
+                            <li>在同一任務上比較三種模型</li>
+                            <li>比較訓練時間和參數量</li>
+                            <li>分析性能差異</li>
+                            <li>視覺化學習曲線</li>
+                        </ul>
+                    </li>
+                </ol>
+
+                <h4>進階練習</h4>
+                <ol start="4">
+                    <li>
+                        <strong>實作 Seq2Seq 模型</strong>
+                        <ul>
+                            <li>建立完整的 Seq2Seq 架構</li>
+                            <li>實作教師強制</li>
+                            <li>在簡單翻譯任務上訓練</li>
+                            <li>評估 BLEU 分數</li>
+                        </ul>
+                    </li>
+                    
+                    <li>
+                        <strong>添加注意力機制</strong>
+                        <ul>
+                            <li>實作 Bahdanau 或 Luong 注意力</li>
+                            <li>視覺化注意力權重</li>
+                            <li>比較有無注意力的效果</li>
+                            <li>分析注意力對齊</li>
+                        </ul>
+                    </li>
+                </ol>
+
+                <h4>挑戰練習</h4>
+                <ol start="6">
+                    <li>
+                        <strong>文本生成專案</strong>
+                        <ul>
+                            <li>字符級或詞級 RNN</li>
+                            <li>在較大文本語料上訓練</li>
+                            <li>實驗不同的生成策略</li>
+                            <li>評估生成質量</li>
+                        </ul>
+                    </li>
+                    
+                    <li>
+                        <strong>雙向 LSTM + CRF</strong>
+                        <ul>
+                            <li>實作命名實體識別（NER）</li>
+                            <li>結合 BiLSTM 和 CRF 層</li>
+                            <li>在標準資料集上評估</li>
+                            <li>分析錯誤案例</li>
+                        </ul>
+                    </li>
+                </ol>
+            </div>
+        </div>
+
+        <div class="content">
+            <h2>本週總結</h2>
+            
+            <h3>重點回顧</h3>
+            <ul>
+                <li>理解 RNN 的基本原理和限制</li>
+                <li>掌握 LSTM 和 GRU 的架構</li>
+                <li>學會建立 Seq2Seq 模型</li>
+                <li>理解注意力機制的重要性</li>
+                <li>完成情感分析和文本生成任務</li>
+            </ul>
+
+            <h3>關鍵概念</h3>
+            <ul>
+                <li><strong>隱藏狀態</strong> - RNN 的記憶機制</li>
+                <li><strong>梯度消失</strong> - RNN 的主要問題，LSTM/GRU 解決</li>
+                <li><strong>閘門機制</strong> - 控制資訊流動</li>
+                <li><strong>注意力</strong> - 讓模型關注重要部分</li>
+                <li><strong>教師強制</strong> - 加速訓練的技巧</li>
+            </ul>
+
+            <h3>下週預告</h3>
+            <div class="note-box">
+                <h4>Week 7 - Transformer 與注意力機制</h4>
+                <p>下週將學習現代 NLP 的基礎架構：</p>
+                <ul>
+                    <li>Self-Attention 機制詳解</li>
+                    <li>Multi-Head Attention</li>
+                    <li>Transformer 架構（Encoder-Decoder）</li>
+                    <li>位置編碼（Positional Encoding）</li>
+                    <li>實戰：從零實現 Transformer</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="nav-buttons">
+            <a href="llm-week5.html" class="btn btn-secondary">Week 5：卷積神經網路</a>
+            <a href="llm-week7.html" class="btn">Week 7：Transformer 架構</a>
+        </div>
+
+        <footer>
+            <p>LLM 與 AI/ML 課程 Week 6</p>
+            <p>循環神經網路 · LSTM · GRU · Seq2Seq · 注意力機制 · 文本處理</p>
+            <p style="font-size: 0.9em; color: #95a5a6;">© 2025 All Rights Reserved</p>
+        </footer>
+    </div>
+</body>
+</html>

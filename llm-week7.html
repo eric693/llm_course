@@ -1,0 +1,1567 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Week 7 - Transformer 架構 | LLM 與 AI/ML 課程</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft JhengHei', Arial, sans-serif;
+            background: #f8f9fa;
+            color: #1a1a1a;
+            line-height: 1.7;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .nav {
+            background: white;
+            padding: 16px 28px;
+            border-radius: 8px;
+            margin-bottom: 32px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            border: 1px solid #e0e0e0;
+        }
+
+        .nav a {
+            color: #3498db;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 8px 16px;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+        }
+
+        .nav a:hover {
+            background: #ecf0f1;
+            color: #2980b9;
+        }
+
+        .nav span {
+            color: #6c757d;
+            font-weight: 500;
+        }
+
+        header {
+            background: linear-gradient(to right, #2c3e50, #34495e);
+            color: white;
+            padding: 56px 40px;
+            border-radius: 8px;
+            margin-bottom: 32px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            border-bottom: 3px solid #3498db;
+        }
+
+        header h1 {
+            font-size: 2.2em;
+            margin-bottom: 12px;
+            font-weight: 700;
+        }
+
+        header .subtitle {
+            font-size: 1.05em;
+            opacity: 0.9;
+            font-weight: 400;
+        }
+
+        .content {
+            background: white;
+            border-radius: 8px;
+            padding: 48px;
+            margin-bottom: 32px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            border: 1px solid #e0e0e0;
+        }
+
+        .content h2 {
+            color: #1a1a1a;
+            font-size: 1.9em;
+            margin-bottom: 24px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #3498db;
+            font-weight: 700;
+        }
+
+        .content h3 {
+            color: #2c3e50;
+            font-size: 1.5em;
+            margin: 36px 0 16px 0;
+            font-weight: 600;
+        }
+
+        .content h4 {
+            color: #34495e;
+            font-size: 1.2em;
+            margin: 24px 0 12px 0;
+            font-weight: 600;
+        }
+
+        .content p {
+            margin-bottom: 16px;
+            line-height: 1.8;
+            color: #4a4a4a;
+        }
+
+        pre[class*="language-"] {
+            margin: 24px 0;
+            border-radius: 6px;
+            border: 1px solid #d0d7de;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+        }
+
+        code[class*="language-"] {
+            font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
+            font-size: 0.92em;
+            line-height: 1.6;
+        }
+
+        .note-box {
+            background: #e3f2fd;
+            border-left: 4px solid #2196f3;
+            padding: 20px 24px;
+            margin: 24px 0;
+            border-radius: 4px;
+        }
+
+        .note-box h4 {
+            color: #1565c0;
+            margin-top: 0;
+            margin-bottom: 12px;
+            font-size: 1.1em;
+        }
+
+        .warning-box {
+            background: #fff3e0;
+            border-left: 4px solid #ff9800;
+            padding: 20px 24px;
+            margin: 24px 0;
+            border-radius: 4px;
+        }
+
+        .warning-box h4 {
+            color: #e65100;
+            margin-top: 0;
+            margin-bottom: 12px;
+            font-size: 1.1em;
+        }
+
+        .tip-box {
+            background: #f1f8e9;
+            border-left: 4px solid #8bc34a;
+            padding: 20px 24px;
+            margin: 24px 0;
+            border-radius: 4px;
+        }
+
+        .tip-box h4 {
+            color: #558b2f;
+            margin-top: 0;
+            margin-bottom: 12px;
+            font-size: 1.1em;
+        }
+
+        .concept-box {
+            background: #f3e5f5;
+            border-left: 4px solid #9c27b0;
+            padding: 20px 24px;
+            margin: 24px 0;
+            border-radius: 4px;
+        }
+
+        .concept-box h4 {
+            color: #6a1b9a;
+            margin-top: 0;
+            margin-bottom: 12px;
+            font-size: 1.1em;
+        }
+
+        .exercise-section {
+            background: #fafafa;
+            border: 1px solid #e0e0e0;
+            padding: 32px;
+            margin: 32px 0;
+            border-radius: 8px;
+        }
+
+        .exercise-section h3 {
+            color: #2c3e50;
+            margin-top: 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 24px 0;
+            background: white;
+        }
+
+        table th,
+        table td {
+            padding: 14px 16px;
+            text-align: left;
+            border: 1px solid #dee2e6;
+        }
+
+        table th {
+            background: #2c3e50;
+            color: white;
+            font-weight: 600;
+        }
+
+        table tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+
+        ul, ol {
+            margin-left: 28px;
+            margin-top: 12px;
+            margin-bottom: 16px;
+        }
+
+        li {
+            margin: 10px 0;
+            line-height: 1.7;
+            color: #4a4a4a;
+        }
+
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 48px;
+            gap: 16px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 28px;
+            background: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            border: none;
+        }
+
+        .btn:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
+        }
+
+        .btn-secondary {
+            background: #95a5a6;
+        }
+
+        .btn-secondary:hover {
+            background: #7f8c8d;
+            box-shadow: 0 4px 12px rgba(149, 165, 166, 0.3);
+        }
+
+        .highlight {
+            background: #fff9c4;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-weight: 500;
+        }
+
+        footer {
+            text-align: center;
+            padding: 32px 0;
+            color: #6c757d;
+            margin-top: 48px;
+            border-top: 1px solid #dee2e6;
+        }
+
+        footer p {
+            margin: 8px 0;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 12px;
+            }
+
+            .content {
+                padding: 24px 20px;
+            }
+
+            header {
+                padding: 32px 24px;
+            }
+
+            header h1 {
+                font-size: 1.8em;
+            }
+
+            .nav-buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="nav">
+            <a href="llm-week6.html">Week 6</a>
+            <span>Week 7 / 16</span>
+            <a href="llm-week8.html">Week 8</a>
+        </div>
+
+        <header>
+            <h1>Week 7 - Transformer 架構</h1>
+            <div class="subtitle">理解現代 LLM 的基礎：Self-Attention 與 Transformer</div>
+        </header>
+
+        <div class="content">
+            <h2>本週學習內容</h2>
+            <ul>
+                <li>Self-Attention 機制詳解</li>
+                <li>Multi-Head Attention</li>
+                <li>Transformer Encoder-Decoder 架構</li>
+                <li>位置編碼（Positional Encoding）</li>
+                <li>實戰：從零實現 Transformer</li>
+            </ul>
+
+            <div class="concept-box">
+                <h4>Transformer 的革命性意義</h4>
+                <p>Transformer（2017 年 "Attention Is All You Need"）徹底改變了 NLP 領域：</p>
+                <ul>
+                    <li><strong>並行化</strong> - 不同於 RNN 的序列處理，可完全並行訓練</li>
+                    <li><strong>長距離依賴</strong> - 透過 Self-Attention 直接建立任意距離的連接</li>
+                    <li><strong>可擴展性</strong> - 更容易擴展到更大的模型和資料集</li>
+                    <li><strong>通用架構</strong> - BERT、GPT、T5 等都基於 Transformer</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="content">
+            <h2>1. Self-Attention 機制</h2>
+            
+            <h3>Attention 的直覺理解</h3>
+            <p><span class="highlight">Self-Attention</span> 讓序列中的每個位置都能關注到序列中的所有其他位置，從而捕捉全局依賴關係。</p>
+
+            <div class="note-box">
+                <h4>Self-Attention 的核心思想</h4>
+                <p>給定一個輸入序列，Self-Attention 為每個位置計算：</p>
+                <ul>
+                    <li><strong>Query（查詢）</strong> - "我想找什麼？"</li>
+                    <li><strong>Key（鍵）</strong> - "我能提供什麼？"</li>
+                    <li><strong>Value（值）</strong> - "我實際包含什麼資訊？"</li>
+                </ul>
+                <p>透過比較 Query 和 Key 的相似度，決定要關注哪些 Value。</p>
+            </div>
+
+            <h3>Scaled Dot-Product Attention</h3>
+            <pre><code class="language-python">import torch
+import torch.nn as nn
+import torch.nn.functional as F
+import numpy as np
+import matplotlib.pyplot as plt
+
+def scaled_dot_product_attention(query, key, value, mask=None):
+    """
+    Scaled Dot-Product Attention
+    
+    參數:
+        query: (batch_size, seq_len, d_k)
+        key: (batch_size, seq_len, d_k)
+        value: (batch_size, seq_len, d_v)
+        mask: 可選的遮罩 (batch_size, seq_len, seq_len)
+    
+    返回:
+        output: (batch_size, seq_len, d_v)
+        attention_weights: (batch_size, seq_len, seq_len)
+    """
+    d_k = query.size(-1)
+    
+    # 計算注意力分數
+    # scores: (batch_size, seq_len, seq_len)
+    scores = torch.matmul(query, key.transpose(-2, -1)) / np.sqrt(d_k)
+    
+    # 應用遮罩（如果有）
+    if mask is not None:
+        scores = scores.masked_fill(mask == 0, -1e9)
+    
+    # Softmax 得到注意力權重
+    attention_weights = F.softmax(scores, dim=-1)
+    
+    # 加權求和
+    output = torch.matmul(attention_weights, value)
+    
+    return output, attention_weights
+
+# 測試 Scaled Dot-Product Attention
+batch_size = 2
+seq_len = 4
+d_k = 8
+d_v = 8
+
+query = torch.randn(batch_size, seq_len, d_k)
+key = torch.randn(batch_size, seq_len, d_k)
+value = torch.randn(batch_size, seq_len, d_v)
+
+output, attention_weights = scaled_dot_product_attention(query, key, value)
+
+print(f"Query 形狀: {query.shape}")
+print(f"Key 形狀: {key.shape}")
+print(f"Value 形狀: {value.shape}")
+print(f"\nOutput 形狀: {output.shape}")
+print(f"Attention Weights 形狀: {attention_weights.shape}")
+
+# 視覺化注意力權重
+plt.figure(figsize=(8, 6))
+plt.imshow(attention_weights[0].detach().numpy(), cmap='Blues')
+plt.colorbar(label='注意力權重')
+plt.xlabel('Key 位置')
+plt.ylabel('Query 位置')
+plt.title('Self-Attention 權重矩陣')
+plt.show()
+</code></pre>
+
+            <h3>為什麼要縮放（Scaling）？</h3>
+            <div class="warning-box">
+                <h4>縮放的重要性</h4>
+                <p>除以 √d_k 的原因：</p>
+                <ul>
+                    <li>當 d_k 很大時，點積的值會變得很大</li>
+                    <li>大的點積值經過 softmax 後，梯度會變得很小（梯度消失）</li>
+                    <li>縮放可以讓 softmax 函數處於梯度較好的區域</li>
+                </ul>
+            </div>
+
+            <h3>手動計算範例</h3>
+            <pre><code class="language-python"># 簡化的手動計算範例
+def attention_example():
+    """
+    簡單的 attention 計算範例
+    假設句子: "I love machine learning"
+    """
+    # 詞向量（簡化為 3 維）
+    embeddings = torch.tensor([
+        [1.0, 0.5, 0.2],  # I
+        [0.8, 1.0, 0.3],  # love
+        [0.3, 0.4, 1.0],  # machine
+        [0.2, 0.6, 0.9],  # learning
+    ])
+    
+    seq_len, d_model = embeddings.shape
+    
+    # 初始化 Q, K, V 權重矩陣（簡化）
+    W_q = torch.randn(d_model, d_model)
+    W_k = torch.randn(d_model, d_model)
+    W_v = torch.randn(d_model, d_model)
+    
+    # 計算 Query, Key, Value
+    Q = torch.matmul(embeddings, W_q)
+    K = torch.matmul(embeddings, W_k)
+    V = torch.matmul(embeddings, W_v)
+    
+    print("Query (Q):")
+    print(Q)
+    print("\nKey (K):")
+    print(K)
+    print("\nValue (V):")
+    print(V)
+    
+    # 計算注意力分數
+    d_k = Q.size(-1)
+    scores = torch.matmul(Q, K.transpose(-2, -1)) / np.sqrt(d_k)
+    
+    print("\n注意力分數矩陣:")
+    print(scores)
+    
+    # Softmax
+    attention_weights = F.softmax(scores, dim=-1)
+    
+    print("\n注意力權重矩陣:")
+    print(attention_weights)
+    
+    # 加權求和
+    output = torch.matmul(attention_weights, V)
+    
+    print("\n輸出:")
+    print(output)
+    
+    # 視覺化
+    fig, axes = plt.subplots(1, 2, figsize=(14, 5))
+    
+    words = ['I', 'love', 'machine', 'learning']
+    
+    # 注意力分數
+    im1 = axes[0].imshow(scores.detach().numpy(), cmap='RdYlBu_r')
+    axes[0].set_xticks(range(seq_len))
+    axes[0].set_yticks(range(seq_len))
+    axes[0].set_xticklabels(words)
+    axes[0].set_yticklabels(words)
+    axes[0].set_title('注意力分數（Softmax 前）')
+    plt.colorbar(im1, ax=axes[0])
+    
+    # 注意力權重
+    im2 = axes[1].imshow(attention_weights.detach().numpy(), cmap='Blues')
+    axes[1].set_xticks(range(seq_len))
+    axes[1].set_yticks(range(seq_len))
+    axes[1].set_xticklabels(words)
+    axes[1].set_yticklabels(words)
+    axes[1].set_title('注意力權重（Softmax 後）')
+    plt.colorbar(im2, ax=axes[1])
+    
+    plt.tight_layout()
+    plt.show()
+    
+    return output, attention_weights
+
+output, weights = attention_example()
+</code></pre>
+        </div>
+
+        <div class="content">
+            <h2>2. Multi-Head Attention</h2>
+            
+            <h3>為什麼需要多頭注意力？</h3>
+            <p><span class="highlight">Multi-Head Attention</span> 讓模型能夠從不同的表示子空間關注資訊，就像 CNN 中的多個卷積核。</p>
+
+            <div class="concept-box">
+                <h4>Multi-Head Attention 的優勢</h4>
+                <ul>
+                    <li><strong>不同的關注模式</strong> - 每個 head 可以學習不同的依賴關係</li>
+                    <li><strong>更豐富的表示</strong> - 捕捉多方面的資訊</li>
+                    <li><strong>集成效果</strong> - 類似模型集成，提升魯棒性</li>
+                </ul>
+            </div>
+
+            <pre><code class="language-python">import torch
+import torch.nn as nn
+import math
+
+class MultiHeadAttention(nn.Module):
+    def __init__(self, d_model, num_heads, dropout=0.1):
+        """
+        Multi-Head Attention
+        
+        參數:
+            d_model: 模型維度
+            num_heads: 注意力頭數
+            dropout: Dropout 比例
+        """
+        super(MultiHeadAttention, self).__init__()
+        
+        assert d_model % num_heads == 0, "d_model 必須能被 num_heads 整除"
+        
+        self.d_model = d_model
+        self.num_heads = num_heads
+        self.d_k = d_model // num_heads
+        
+        # 線性投影層
+        self.W_q = nn.Linear(d_model, d_model)
+        self.W_k = nn.Linear(d_model, d_model)
+        self.W_v = nn.Linear(d_model, d_model)
+        self.W_o = nn.Linear(d_model, d_model)
+        
+        self.dropout = nn.Dropout(dropout)
+    
+    def split_heads(self, x, batch_size):
+        """
+        將最後一個維度分割成 (num_heads, d_k)
+        x: (batch_size, seq_len, d_model)
+        返回: (batch_size, num_heads, seq_len, d_k)
+        """
+        x = x.view(batch_size, -1, self.num_heads, self.d_k)
+        return x.transpose(1, 2)
+    
+    def forward(self, query, key, value, mask=None):
+        """
+        前向傳播
+        
+        參數:
+            query: (batch_size, seq_len_q, d_model)
+            key: (batch_size, seq_len_k, d_model)
+            value: (batch_size, seq_len_v, d_model)
+            mask: 可選的遮罩
+        """
+        batch_size = query.size(0)
+        
+        # 線性投影
+        Q = self.W_q(query)  # (batch_size, seq_len_q, d_model)
+        K = self.W_k(key)    # (batch_size, seq_len_k, d_model)
+        V = self.W_v(value)  # (batch_size, seq_len_v, d_model)
+        
+        # 分割成多個頭
+        Q = self.split_heads(Q, batch_size)  # (batch_size, num_heads, seq_len_q, d_k)
+        K = self.split_heads(K, batch_size)  # (batch_size, num_heads, seq_len_k, d_k)
+        V = self.split_heads(V, batch_size)  # (batch_size, num_heads, seq_len_v, d_k)
+        
+        # 計算注意力分數
+        scores = torch.matmul(Q, K.transpose(-2, -1)) / math.sqrt(self.d_k)
+        # scores: (batch_size, num_heads, seq_len_q, seq_len_k)
+        
+        # 應用遮罩
+        if mask is not None:
+            # 擴展 mask 維度以匹配 scores
+            mask = mask.unsqueeze(1)  # (batch_size, 1, seq_len_q, seq_len_k)
+            scores = scores.masked_fill(mask == 0, -1e9)
+        
+        # Softmax
+        attention_weights = F.softmax(scores, dim=-1)
+        attention_weights = self.dropout(attention_weights)
+        
+        # 加權求和
+        context = torch.matmul(attention_weights, V)
+        # context: (batch_size, num_heads, seq_len_q, d_k)
+        
+        # 合併多個頭
+        context = context.transpose(1, 2).contiguous()
+        # context: (batch_size, seq_len_q, num_heads, d_k)
+        
+        context = context.view(batch_size, -1, self.d_model)
+        # context: (batch_size, seq_len_q, d_model)
+        
+        # 最終線性投影
+        output = self.W_o(context)
+        
+        return output, attention_weights
+
+# 測試 Multi-Head Attention
+d_model = 512
+num_heads = 8
+batch_size = 2
+seq_len = 10
+
+mha = MultiHeadAttention(d_model, num_heads)
+
+x = torch.randn(batch_size, seq_len, d_model)
+output, attention_weights = mha(x, x, x)
+
+print(f"輸入形狀: {x.shape}")
+print(f"輸出形狀: {output.shape}")
+print(f"注意力權重形狀: {attention_weights.shape}")
+print(f"模型參數量: {sum(p.numel() for p in mha.parameters()):,}")
+
+# 視覺化多頭注意力
+fig, axes = plt.subplots(2, 4, figsize=(16, 8))
+axes = axes.ravel()
+
+for head in range(num_heads):
+    ax = axes[head]
+    attn = attention_weights[0, head].detach().numpy()
+    im = ax.imshow(attn, cmap='Blues')
+    ax.set_title(f'Head {head+1}')
+    ax.set_xlabel('Key')
+    ax.set_ylabel('Query')
+    plt.colorbar(im, ax=ax)
+
+plt.tight_layout()
+plt.suptitle('Multi-Head Attention 視覺化', y=1.02, fontsize=14)
+plt.show()
+</code></pre>
+
+            <div class="tip-box">
+                <h4>Multi-Head Attention 的超參數</h4>
+                <ul>
+                    <li><strong>num_heads = 8</strong> - 原始 Transformer 論文使用 8 個頭</li>
+                    <li><strong>d_k = d_model / num_heads</strong> - 每個頭的維度</li>
+                    <li><strong>常見設定</strong> - BERT: 12 heads, GPT: 12-96 heads</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="content">
+            <h2>3. 位置編碼（Positional Encoding）</h2>
+            
+            <h3>為什麼需要位置編碼？</h3>
+            <p>與 RNN 不同，Self-Attention 本身沒有位置資訊。<span class="highlight">位置編碼</span>為每個位置添加唯一的表示，讓模型能夠理解序列順序。</p>
+
+            <pre><code class="language-python">import torch
+import numpy as np
+import matplotlib.pyplot as plt
+
+class PositionalEncoding(nn.Module):
+    def __init__(self, d_model, max_len=5000, dropout=0.1):
+        """
+        位置編碼
+        
+        使用正弦和餘弦函數：
+        PE(pos, 2i) = sin(pos / 10000^(2i/d_model))
+        PE(pos, 2i+1) = cos(pos / 10000^(2i/d_model))
+        
+        參數:
+            d_model: 模型維度
+            max_len: 最大序列長度
+            dropout: Dropout 比例
+        """
+        super(PositionalEncoding, self).__init__()
+        
+        self.dropout = nn.Dropout(dropout)
+        
+        # 建立位置編碼矩陣
+        pe = torch.zeros(max_len, d_model)
+        position = torch.arange(0, max_len, dtype=torch.float).unsqueeze(1)
+        
+        # 計算分母項
+        div_term = torch.exp(torch.arange(0, d_model, 2).float() * 
+                            (-math.log(10000.0) / d_model))
+        
+        # 應用正弦和餘弦
+        pe[:, 0::2] = torch.sin(position * div_term)
+        pe[:, 1::2] = torch.cos(position * div_term)
+        
+        # 添加 batch 維度
+        pe = pe.unsqueeze(0)  # (1, max_len, d_model)
+        
+        # 註冊為 buffer（不需要訓練的參數）
+        self.register_buffer('pe', pe)
+    
+    def forward(self, x):
+        """
+        x: (batch_size, seq_len, d_model)
+        """
+        # 添加位置編碼
+        x = x + self.pe[:, :x.size(1), :]
+        return self.dropout(x)
+
+# 建立位置編碼
+d_model = 512
+max_len = 100
+
+pos_encoding = PositionalEncoding(d_model, max_len)
+
+# 視覺化位置編碼
+pe = pos_encoding.pe.squeeze(0).numpy()
+
+plt.figure(figsize=(14, 8))
+
+# 完整的位置編碼矩陣
+plt.subplot(2, 1, 1)
+plt.imshow(pe.T, cmap='RdBu', aspect='auto')
+plt.colorbar(label='值')
+plt.xlabel('位置')
+plt.ylabel('維度')
+plt.title('位置編碼矩陣')
+
+# 特定維度的位置編碼曲線
+plt.subplot(2, 1, 2)
+positions = np.arange(max_len)
+for i in [0, 1, 4, 8, 16, 32]:
+    plt.plot(positions, pe[:, i], label=f'維度 {i}')
+plt.xlabel('位置')
+plt.ylabel('位置編碼值')
+plt.title('不同維度的位置編碼曲線')
+plt.legend()
+plt.grid(True, alpha=0.3)
+
+plt.tight_layout()
+plt.show()
+
+# 測試位置編碼
+batch_size = 2
+seq_len = 50
+x = torch.randn(batch_size, seq_len, d_model)
+
+print(f"輸入形狀: {x.shape}")
+x_with_pos = pos_encoding(x)
+print(f"加上位置編碼後形狀: {x_with_pos.shape}")
+</code></pre>
+
+            <div class="note-box">
+                <h4>位置編碼的特性</h4>
+                <ul>
+                    <li><strong>確定性</strong> - 相同位置總是得到相同的編碼</li>
+                    <li><strong>相對位置</strong> - 正弦餘弦函數使模型容易學習相對位置</li>
+                    <li><strong>外推性</strong> - 可以推廣到比訓練時更長的序列</li>
+                    <li><strong>可學習替代</strong> - 也可以使用可學習的位置嵌入</li>
+                </ul>
+            </div>
+
+            <h3>可學習的位置編碼</h3>
+            <pre><code class="language-python">class LearnablePositionalEncoding(nn.Module):
+    """可學習的位置編碼"""
+    def __init__(self, d_model, max_len=5000, dropout=0.1):
+        super(LearnablePositionalEncoding, self).__init__()
+        
+        self.dropout = nn.Dropout(dropout)
+        
+        # 可學習的位置嵌入
+        self.position_embeddings = nn.Embedding(max_len, d_model)
+    
+    def forward(self, x):
+        """
+        x: (batch_size, seq_len, d_model)
+        """
+        batch_size, seq_len, _ = x.size()
+        
+        # 建立位置索引
+        positions = torch.arange(seq_len, device=x.device).unsqueeze(0).expand(batch_size, -1)
+        
+        # 獲取位置嵌入
+        position_embeds = self.position_embeddings(positions)
+        
+        # 添加到輸入
+        x = x + position_embeds
+        return self.dropout(x)
+
+# 比較兩種位置編碼
+learnable_pe = LearnablePositionalEncoding(d_model, max_len)
+
+print("固定位置編碼參數量:", sum(p.numel() for p in pos_encoding.parameters()))
+print("可學習位置編碼參數量:", sum(p.numel() for p in learnable_pe.parameters()))
+</code></pre>
+        </div>
+
+        <div class="content">
+            <h2>4. Transformer Encoder</h2>
+            
+            <h3>Encoder Layer 結構</h3>
+            <p>Transformer Encoder 由多個相同的層堆疊而成，每層包含兩個子層：Multi-Head Attention 和 Feed-Forward Network。</p>
+
+            <pre><code class="language-python">import torch.nn as nn
+
+class FeedForward(nn.Module):
+    """Position-wise Feed-Forward Network"""
+    def __init__(self, d_model, d_ff, dropout=0.1):
+        super(FeedForward, self).__init__()
+        
+        self.linear1 = nn.Linear(d_model, d_ff)
+        self.linear2 = nn.Linear(d_ff, d_model)
+        self.dropout = nn.Dropout(dropout)
+    
+    def forward(self, x):
+        # x: (batch_size, seq_len, d_model)
+        x = self.linear1(x)
+        x = F.relu(x)
+        x = self.dropout(x)
+        x = self.linear2(x)
+        return x
+
+class EncoderLayer(nn.Module):
+    """Transformer Encoder Layer"""
+    def __init__(self, d_model, num_heads, d_ff, dropout=0.1):
+        super(EncoderLayer, self).__init__()
+        
+        # Multi-Head Attention
+        self.self_attn = MultiHeadAttention(d_model, num_heads, dropout)
+        
+        # Feed-Forward Network
+        self.feed_forward = FeedForward(d_model, d_ff, dropout)
+        
+        # Layer Normalization
+        self.norm1 = nn.LayerNorm(d_model)
+        self.norm2 = nn.LayerNorm(d_model)
+        
+        # Dropout
+        self.dropout = nn.Dropout(dropout)
+    
+    def forward(self, x, mask=None):
+        """
+        x: (batch_size, seq_len, d_model)
+        mask: 可選的遮罩
+        """
+        # Multi-Head Attention + Residual + Norm
+        attn_output, _ = self.self_attn(x, x, x, mask)
+        x = self.norm1(x + self.dropout(attn_output))
+        
+        # Feed-Forward + Residual + Norm
+        ff_output = self.feed_forward(x)
+        x = self.norm2(x + self.dropout(ff_output))
+        
+        return x
+
+class TransformerEncoder(nn.Module):
+    """完整的 Transformer Encoder"""
+    def __init__(self, vocab_size, d_model, num_heads, num_layers, 
+                 d_ff, max_len=5000, dropout=0.1):
+        super(TransformerEncoder, self).__init__()
+        
+        # Token Embedding
+        self.embedding = nn.Embedding(vocab_size, d_model)
+        
+        # Positional Encoding
+        self.pos_encoding = PositionalEncoding(d_model, max_len, dropout)
+        
+        # Encoder Layers
+        self.layers = nn.ModuleList([
+            EncoderLayer(d_model, num_heads, d_ff, dropout)
+            for _ in range(num_layers)
+        ])
+        
+        self.dropout = nn.Dropout(dropout)
+        self.d_model = d_model
+    
+    def forward(self, x, mask=None):
+        """
+        x: (batch_size, seq_len) - token indices
+        mask: 可選的遮罩
+        """
+        # Embedding + Scaling
+        x = self.embedding(x) * math.sqrt(self.d_model)
+        
+        # Add Positional Encoding
+        x = self.pos_encoding(x)
+        
+        # Pass through encoder layers
+        for layer in self.layers:
+            x = layer(x, mask)
+        
+        return x
+
+# 建立 Transformer Encoder
+VOCAB_SIZE = 10000
+D_MODEL = 512
+NUM_HEADS = 8
+NUM_LAYERS = 6
+D_FF = 2048
+MAX_LEN = 5000
+
+encoder = TransformerEncoder(
+    vocab_size=VOCAB_SIZE,
+    d_model=D_MODEL,
+    num_heads=NUM_HEADS,
+    num_layers=NUM_LAYERS,
+    d_ff=D_FF,
+    max_len=MAX_LEN,
+    dropout=0.1
+)
+
+print(encoder)
+print(f"\n總參數量: {sum(p.numel() for p in encoder.parameters()):,}")
+
+# 測試
+batch_size = 2
+seq_len = 20
+x = torch.randint(0, VOCAB_SIZE, (batch_size, seq_len))
+
+output = encoder(x)
+print(f"\n輸入形狀: {x.shape}")
+print(f"輸出形狀: {output.shape}")
+</code></pre>
+
+            <div class="concept-box">
+                <h4>Encoder 的關鍵組件</h4>
+                <ul>
+                    <li><strong>Multi-Head Attention</strong> - 捕捉序列內的依賴關係</li>
+                    <li><strong>Feed-Forward Network</strong> - 位置獨立的非線性轉換</li>
+                    <li><strong>Residual Connection</strong> - 緩解梯度消失，加速訓練</li>
+                    <li><strong>Layer Normalization</strong> - 穩定訓練過程</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="content">
+            <h2>5. Transformer Decoder</h2>
+            
+            <h3>Decoder Layer 結構</h3>
+            <p>Decoder 除了 Encoder 的兩個子層外，還添加了第三個子層：對 Encoder 輸出的 Cross-Attention。</p>
+
+            <pre><code class="language-python">class DecoderLayer(nn.Module):
+    """Transformer Decoder Layer"""
+    def __init__(self, d_model, num_heads, d_ff, dropout=0.1):
+        super(DecoderLayer, self).__init__()
+        
+        # Masked Multi-Head Self-Attention
+        self.self_attn = MultiHeadAttention(d_model, num_heads, dropout)
+        
+        # Multi-Head Cross-Attention
+        self.cross_attn = MultiHeadAttention(d_model, num_heads, dropout)
+        
+        # Feed-Forward Network
+        self.feed_forward = FeedForward(d_model, d_ff, dropout)
+        
+        # Layer Normalization
+        self.norm1 = nn.LayerNorm(d_model)
+        self.norm2 = nn.LayerNorm(d_model)
+        self.norm3 = nn.LayerNorm(d_model)
+        
+        # Dropout
+        self.dropout = nn.Dropout(dropout)
+    
+    def forward(self, x, encoder_output, src_mask=None, tgt_mask=None):
+        """
+        x: decoder 輸入 (batch_size, tgt_seq_len, d_model)
+        encoder_output: encoder 輸出 (batch_size, src_seq_len, d_model)
+        src_mask: 源序列遮罩
+        tgt_mask: 目標序列遮罩（因果遮罩）
+        """
+        # Masked Self-Attention + Residual + Norm
+        self_attn_output, _ = self.self_attn(x, x, x, tgt_mask)
+        x = self.norm1(x + self.dropout(self_attn_output))
+        
+        # Cross-Attention + Residual + Norm
+        cross_attn_output, _ = self.cross_attn(x, encoder_output, encoder_output, src_mask)
+        x = self.norm2(x + self.dropout(cross_attn_output))
+        
+        # Feed-Forward + Residual + Norm
+        ff_output = self.feed_forward(x)
+        x = self.norm3(x + self.dropout(ff_output))
+        
+        return x
+
+class TransformerDecoder(nn.Module):
+    """完整的 Transformer Decoder"""
+    def __init__(self, vocab_size, d_model, num_heads, num_layers, 
+                 d_ff, max_len=5000, dropout=0.1):
+        super(TransformerDecoder, self).__init__()
+        
+        # Token Embedding
+        self.embedding = nn.Embedding(vocab_size, d_model)
+        
+        # Positional Encoding
+        self.pos_encoding = PositionalEncoding(d_model, max_len, dropout)
+        
+        # Decoder Layers
+        self.layers = nn.ModuleList([
+            DecoderLayer(d_model, num_heads, d_ff, dropout)
+            for _ in range(num_layers)
+        ])
+        
+        # Output projection
+        self.fc_out = nn.Linear(d_model, vocab_size)
+        
+        self.dropout = nn.Dropout(dropout)
+        self.d_model = d_model
+    
+    def forward(self, x, encoder_output, src_mask=None, tgt_mask=None):
+        """
+        x: (batch_size, tgt_seq_len) - token indices
+        encoder_output: (batch_size, src_seq_len, d_model)
+        """
+        # Embedding + Scaling
+        x = self.embedding(x) * math.sqrt(self.d_model)
+        
+        # Add Positional Encoding
+        x = self.pos_encoding(x)
+        
+        # Pass through decoder layers
+        for layer in self.layers:
+            x = layer(x, encoder_output, src_mask, tgt_mask)
+        
+        # Output projection
+        output = self.fc_out(x)
+        
+        return output
+
+# 測試 Decoder
+decoder = TransformerDecoder(
+    vocab_size=VOCAB_SIZE,
+    d_model=D_MODEL,
+    num_heads=NUM_HEADS,
+    num_layers=NUM_LAYERS,
+    d_ff=D_FF,
+    max_len=MAX_LEN,
+    dropout=0.1
+)
+
+print(f"Decoder 參數量: {sum(p.numel() for p in decoder.parameters()):,}")
+
+# 測試
+tgt = torch.randint(0, VOCAB_SIZE, (batch_size, 15))
+encoder_output = torch.randn(batch_size, seq_len, D_MODEL)
+
+decoder_output = decoder(tgt, encoder_output)
+print(f"\nDecoder 輸入形狀: {tgt.shape}")
+print(f"Encoder 輸出形狀: {encoder_output.shape}")
+print(f"Decoder 輸出形狀: {decoder_output.shape}")
+</code></pre>
+
+            <h3>因果遮罩（Causal Mask）</h3>
+            <pre><code class="language-python">def create_causal_mask(seq_len):
+    """
+    建立因果遮罩（下三角矩陣）
+    防止解碼器看到未來的 token
+    """
+    mask = torch.triu(torch.ones(seq_len, seq_len), diagonal=1)
+    mask = mask == 0  # 反轉：1 表示可見，0 表示遮蔽
+    return mask
+
+# 視覺化因果遮罩
+seq_len = 8
+causal_mask = create_causal_mask(seq_len)
+
+plt.figure(figsize=(8, 6))
+plt.imshow(causal_mask.numpy(), cmap='Greys')
+plt.title('因果遮罩（Causal Mask）')
+plt.xlabel('Key Position')
+plt.ylabel('Query Position')
+plt.colorbar(label='可見性')
+
+# 添加網格
+for i in range(seq_len):
+    for j in range(seq_len):
+        text = plt.text(j, i, '✓' if causal_mask[i, j] else '✗',
+                       ha="center", va="center", color="red" if not causal_mask[i, j] else "green")
+
+plt.tight_layout()
+plt.show()
+
+print("因果遮罩:")
+print(causal_mask.int())
+</code></pre>
+        </div>
+
+        <div class="content">
+            <h2>6. 完整的 Transformer</h2>
+            
+            <h3>組合 Encoder 和 Decoder</h3>
+            <pre><code class="language-python">class Transformer(nn.Module):
+    """完整的 Transformer 模型"""
+    def __init__(self, src_vocab_size, tgt_vocab_size, d_model=512, 
+                 num_heads=8, num_encoder_layers=6, num_decoder_layers=6,
+                 d_ff=2048, max_len=5000, dropout=0.1):
+        super(Transformer, self).__init__()
+        
+        # Encoder
+        self.encoder = TransformerEncoder(
+            vocab_size=src_vocab_size,
+            d_model=d_model,
+            num_heads=num_heads,
+            num_layers=num_encoder_layers,
+            d_ff=d_ff,
+            max_len=max_len,
+            dropout=dropout
+        )
+        
+        # Decoder
+        self.decoder = TransformerDecoder(
+            vocab_size=tgt_vocab_size,
+            d_model=d_model,
+            num_heads=num_heads,
+            num_layers=num_decoder_layers,
+            d_ff=d_ff,
+            max_len=max_len,
+            dropout=dropout
+        )
+    
+    def forward(self, src, tgt, src_mask=None, tgt_mask=None):
+        """
+        src: 源序列 (batch_size, src_seq_len)
+        tgt: 目標序列 (batch_size, tgt_seq_len)
+        src_mask: 源序列遮罩
+        tgt_mask: 目標序列遮罩
+        """
+        # Encode
+        encoder_output = self.encoder(src, src_mask)
+        
+        # Decode
+        decoder_output = self.decoder(tgt, encoder_output, src_mask, tgt_mask)
+        
+        return decoder_output
+    
+    def generate(self, src, max_len=50, start_token=1, end_token=2):
+        """
+        生成序列（貪心解碼）
+        
+        src: 源序列 (batch_size, src_seq_len)
+        max_len: 最大生成長度
+        start_token: 起始 token
+        end_token: 結束 token
+        """
+        self.eval()
+        
+        batch_size = src.size(0)
+        device = src.device
+        
+        # Encode
+        encoder_output = self.encoder(src)
+        
+        # 初始化目標序列
+        tgt = torch.full((batch_size, 1), start_token, dtype=torch.long, device=device)
+        
+        for _ in range(max_len):
+            # 建立因果遮罩
+            tgt_mask = create_causal_mask(tgt.size(1)).unsqueeze(0).to(device)
+            
+            # Decode
+            with torch.no_grad():
+                output = self.decoder(tgt, encoder_output, tgt_mask=tgt_mask)
+            
+            # 取最後一個位置的預測
+            next_token_logits = output[:, -1, :]
+            next_token = next_token_logits.argmax(dim=-1, keepdim=True)
+            
+            # 添加到目標序列
+            tgt = torch.cat([tgt, next_token], dim=1)
+            
+            # 如果生成了結束 token，停止
+            if (next_token == end_token).all():
+                break
+        
+        return tgt
+
+# 建立完整的 Transformer
+SRC_VOCAB_SIZE = 10000
+TGT_VOCAB_SIZE = 10000
+
+transformer = Transformer(
+    src_vocab_size=SRC_VOCAB_SIZE,
+    tgt_vocab_size=TGT_VOCAB_SIZE,
+    d_model=512,
+    num_heads=8,
+    num_encoder_layers=6,
+    num_decoder_layers=6,
+    d_ff=2048,
+    max_len=5000,
+    dropout=0.1
+)
+
+print(transformer)
+print(f"\n總參數量: {sum(p.numel() for p in transformer.parameters()):,}")
+
+# 測試
+batch_size = 2
+src_seq_len = 20
+tgt_seq_len = 15
+
+src = torch.randint(0, SRC_VOCAB_SIZE, (batch_size, src_seq_len))
+tgt = torch.randint(0, TGT_VOCAB_SIZE, (batch_size, tgt_seq_len))
+
+# 建立遮罩
+tgt_mask = create_causal_mask(tgt_seq_len).unsqueeze(0)
+
+output = transformer(src, tgt, tgt_mask=tgt_mask)
+
+print(f"\n源序列形狀: {src.shape}")
+print(f"目標序列形狀: {tgt.shape}")
+print(f"輸出形狀: {output.shape}")
+
+# 測試生成
+generated = transformer.generate(src, max_len=20)
+print(f"\n生成序列形狀: {generated.shape}")
+</code></pre>
+
+            <div class="note-box">
+                <h4>Transformer 的參數量</h4>
+                <p>以標準 Transformer 為例（d_model=512, num_layers=6）：</p>
+                <ul>
+                    <li>原始論文：約 65M 參數</li>
+                    <li>BERT-Base：110M 參數（12 層）</li>
+                    <li>GPT-2：1.5B 參數（48 層）</li>
+                    <li>GPT-3：175B 參數（96 層）</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="content">
+            <h2>7. 訓練 Transformer</h2>
+            
+            <h3>訓練設定</h3>
+            <pre><code class="language-python">import torch.optim as optim
+
+def train_transformer(model, train_loader, num_epochs, device='cuda'):
+    """訓練 Transformer 模型"""
+    
+    model = model.to(device)
+    
+    # 定義損失函數（忽略 padding token）
+    criterion = nn.CrossEntropyLoss(ignore_index=0)
+    
+    # Adam 優化器 with warmup
+    optimizer = optim.Adam(model.parameters(), lr=0, betas=(0.9, 0.98), eps=1e-9)
+    
+    # 學習率調度器（Warmup）
+    def get_lr(step, d_model=512, warmup_steps=4000):
+        """
+        學習率調度：先增後減
+        """
+        step = max(1, step)  # 避免除以零
+        return d_model ** (-0.5) * min(step ** (-0.5), step * warmup_steps ** (-1.5))
+    
+    train_losses = []
+    step = 0
+    
+    print("開始訓練...")
+    for epoch in range(num_epochs):
+        model.train()
+        epoch_loss = 0
+        
+        for batch_idx, (src, tgt) in enumerate(train_loader):
+            src, tgt = src.to(device), tgt.to(device)
+            
+            # 目標輸入和輸出（shifted）
+            tgt_input = tgt[:, :-1]
+            tgt_output = tgt[:, 1:]
+            
+            # 建立因果遮罩
+            tgt_seq_len = tgt_input.size(1)
+            tgt_mask = create_causal_mask(tgt_seq_len).unsqueeze(0).to(device)
+            
+            # 更新學習率
+            step += 1
+            lr = get_lr(step)
+            for param_group in optimizer.param_groups:
+                param_group['lr'] = lr
+            
+            # 前向傳播
+            optimizer.zero_grad()
+            output = model(src, tgt_input, tgt_mask=tgt_mask)
+            
+            # 計算損失
+            loss = criterion(output.reshape(-1, output.size(-1)), tgt_output.reshape(-1))
+            
+            # 反向傳播
+            loss.backward()
+            
+            # 梯度裁剪
+            torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=1.0)
+            
+            optimizer.step()
+            
+            epoch_loss += loss.item()
+            
+            if batch_idx % 100 == 0:
+                print(f'Epoch {epoch+1}, Batch {batch_idx}, Loss: {loss.item():.4f}, LR: {lr:.6f}')
+        
+        avg_loss = epoch_loss / len(train_loader)
+        train_losses.append(avg_loss)
+        
+        print(f'Epoch {epoch+1}/{num_epochs}, Average Loss: {avg_loss:.4f}')
+    
+    return train_losses
+
+# 視覺化學習率調度
+steps = np.arange(1, 20000)
+lrs = [get_lr(step) for step in steps]
+
+plt.figure(figsize=(10, 6))
+plt.plot(steps, lrs, linewidth=2)
+plt.xlabel('訓練步數')
+plt.ylabel('學習率')
+plt.title('Transformer 學習率調度（Warmup）')
+plt.grid(True, alpha=0.3)
+plt.show()
+</code></pre>
+
+            <h3>Label Smoothing</h3>
+            <pre><code class="language-python">class LabelSmoothing(nn.Module):
+    """
+    Label Smoothing 正規化
+    
+    將真實標籤的機率從 1.0 降低到 (1 - smoothing)
+    其餘機率均勻分配給其他類別
+    """
+    def __init__(self, size, smoothing=0.1):
+        super(LabelSmoothing, self).__init__()
+        self.criterion = nn.KLDivLoss(reduction='batchmean')
+        self.smoothing = smoothing
+        self.size = size
+        self.confidence = 1.0 - smoothing
+    
+    def forward(self, pred, target):
+        """
+        pred: (batch_size * seq_len, vocab_size) - log probabilities
+        target: (batch_size * seq_len,) - true labels
+        """
+        assert pred.size(1) == self.size
+        
+        true_dist = torch.zeros_like(pred)
+        true_dist.fill_(self.smoothing / (self.size - 1))
+        true_dist.scatter_(1, target.unsqueeze(1), self.confidence)
+        
+        return self.criterion(pred, true_dist)
+
+# 測試 Label Smoothing
+vocab_size = 1000
+smoothing = 0.1
+
+criterion = LabelSmoothing(vocab_size, smoothing)
+
+# 模擬預測和目標
+pred = F.log_softmax(torch.randn(32, vocab_size), dim=-1)
+target = torch.randint(0, vocab_size, (32,))
+
+loss = criterion(pred, target)
+print(f"Label Smoothing Loss: {loss.item():.4f}")
+</code></pre>
+
+            <div class="tip-box">
+                <h4>Transformer 訓練技巧</h4>
+                <ul>
+                    <li><strong>Warmup</strong> - 學習率先增後減，穩定訓練</li>
+                    <li><strong>梯度裁剪</strong> - 防止梯度爆炸</li>
+                    <li><strong>Label Smoothing</strong> - 防止過擬合，提升泛化</li>
+                    <li><strong>Dropout</strong> - 在注意力和 FFN 中使用</li>
+                    <li><strong>Layer Normalization</strong> - 穩定訓練過程</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="content">
+            <div class="exercise-section">
+                <h3>本週練習題</h3>
+                
+                <h4>基礎練習（必做）</h4>
+                <ol>
+                    <li>
+                        <strong>實作 Scaled Dot-Product Attention</strong>
+                        <ul>
+                            <li>從零實現 attention 計算</li>
+                            <li>視覺化注意力權重</li>
+                            <li>理解縮放的作用</li>
+                            <li>實驗不同的遮罩</li>
+                        </ul>
+                    </li>
+                    
+                    <li>
+                        <strong>Multi-Head Attention 分析</strong>
+                        <ul>
+                            <li>實作完整的 Multi-Head Attention</li>
+                            <li>視覺化不同 head 的注意力模式</li>
+                            <li>分析不同 head 學到的內容</li>
+                            <li>比較不同 head 數量的效果</li>
+                        </ul>
+                    </li>
+                    
+                    <li>
+                        <strong>位置編碼實驗</strong>
+                        <ul>
+                            <li>實作正弦餘弦位置編碼</li>
+                            <li>實作可學習位置編碼</li>
+                            <li>視覺化位置編碼模式</li>
+                            <li>比較兩種方法的效果</li>
+                        </ul>
+                    </li>
+                </ol>
+
+                <h4>進階練習</h4>
+                <ol start="4">
+                    <li>
+                        <strong>完整 Transformer 實作</strong>
+                        <ul>
+                            <li>從零實現 Encoder 和 Decoder</li>
+                            <li>實現完整的訓練流程</li>
+                            <li>在簡單任務上驗證（如複製任務）</li>
+                            <li>視覺化學習過程</li>
+                        </ul>
+                    </li>
+                    
+                    <li>
+                        <strong>機器翻譯任務</strong>
+                        <ul>
+                            <li>準備雙語平行語料</li>
+                            <li>實現分詞和詞彙表</li>
+                            <li>訓練 Transformer 翻譯模型</li>
+                            <li>評估 BLEU 分數</li>
+                        </ul>
+                    </li>
+                </ol>
+
+                <h4>挑戰練習</h4>
+                <ol start="6">
+                    <li>
+                        <strong>Transformer 變體</strong>
+                        <ul>
+                            <li>實作 Transformer-XL（相對位置編碼）</li>
+                            <li>實作 Universal Transformer（循環深度）</li>
+                            <li>比較不同變體的性能</li>
+                            <li>分析各自的優缺點</li>
+                        </ul>
+                    </li>
+                    
+                    <li>
+                        <strong>優化與加速</strong>
+                        <ul>
+                            <li>實現混合精度訓練</li>
+                            <li>使用 Flash Attention 加速</li>
+                            <li>實現 KV Cache 加速推理</li>
+                            <li>分析性能瓶頸</li>
+                        </ul>
+                    </li>
+                </ol>
+            </div>
+        </div>
+
+        <div class="content">
+            <h2>本週總結</h2>
+            
+            <h3>重點回顧</h3>
+            <ul>
+                <li>理解 Self-Attention 的核心機制</li>
+                <li>掌握 Multi-Head Attention 的實作</li>
+                <li>理解位置編碼的必要性</li>
+                <li>掌握 Transformer Encoder-Decoder 架構</li>
+                <li>學會完整的訓練流程</li>
+            </ul>
+
+            <h3>關鍵概念</h3>
+            <ul>
+                <li><strong>Query、Key、Value</strong> - Self-Attention 的三要素</li>
+                <li><strong>Scaled Dot-Product</strong> - 縮放防止梯度消失</li>
+                <li><strong>Multi-Head</strong> - 從多個子空間關注資訊</li>
+                <li><strong>位置編碼</strong> - 注入序列順序資訊</li>
+                <li><strong>Residual + LayerNorm</strong> - 穩定深層網路訓練</li>
+            </ul>
+
+            <h3>Transformer 的影響</h3>
+            <table>
+                <tr>
+                    <th>領域</th>
+                    <th>代表模型</th>
+                    <th>創新點</th>
+                </tr>
+                <tr>
+                    <td>自然語言理解</td>
+                    <td>BERT, RoBERTa</td>
+                    <td>雙向編碼器，預訓練-微調</td>
+                </tr>
+                <tr>
+                    <td>自然語言生成</td>
+                    <td>GPT, GPT-2, GPT-3</td>
+                    <td>單向解碼器，大規模訓練</td>
+                </tr>
+                <tr>
+                    <td>序列到序列</td>
+                    <td>T5, BART</td>
+                    <td>編碼器-解碼器，統一框架</td>
+                </tr>
+                <tr>
+                    <td>電腦視覺</td>
+                    <td>ViT, DETR</td>
+                    <td>圖像 patch 作為 token</td>
+                </tr>
+                <tr>
+                    <td>多模態</td>
+                    <td>CLIP, DALL-E</td>
+                    <td>跨模態對齊</td>
+                </tr>
+            </table>
+
+            <h3>下週預告</h3>
+            <div class="note-box">
+                <h4>Week 8 - 預訓練語言模型（BERT & GPT）</h4>
+                <p>下週將深入學習現代 NLP 的兩大支柱：</p>
+                <ul>
+                    <li>BERT 架構與預訓練任務（MLM、NSP）</li>
+                    <li>GPT 架構與自回歸語言建模</li>
+                    <li>預訓練-微調範式</li>
+                    <li>實戰：BERT 文本分類與 GPT 文本生成</li>
+                    <li>模型壓縮與部署</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="nav-buttons">
+            <a href="llm-week6.html" class="btn btn-secondary">Week 6：循環神經網路</a>
+            <a href="llm-week8.html" class="btn">Week 8：BERT 與 GPT</a>
+        </div>
+
+        <footer>
+            <p>LLM 與 AI/ML 課程 Week 7</p>
+            <p>Transformer · Self-Attention · Multi-Head Attention · 位置編碼 · Encoder-Decoder</p>
+            <p style="font-size: 0.9em; color: #95a5a6;">© 2025 All Rights Reserved</p>
+        </footer>
+    </div>
+</body>
+</html>

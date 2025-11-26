@@ -1,0 +1,1581 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Week 10 - 多模態學習 | LLM 與 AI/ML 課程</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft JhengHei', Arial, sans-serif;
+            background: #f8f9fa;
+            color: #1a1a1a;
+            line-height: 1.7;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .nav {
+            background: white;
+            padding: 16px 28px;
+            border-radius: 8px;
+            margin-bottom: 32px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            border: 1px solid #e0e0e0;
+        }
+
+        .nav a {
+            color: #3498db;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 8px 16px;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+        }
+
+        .nav a:hover {
+            background: #ecf0f1;
+            color: #2980b9;
+        }
+
+        .nav span {
+            color: #6c757d;
+            font-weight: 500;
+        }
+
+        header {
+            background: linear-gradient(to right, #2c3e50, #34495e);
+            color: white;
+            padding: 56px 40px;
+            border-radius: 8px;
+            margin-bottom: 32px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            border-bottom: 3px solid #3498db;
+        }
+
+        header h1 {
+            font-size: 2.2em;
+            margin-bottom: 12px;
+            font-weight: 700;
+        }
+
+        header .subtitle {
+            font-size: 1.05em;
+            opacity: 0.9;
+            font-weight: 400;
+        }
+
+        .content {
+            background: white;
+            border-radius: 8px;
+            padding: 48px;
+            margin-bottom: 32px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            border: 1px solid #e0e0e0;
+        }
+
+        .content h2 {
+            color: #1a1a1a;
+            font-size: 1.9em;
+            margin-bottom: 24px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #3498db;
+            font-weight: 700;
+        }
+
+        .content h3 {
+            color: #2c3e50;
+            font-size: 1.5em;
+            margin: 36px 0 16px 0;
+            font-weight: 600;
+        }
+
+        .content h4 {
+            color: #34495e;
+            font-size: 1.2em;
+            margin: 24px 0 12px 0;
+            font-weight: 600;
+        }
+
+        .content p {
+            margin-bottom: 16px;
+            line-height: 1.8;
+            color: #4a4a4a;
+        }
+
+        pre[class*="language-"] {
+            margin: 24px 0;
+            border-radius: 6px;
+            border: 1px solid #d0d7de;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+        }
+
+        code[class*="language-"] {
+            font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
+            font-size: 0.92em;
+            line-height: 1.6;
+        }
+
+        .note-box {
+            background: #e3f2fd;
+            border-left: 4px solid #2196f3;
+            padding: 20px 24px;
+            margin: 24px 0;
+            border-radius: 4px;
+        }
+
+        .note-box h4 {
+            color: #1565c0;
+            margin-top: 0;
+            margin-bottom: 12px;
+            font-size: 1.1em;
+        }
+
+        .warning-box {
+            background: #fff3e0;
+            border-left: 4px solid #ff9800;
+            padding: 20px 24px;
+            margin: 24px 0;
+            border-radius: 4px;
+        }
+
+        .warning-box h4 {
+            color: #e65100;
+            margin-top: 0;
+            margin-bottom: 12px;
+            font-size: 1.1em;
+        }
+
+        .tip-box {
+            background: #f1f8e9;
+            border-left: 4px solid #8bc34a;
+            padding: 20px 24px;
+            margin: 24px 0;
+            border-radius: 4px;
+        }
+
+        .tip-box h4 {
+            color: #558b2f;
+            margin-top: 0;
+            margin-bottom: 12px;
+            font-size: 1.1em;
+        }
+
+        .concept-box {
+            background: #f3e5f5;
+            border-left: 4px solid #9c27b0;
+            padding: 20px 24px;
+            margin: 24px 0;
+            border-radius: 4px;
+        }
+
+        .concept-box h4 {
+            color: #6a1b9a;
+            margin-top: 0;
+            margin-bottom: 12px;
+            font-size: 1.1em;
+        }
+
+        .exercise-section {
+            background: #fafafa;
+            border: 1px solid #e0e0e0;
+            padding: 32px;
+            margin: 32px 0;
+            border-radius: 8px;
+        }
+
+        .exercise-section h3 {
+            color: #2c3e50;
+            margin-top: 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 24px 0;
+            background: white;
+        }
+
+        table th,
+        table td {
+            padding: 14px 16px;
+            text-align: left;
+            border: 1px solid #dee2e6;
+        }
+
+        table th {
+            background: #2c3e50;
+            color: white;
+            font-weight: 600;
+        }
+
+        table tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+
+        ul, ol {
+            margin-left: 28px;
+            margin-top: 12px;
+            margin-bottom: 16px;
+        }
+
+        li {
+            margin: 10px 0;
+            line-height: 1.7;
+            color: #4a4a4a;
+        }
+
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 48px;
+            gap: 16px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 28px;
+            background: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            border: none;
+        }
+
+        .btn:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
+        }
+
+        .btn-secondary {
+            background: #95a5a6;
+        }
+
+        .btn-secondary:hover {
+            background: #7f8c8d;
+            box-shadow: 0 4px 12px rgba(149, 165, 166, 0.3);
+        }
+
+        .highlight {
+            background: #fff9c4;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-weight: 500;
+        }
+
+        footer {
+            text-align: center;
+            padding: 32px 0;
+            color: #6c757d;
+            margin-top: 48px;
+            border-top: 1px solid #dee2e6;
+        }
+
+        footer p {
+            margin: 8px 0;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 12px;
+            }
+
+            .content {
+                padding: 24px 20px;
+            }
+
+            header {
+                padding: 32px 24px;
+            }
+
+            header h1 {
+                font-size: 1.8em;
+            }
+
+            .nav-buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="nav">
+            <a href="llm-week9.html">Week 9</a>
+            <span>Week 10 / 16</span>
+            <a href="llm-week11.html">Week 11</a>
+        </div>
+
+        <header>
+            <h1>Week 10 - 多模態學習</h1>
+            <div class="subtitle">跨越視覺與語言的邊界：Vision Transformer 與 CLIP</div>
+        </header>
+
+        <div class="content">
+            <h2>本週學習內容</h2>
+            <ul>
+                <li>Vision Transformer (ViT) 架構</li>
+                <li>CLIP：視覺-語言對齊學習</li>
+                <li>多模態融合技術</li>
+                <li>影像描述生成（Image Captioning）</li>
+                <li>實戰：視覺問答系統（VQA）</li>
+            </ul>
+
+            <div class="concept-box">
+                <h4>多模態學習的重要性</h4>
+                <p>人類透過多種感官理解世界，AI 也應該如此：</p>
+                <ul>
+                    <li><strong>統一表示</strong> - 將不同模態映射到共同空間</li>
+                    <li><strong>跨模態理解</strong> - 理解視覺與語言之間的關係</li>
+                    <li><strong>零樣本遷移</strong> - 在未見過的組合上泛化</li>
+                    <li><strong>實際應用</strong> - 圖像搜尋、自動駕駛、醫療診斷</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="content">
+            <h2>1. Vision Transformer (ViT)</h2>
+            
+            <h3>ViT 的核心思想</h3>
+            <p><span class="highlight">Vision Transformer</span> 將影像分割成 patches，像處理文本 tokens 一樣處理影像。</p>
+
+            <div class="note-box">
+                <h4>ViT vs CNN</h4>
+                <ul>
+                    <li><strong>CNN</strong> - 局部感受野、歸納偏置強</li>
+                    <li><strong>ViT</strong> - 全局感受野、需要大量資料</li>
+                    <li><strong>優勢</strong> - ViT 在大規模資料上表現更好</li>
+                    <li><strong>挑戰</strong> - 小資料集上可能不如 CNN</li>
+                </ul>
+            </div>
+
+            <pre><code class="language-python">import torch
+import torch.nn as nn
+import torch.nn.functional as F
+import math
+
+class PatchEmbedding(nn.Module):
+    """
+    將影像分割成 patches 並嵌入
+    """
+    def __init__(self, img_size=224, patch_size=16, in_channels=3, embed_dim=768):
+        super(PatchEmbedding, self).__init__()
+        
+        self.img_size = img_size
+        self.patch_size = patch_size
+        self.num_patches = (img_size // patch_size) ** 2
+        
+        # 使用卷積實現 patch embedding
+        self.proj = nn.Conv2d(
+            in_channels, 
+            embed_dim, 
+            kernel_size=patch_size, 
+            stride=patch_size
+        )
+    
+    def forward(self, x):
+        """
+        x: (batch_size, channels, height, width)
+        返回: (batch_size, num_patches, embed_dim)
+        """
+        # 卷積: (B, C, H, W) -> (B, embed_dim, H/P, W/P)
+        x = self.proj(x)
+        
+        # 展平並轉置: (B, embed_dim, H/P, W/P) -> (B, num_patches, embed_dim)
+        x = x.flatten(2).transpose(1, 2)
+        
+        return x
+
+class VisionTransformer(nn.Module):
+    """Vision Transformer 模型"""
+    def __init__(self, img_size=224, patch_size=16, in_channels=3, 
+                 num_classes=1000, embed_dim=768, depth=12, num_heads=12,
+                 mlp_ratio=4.0, dropout=0.1):
+        super(VisionTransformer, self).__init__()
+        
+        self.num_patches = (img_size // patch_size) ** 2
+        self.embed_dim = embed_dim
+        
+        # Patch Embedding
+        self.patch_embed = PatchEmbedding(img_size, patch_size, in_channels, embed_dim)
+        
+        # Class Token (類似 BERT 的 [CLS])
+        self.cls_token = nn.Parameter(torch.zeros(1, 1, embed_dim))
+        
+        # Position Embedding
+        self.pos_embed = nn.Parameter(
+            torch.zeros(1, self.num_patches + 1, embed_dim)
+        )
+        
+        self.dropout = nn.Dropout(dropout)
+        
+        # Transformer Encoder
+        encoder_layer = nn.TransformerEncoderLayer(
+            d_model=embed_dim,
+            nhead=num_heads,
+            dim_feedforward=int(embed_dim * mlp_ratio),
+            dropout=dropout,
+            activation='gelu',
+            batch_first=True
+        )
+        self.transformer = nn.TransformerEncoder(encoder_layer, depth)
+        
+        # Classification Head
+        self.norm = nn.LayerNorm(embed_dim)
+        self.head = nn.Linear(embed_dim, num_classes)
+        
+        # 初始化
+        nn.init.trunc_normal_(self.pos_embed, std=0.02)
+        nn.init.trunc_normal_(self.cls_token, std=0.02)
+    
+    def forward(self, x):
+        """
+        x: (batch_size, channels, height, width)
+        """
+        batch_size = x.shape[0]
+        
+        # Patch Embedding
+        x = self.patch_embed(x)  # (B, num_patches, embed_dim)
+        
+        # 添加 Class Token
+        cls_tokens = self.cls_token.expand(batch_size, -1, -1)
+        x = torch.cat([cls_tokens, x], dim=1)  # (B, num_patches+1, embed_dim)
+        
+        # 添加 Position Embedding
+        x = x + self.pos_embed
+        x = self.dropout(x)
+        
+        # Transformer Encoder
+        x = self.transformer(x)
+        
+        # 取 Class Token 的輸出
+        x = self.norm(x[:, 0])
+        
+        # Classification
+        x = self.head(x)
+        
+        return x
+
+# 建立 ViT 模型
+model = VisionTransformer(
+    img_size=224,
+    patch_size=16,
+    in_channels=3,
+    num_classes=1000,
+    embed_dim=768,
+    depth=12,
+    num_heads=12
+)
+
+print("Vision Transformer 架構:")
+print(model)
+print(f"\n總參數量: {sum(p.numel() for p in model.parameters()):,}")
+
+# 測試
+batch_size = 4
+img = torch.randn(batch_size, 3, 224, 224)
+output = model(img)
+
+print(f"\n輸入形狀: {img.shape}")
+print(f"輸出形狀: {output.shape}")
+
+# 計算 patch 數量
+num_patches = (224 // 16) ** 2
+print(f"\nPatch 數量: {num_patches}")
+print(f"每個 patch 大小: 16x16")
+print(f"序列長度（含 CLS token）: {num_patches + 1}")
+</code></pre>
+
+            <h3>ViT 的關鍵設計</h3>
+            <div class="note-box">
+                <h4>ViT 架構細節</h4>
+                <ul>
+                    <li><strong>Patch Size</strong> - 通常 16x16 或 32x32，影響序列長度和計算量</li>
+                    <li><strong>Class Token</strong> - 用於分類任務，類似 BERT 的 [CLS]</li>
+                    <li><strong>Position Embedding</strong> - 可學習的位置編碼</li>
+                    <li><strong>預訓練</strong> - 通常在 ImageNet-21k 上預訓練</li>
+                </ul>
+            </div>
+
+            <h3>視覺化注意力</h3>
+            <pre><code class="language-python">import matplotlib.pyplot as plt
+import numpy as np
+
+def visualize_attention(model, img, layer_idx=11):
+    """
+    視覺化 ViT 的注意力圖
+    
+    model: ViT 模型
+    img: 輸入影像 (1, 3, 224, 224)
+    layer_idx: 要視覺化的層索引
+    """
+    model.eval()
+    
+    # 修改模型以返回注意力權重
+    # 這裡簡化，實際需要修改 forward 函數
+    
+    with torch.no_grad():
+        # Patch Embedding
+        x = model.patch_embed(img)
+        
+        # 添加 Class Token 和 Position Embedding
+        cls_tokens = model.cls_token.expand(1, -1, -1)
+        x = torch.cat([cls_tokens, x], dim=1)
+        x = x + model.pos_embed
+        
+        # 獲取指定層的注意力權重
+        # 這需要修改 Transformer 以返回注意力權重
+        # 這裡用隨機矩陣演示
+        num_patches = (224 // 16) ** 2 + 1
+        attention = torch.rand(1, 12, num_patches, num_patches)
+    
+    # 取第一個 head 的注意力
+    attn_map = attention[0, 0, 0, 1:].reshape(14, 14)
+    
+    # 視覺化
+    fig, axes = plt.subplots(1, 2, figsize=(12, 5))
+    
+    # 原始影像
+    img_display = img[0].permute(1, 2, 0).cpu().numpy()
+    img_display = (img_display - img_display.min()) / (img_display.max() - img_display.min())
+    axes[0].imshow(img_display)
+    axes[0].set_title('原始影像')
+    axes[0].axis('off')
+    
+    # 注意力圖
+    axes[1].imshow(attn_map.cpu().numpy(), cmap='viridis')
+    axes[1].set_title(f'Layer {layer_idx} - Head 0 注意力')
+    axes[1].axis('off')
+    
+    plt.tight_layout()
+    plt.show()
+
+# 測試視覺化
+test_img = torch.randn(1, 3, 224, 224)
+# visualize_attention(model, test_img)  # 取消註解以執行
+print("注意力視覺化函數已定義")
+</code></pre>
+
+            <h3>ViT 變體</h3>
+            <table>
+                <tr>
+                    <th>模型</th>
+                    <th>特點</th>
+                    <th>參數量</th>
+                    <th>適用場景</th>
+                </tr>
+                <tr>
+                    <td>ViT-Base</td>
+                    <td>標準配置</td>
+                    <td>86M</td>
+                    <td>一般影像分類</td>
+                </tr>
+                <tr>
+                    <td>ViT-Large</td>
+                    <td>更深更寬</td>
+                    <td>307M</td>
+                    <td>大規模預訓練</td>
+                </tr>
+                <tr>
+                    <td>ViT-Huge</td>
+                    <td>最大模型</td>
+                    <td>632M</td>
+                    <td>頂級性能</td>
+                </tr>
+                <tr>
+                    <td>DeiT</td>
+                    <td>資料高效</td>
+                    <td>86M</td>
+                    <td>小資料集</td>
+                </tr>
+                <tr>
+                    <td>Swin Transformer</td>
+                    <td>移位窗口</td>
+                    <td>88M</td>
+                    <td>密集預測任務</td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="content">
+            <h2>2. CLIP（Contrastive Language-Image Pre-training）</h2>
+            
+            <h3>CLIP 的核心思想</h3>
+            <p><span class="highlight">CLIP</span> 透過對比學習將視覺和語言表示對齊到同一個嵌入空間。</p>
+
+            <div class="concept-box">
+                <h4>CLIP 的突破性創新</h4>
+                <ul>
+                    <li><strong>零樣本遷移</strong> - 無需微調即可用於新類別</li>
+                    <li><strong>自然語言監督</strong> - 使用描述而非固定標籤</li>
+                    <li><strong>大規模訓練</strong> - 4 億圖文對</li>
+                    <li><strong>統一空間</strong> - 圖像和文本在同一嵌入空間</li>
+                </ul>
+            </div>
+
+            <pre><code class="language-python">import torch
+import torch.nn as nn
+import torch.nn.functional as F
+
+class CLIP(nn.Module):
+    """
+    CLIP 模型架構
+    """
+    def __init__(self, image_encoder, text_encoder, embed_dim=512, temperature=0.07):
+        super(CLIP, self).__init__()
+        
+        self.image_encoder = image_encoder
+        self.text_encoder = text_encoder
+        
+        # 投影層（將編碼器輸出投影到共同空間）
+        self.image_projection = nn.Linear(image_encoder.embed_dim, embed_dim)
+        self.text_projection = nn.Linear(text_encoder.embed_dim, embed_dim)
+        
+        # 可學習的溫度參數
+        self.logit_scale = nn.Parameter(torch.ones([]) * np.log(1 / temperature))
+    
+    def encode_image(self, images):
+        """
+        編碼影像
+        images: (batch_size, channels, height, width)
+        """
+        # 影像編碼器
+        image_features = self.image_encoder(images)
+        
+        # 投影到共同空間
+        image_embeds = self.image_projection(image_features)
+        
+        # L2 正規化
+        image_embeds = F.normalize(image_embeds, dim=-1)
+        
+        return image_embeds
+    
+    def encode_text(self, texts):
+        """
+        編碼文本
+        texts: (batch_size, seq_len)
+        """
+        # 文本編碼器
+        text_features = self.text_encoder(texts)
+        
+        # 投影到共同空間
+        text_embeds = self.text_projection(text_features)
+        
+        # L2 正規化
+        text_embeds = F.normalize(text_embeds, dim=-1)
+        
+        return text_embeds
+    
+    def forward(self, images, texts):
+        """
+        前向傳播
+        
+        返回:
+            logits_per_image: 影像對文本的相似度
+            logits_per_text: 文本對影像的相似度
+        """
+        # 編碼
+        image_embeds = self.encode_image(images)
+        text_embeds = self.encode_text(texts)
+        
+        # 計算相似度（點積）
+        logit_scale = self.logit_scale.exp()
+        logits_per_image = logit_scale * image_embeds @ text_embeds.T
+        logits_per_text = logits_per_image.T
+        
+        return logits_per_image, logits_per_text
+
+# 簡化的編碼器
+class SimpleImageEncoder(nn.Module):
+    def __init__(self):
+        super(SimpleImageEncoder, self).__init__()
+        self.embed_dim = 768
+        self.conv = nn.Sequential(
+            nn.Conv2d(3, 64, 7, 2, 3),
+            nn.ReLU(),
+            nn.Conv2d(64, 128, 3, 2, 1),
+            nn.ReLU(),
+            nn.AdaptiveAvgPool2d((1, 1))
+        )
+        self.fc = nn.Linear(128, self.embed_dim)
+    
+    def forward(self, x):
+        x = self.conv(x)
+        x = x.flatten(1)
+        x = self.fc(x)
+        return x
+
+class SimpleTextEncoder(nn.Module):
+    def __init__(self, vocab_size=50000):
+        super(SimpleTextEncoder, self).__init__()
+        self.embed_dim = 512
+        self.embedding = nn.Embedding(vocab_size, 256)
+        self.lstm = nn.LSTM(256, self.embed_dim // 2, bidirectional=True, batch_first=True)
+    
+    def forward(self, x):
+        x = self.embedding(x)
+        _, (h, _) = self.lstm(x)
+        h = torch.cat([h[0], h[1]], dim=-1)
+        return h
+
+# 建立 CLIP 模型
+image_encoder = SimpleImageEncoder()
+text_encoder = SimpleTextEncoder()
+clip_model = CLIP(image_encoder, text_encoder, embed_dim=512)
+
+print("CLIP 模型架構:")
+print(f"總參數量: {sum(p.numel() for p in clip_model.parameters()):,}")
+
+# 測試
+batch_size = 8
+images = torch.randn(batch_size, 3, 224, 224)
+texts = torch.randint(0, 50000, (batch_size, 20))
+
+logits_per_image, logits_per_text = clip_model(images, texts)
+
+print(f"\n影像形狀: {images.shape}")
+print(f"文本形狀: {texts.shape}")
+print(f"影像-文本相似度矩陣: {logits_per_image.shape}")
+</code></pre>
+
+            <h3>CLIP 訓練目標</h3>
+            <pre><code class="language-python">class CLIPLoss(nn.Module):
+    """
+    CLIP 的對比損失
+    對稱的交叉熵損失
+    """
+    def __init__(self):
+        super(CLIPLoss, self).__init__()
+        self.loss_fn = nn.CrossEntropyLoss()
+    
+    def forward(self, logits_per_image, logits_per_text):
+        """
+        logits_per_image: (batch_size, batch_size)
+        logits_per_text: (batch_size, batch_size)
+        
+        目標：對角線元素應該最大（匹配的圖文對）
+        """
+        batch_size = logits_per_image.shape[0]
+        labels = torch.arange(batch_size, device=logits_per_image.device)
+        
+        # 影像到文本的損失
+        loss_i2t = self.loss_fn(logits_per_image, labels)
+        
+        # 文本到影像的損失
+        loss_t2i = self.loss_fn(logits_per_text, labels)
+        
+        # 對稱損失
+        total_loss = (loss_i2t + loss_t2i) / 2
+        
+        return total_loss
+
+def train_clip_step(model, images, texts, optimizer, criterion):
+    """CLIP 訓練的一步"""
+    model.train()
+    
+    # 前向傳播
+    logits_per_image, logits_per_text = model(images, texts)
+    
+    # 計算損失
+    loss = criterion(logits_per_image, logits_per_text)
+    
+    # 反向傳播
+    optimizer.zero_grad()
+    loss.backward()
+    optimizer.step()
+    
+    # 計算準確率
+    with torch.no_grad():
+        # Top-1 準確率
+        pred_i2t = logits_per_image.argmax(dim=1)
+        pred_t2i = logits_per_text.argmax(dim=1)
+        labels = torch.arange(images.size(0), device=images.device)
+        
+        acc_i2t = (pred_i2t == labels).float().mean()
+        acc_t2i = (pred_t2i == labels).float().mean()
+    
+    return loss.item(), acc_i2t.item(), acc_t2i.item()
+
+# 測試訓練
+criterion = CLIPLoss()
+optimizer = torch.optim.Adam(clip_model.parameters(), lr=1e-4)
+
+# 模擬訓練步驟
+loss, acc_i2t, acc_t2i = train_clip_step(
+    clip_model, images, texts, optimizer, criterion
+)
+
+print(f"\n訓練測試:")
+print(f"損失: {loss:.4f}")
+print(f"影像→文本準確率: {acc_i2t:.2%}")
+print(f"文本→影像準確率: {acc_t2i:.2%}")
+</code></pre>
+
+            <h3>CLIP 的零樣本分類</h3>
+            <pre><code class="language-python">def zero_shot_classification(clip_model, image, class_names):
+    """
+    使用 CLIP 進行零樣本分類
+    
+    clip_model: CLIP 模型
+    image: 輸入影像 (1, 3, H, W)
+    class_names: 類別名稱列表
+    """
+    clip_model.eval()
+    
+    # 編碼影像
+    with torch.no_grad():
+        image_features = clip_model.encode_image(image)
+    
+    # 為每個類別建立文本提示
+    text_prompts = [f"a photo of a {name}" for name in class_names]
+    
+    # 這裡簡化，實際需要 tokenize
+    # 假設我們有 tokenize 函數
+    # text_tokens = tokenize(text_prompts)
+    
+    # 為了演示，使用隨機 tokens
+    text_tokens = torch.randint(0, 50000, (len(class_names), 20))
+    
+    # 編碼文本
+    with torch.no_grad():
+        text_features = clip_model.encode_text(text_tokens)
+    
+    # 計算相似度
+    logits = (image_features @ text_features.T).squeeze(0)
+    probs = F.softmax(logits, dim=0)
+    
+    # 排序
+    top5_prob, top5_idx = torch.topk(probs, min(5, len(class_names)))
+    
+    results = [
+        {
+            'class': class_names[idx],
+            'probability': prob.item()
+        }
+        for prob, idx in zip(top5_prob, top5_idx)
+    ]
+    
+    return results
+
+# 測試零樣本分類
+test_image = torch.randn(1, 3, 224, 224)
+class_names = ['dog', 'cat', 'car', 'bird', 'fish', 'airplane']
+
+results = zero_shot_classification(clip_model, test_image, class_names)
+
+print("\n零樣本分類結果:")
+for i, result in enumerate(results, 1):
+    print(f"{i}. {result['class']}: {result['probability']:.2%}")
+</code></pre>
+
+            <div class="tip-box">
+                <h4>CLIP 的應用</h4>
+                <ul>
+                    <li><strong>圖像搜尋</strong> - 使用自然語言搜尋圖像</li>
+                    <li><strong>零樣本分類</strong> - 識別訓練時未見過的類別</li>
+                    <li><strong>圖像生成引導</strong> - DALL-E 2、Stable Diffusion</li>
+                    <li><strong>多模態理解</strong> - 視覺問答、影像描述</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="content">
+            <h2>3. 多模態融合技術</h2>
+            
+            <h3>早期融合 vs 晚期融合</h3>
+            <table>
+                <tr>
+                    <th>融合方式</th>
+                    <th>時機</th>
+                    <th>優點</th>
+                    <th>缺點</th>
+                </tr>
+                <tr>
+                    <td>早期融合</td>
+                    <td>特徵提取前</td>
+                    <td>學習跨模態交互</td>
+                    <td>計算量大、難訓練</td>
+                </tr>
+                <tr>
+                    <td>晚期融合</td>
+                    <td>決策層</td>
+                    <td>簡單、易訓練</td>
+                    <td>交互不足</td>
+                </tr>
+                <tr>
+                    <td>混合融合</td>
+                    <td>多個層級</td>
+                    <td>平衡效果</td>
+                    <td>複雜度較高</td>
+                </tr>
+            </table>
+
+            <h3>交叉注意力融合</h3>
+            <pre><code class="language-python">class CrossModalAttention(nn.Module):
+    """
+    跨模態注意力機制
+    讓一個模態關注另一個模態的特徵
+    """
+    def __init__(self, dim, num_heads=8):
+        super(CrossModalAttention, self).__init__()
+        
+        self.num_heads = num_heads
+        self.dim = dim
+        self.head_dim = dim // num_heads
+        
+        # Query, Key, Value 投影
+        self.q_proj = nn.Linear(dim, dim)
+        self.k_proj = nn.Linear(dim, dim)
+        self.v_proj = nn.Linear(dim, dim)
+        self.out_proj = nn.Linear(dim, dim)
+        
+        self.scale = self.head_dim ** -0.5
+    
+    def forward(self, query_features, key_value_features):
+        """
+        query_features: (batch, seq_len_q, dim) - 查詢模態
+        key_value_features: (batch, seq_len_kv, dim) - 被關注的模態
+        """
+        batch_size = query_features.size(0)
+        
+        # 投影
+        Q = self.q_proj(query_features)
+        K = self.k_proj(key_value_features)
+        V = self.v_proj(key_value_features)
+        
+        # 分割成多頭
+        Q = Q.view(batch_size, -1, self.num_heads, self.head_dim).transpose(1, 2)
+        K = K.view(batch_size, -1, self.num_heads, self.head_dim).transpose(1, 2)
+        V = V.view(batch_size, -1, self.num_heads, self.head_dim).transpose(1, 2)
+        
+        # 注意力分數
+        attn = (Q @ K.transpose(-2, -1)) * self.scale
+        attn = F.softmax(attn, dim=-1)
+        
+        # 加權求和
+        out = attn @ V
+        out = out.transpose(1, 2).contiguous().view(batch_size, -1, self.dim)
+        
+        # 輸出投影
+        out = self.out_proj(out)
+        
+        return out, attn
+
+class MultiModalFusion(nn.Module):
+    """
+    多模態融合模組
+    """
+    def __init__(self, dim=512, num_heads=8):
+        super(MultiModalFusion, self).__init__()
+        
+        # 視覺關注文本
+        self.vision_to_text = CrossModalAttention(dim, num_heads)
+        
+        # 文本關注視覺
+        self.text_to_vision = CrossModalAttention(dim, num_heads)
+        
+        # 層正規化
+        self.norm1 = nn.LayerNorm(dim)
+        self.norm2 = nn.LayerNorm(dim)
+        
+        # Feed-Forward
+        self.ff_vision = nn.Sequential(
+            nn.Linear(dim, dim * 4),
+            nn.GELU(),
+            nn.Linear(dim * 4, dim)
+        )
+        
+        self.ff_text = nn.Sequential(
+            nn.Linear(dim, dim * 4),
+            nn.GELU(),
+            nn.Linear(dim * 4, dim)
+        )
+    
+    def forward(self, vision_features, text_features):
+        """
+        vision_features: (batch, num_patches, dim)
+        text_features: (batch, seq_len, dim)
+        """
+        # 視覺關注文本
+        v2t, attn_v2t = self.vision_to_text(vision_features, text_features)
+        vision_features = self.norm1(vision_features + v2t)
+        vision_features = vision_features + self.ff_vision(vision_features)
+        
+        # 文本關注視覺
+        t2v, attn_t2v = self.text_to_vision(text_features, vision_features)
+        text_features = self.norm2(text_features + t2v)
+        text_features = text_features + self.ff_text(text_features)
+        
+        return vision_features, text_features, attn_v2t, attn_t2v
+
+# 測試多模態融合
+fusion = MultiModalFusion(dim=512, num_heads=8)
+
+vision_feat = torch.randn(4, 196, 512)  # 4 images, 196 patches
+text_feat = torch.randn(4, 20, 512)     # 4 texts, 20 tokens
+
+v_out, t_out, attn_v2t, attn_t2v = fusion(vision_feat, text_feat)
+
+print("多模態融合測試:")
+print(f"視覺特徵: {vision_feat.shape} -> {v_out.shape}")
+print(f"文本特徵: {text_feat.shape} -> {t_out.shape}")
+print(f"視覺→文本注意力: {attn_v2t.shape}")
+print(f"文本→視覺注意力: {attn_t2v.shape}")
+</code></pre>
+        </div>
+
+        <div class="content">
+            <h2>4. 影像描述生成（Image Captioning）</h2>
+            
+            <h3>Encoder-Decoder 架構</h3>
+            <p>影像描述生成使用<strong>影像編碼器</strong>提取視覺特徵，<strong>語言解碼器</strong>生成描述文本。</p>
+
+            <pre><code class="language-python">class ImageCaptioningModel(nn.Module):
+    """
+    影像描述生成模型
+    Encoder: CNN 或 ViT
+    Decoder: LSTM 或 Transformer
+    """
+    def __init__(self, vocab_size, embed_dim=512, hidden_dim=512, num_layers=1):
+        super(ImageCaptioningModel, self).__init__()
+        
+        # 影像編碼器（使用預訓練 CNN）
+        self.image_encoder = nn.Sequential(
+            nn.Conv2d(3, 64, 7, 2, 3),
+            nn.ReLU(),
+            nn.MaxPool2d(2),
+            nn.Conv2d(64, 128, 3, 1, 1),
+            nn.ReLU(),
+            nn.AdaptiveAvgPool2d((1, 1))
+        )
+        
+        # 投影到 hidden dimension
+        self.image_proj = nn.Linear(128, hidden_dim)
+        
+        # 文本解碼器
+        self.embedding = nn.Embedding(vocab_size, embed_dim)
+        self.lstm = nn.LSTM(embed_dim, hidden_dim, num_layers, batch_first=True)
+        self.fc = nn.Linear(hidden_dim, vocab_size)
+        
+        self.vocab_size = vocab_size
+        self.hidden_dim = hidden_dim
+        self.num_layers = num_layers
+    
+    def encode_image(self, images):
+        """
+        編碼影像
+        images: (batch_size, 3, H, W)
+        返回: (batch_size, hidden_dim)
+        """
+        features = self.image_encoder(images)
+        features = features.flatten(1)
+        features = self.image_proj(features)
+        return features
+    
+    def decode_step(self, word, hidden, cell, image_features):
+        """
+        解碼一步
+        """
+        # 詞嵌入
+        embed = self.embedding(word)  # (batch, 1, embed_dim)
+        
+        # LSTM
+        output, (hidden, cell) = self.lstm(embed, (hidden, cell))
+        
+        # 預測
+        logits = self.fc(output.squeeze(1))
+        
+        return logits, hidden, cell
+    
+    def forward(self, images, captions):
+        """
+        訓練時的前向傳播
+        
+        images: (batch_size, 3, H, W)
+        captions: (batch_size, max_len)
+        """
+        batch_size = images.size(0)
+        
+        # 編碼影像
+        image_features = self.encode_image(images)
+        
+        # 初始化 LSTM 隱藏狀態
+        hidden = image_features.unsqueeze(0).repeat(self.num_layers, 1, 1)
+        cell = torch.zeros_like(hidden)
+        
+        # 解碼（教師強制）
+        max_len = captions.size(1)
+        outputs = []
+        
+        for t in range(max_len - 1):
+            word = captions[:, t].unsqueeze(1)
+            logits, hidden, cell = self.decode_step(word, hidden, cell, image_features)
+            outputs.append(logits)
+        
+        outputs = torch.stack(outputs, dim=1)
+        
+        return outputs
+    
+    def generate(self, images, max_len=20, start_token=1, end_token=2):
+        """
+        生成描述（推理時）
+        """
+        self.eval()
+        batch_size = images.size(0)
+        device = images.device
+        
+        # 編碼影像
+        image_features = self.encode_image(images)
+        
+        # 初始化
+        hidden = image_features.unsqueeze(0).repeat(self.num_layers, 1, 1)
+        cell = torch.zeros_like(hidden)
+        
+        # 起始 token
+        word = torch.full((batch_size, 1), start_token, dtype=torch.long, device=device)
+        
+        generated = []
+        
+        for _ in range(max_len):
+            with torch.no_grad():
+                logits, hidden, cell = self.decode_step(word, hidden, cell, image_features)
+            
+            # 貪心解碼
+            word = logits.argmax(dim=-1, keepdim=True)
+            generated.append(word)
+            
+            # 檢查是否結束
+            if (word == end_token).all():
+                break
+        
+        generated = torch.cat(generated, dim=1)
+        
+        return generated
+
+# 建立模型
+captioning_model = ImageCaptioningModel(vocab_size=10000, embed_dim=256, hidden_dim=512)
+
+print("影像描述生成模型:")
+print(f"參數量: {sum(p.numel() for p in captioning_model.parameters()):,}")
+
+# 測試訓練
+images = torch.randn(4, 3, 224, 224)
+captions = torch.randint(0, 10000, (4, 15))
+
+outputs = captioning_model(images, captions)
+print(f"\n訓練輸出形狀: {outputs.shape}")
+
+# 測試生成
+generated = captioning_model.generate(images, max_len=20)
+print(f"生成描述形狀: {generated.shape}")
+</code></pre>
+
+            <h3>使用注意力機制的 Image Captioning</h3>
+            <pre><code class="language-python">class AttentionCaptioning(nn.Module):
+    """
+    帶注意力機制的影像描述生成
+    """
+    def __init__(self, vocab_size, embed_dim=512, hidden_dim=512, attention_dim=512):
+        super(AttentionCaptioning, self).__init__()
+        
+        # 影像編碼器（提取空間特徵）
+        self.encoder = nn.Sequential(
+            nn.Conv2d(3, 64, 3, 1, 1),
+            nn.ReLU(),
+            nn.Conv2d(64, 128, 3, 2, 1),
+            nn.ReLU(),
+            nn.Conv2d(128, 256, 3, 2, 1),
+            nn.ReLU()
+        )
+        
+        # 注意力機制
+        self.attention = nn.Sequential(
+            nn.Linear(hidden_dim + 256, attention_dim),
+            nn.Tanh(),
+            nn.Linear(attention_dim, 1)
+        )
+        
+        # 解碼器
+        self.embedding = nn.Embedding(vocab_size, embed_dim)
+        self.lstm_cell = nn.LSTMCell(embed_dim + 256, hidden_dim)
+        self.fc = nn.Linear(hidden_dim, vocab_size)
+        
+        # 初始化隱藏狀態的投影
+        self.init_h = nn.Linear(256, hidden_dim)
+        self.init_c = nn.Linear(256, hidden_dim)
+    
+    def forward(self, images, captions):
+        """前向傳播"""
+        batch_size = images.size(0)
+        
+        # 編碼影像 -> (batch, 256, H', W')
+        encoder_out = self.encoder(images)
+        
+        # 展平空間維度 -> (batch, 256, num_pixels)
+        encoder_out = encoder_out.flatten(2)
+        encoder_dim = encoder_out.size(1)
+        num_pixels = encoder_out.size(2)
+        
+        # 轉置 -> (batch, num_pixels, 256)
+        encoder_out = encoder_out.permute(0, 2, 1)
+        
+        # 初始化 LSTM 狀態
+        mean_encoder = encoder_out.mean(dim=1)
+        h = self.init_h(mean_encoder)
+        c = self.init_c(mean_encoder)
+        
+        # 解碼
+        max_len = captions.size(1)
+        outputs = []
+        
+        for t in range(max_len - 1):
+            # 當前詞嵌入
+            embed = self.embedding(captions[:, t])  # (batch, embed_dim)
+            
+            # 計算注意力權重
+            # 擴展隱藏狀態以匹配每個像素
+            h_expanded = h.unsqueeze(1).expand(-1, num_pixels, -1)
+            # 拼接
+            attn_input = torch.cat([h_expanded, encoder_out], dim=2)
+            # 計算分數
+            attn_scores = self.attention(attn_input).squeeze(2)
+            # Softmax
+            attn_weights = F.softmax(attn_scores, dim=1)
+            
+            # 加權求和
+            context = (encoder_out * attn_weights.unsqueeze(2)).sum(dim=1)
+            
+            # LSTM 輸入：詞嵌入 + 上下文
+            lstm_input = torch.cat([embed, context], dim=1)
+            
+            # LSTM 步驟
+            h, c = self.lstm_cell(lstm_input, (h, c))
+            
+            # 預測
+            output = self.fc(h)
+            outputs.append(output)
+        
+        outputs = torch.stack(outputs, dim=1)
+        
+        return outputs
+
+# 測試注意力模型
+attn_model = AttentionCaptioning(vocab_size=10000)
+output = attn_model(images, captions)
+print(f"\n注意力模型輸出: {output.shape}")
+</code></pre>
+        </div>
+
+        <div class="content">
+            <h2>5. 實戰：視覺問答系統（VQA）</h2>
+            
+            <h3>VQA 任務</h3>
+            <p><span class="highlight">視覺問答</span>結合影像理解和語言理解，回答關於圖像的問題。</p>
+
+            <pre><code class="language-python">class VQAModel(nn.Module):
+    """
+    視覺問答模型
+    輸入：影像 + 問題
+    輸出：答案
+    """
+    def __init__(self, vocab_size, num_answers, embed_dim=512, hidden_dim=1024):
+        super(VQAModel, self).__init__()
+        
+        # 影像編碼器
+        self.image_encoder = nn.Sequential(
+            nn.Conv2d(3, 64, 3, 2, 1),
+            nn.ReLU(),
+            nn.Conv2d(64, 128, 3, 2, 1),
+            nn.ReLU(),
+            nn.Conv2d(128, 256, 3, 2, 1),
+            nn.ReLU(),
+            nn.AdaptiveAvgPool2d((1, 1))
+        )
+        
+        # 問題編碼器
+        self.question_embedding = nn.Embedding(vocab_size, embed_dim)
+        self.question_lstm = nn.LSTM(embed_dim, embed_dim, batch_first=True)
+        
+        # 融合層
+        self.fusion = nn.Sequential(
+            nn.Linear(256 + embed_dim, hidden_dim),
+            nn.ReLU(),
+            nn.Dropout(0.5),
+            nn.Linear(hidden_dim, hidden_dim),
+            nn.ReLU(),
+            nn.Dropout(0.5)
+        )
+        
+        # 分類器
+        self.classifier = nn.Linear(hidden_dim, num_answers)
+    
+    def forward(self, images, questions):
+        """
+        images: (batch_size, 3, H, W)
+        questions: (batch_size, seq_len)
+        """
+        # 編碼影像
+        image_features = self.image_encoder(images)
+        image_features = image_features.flatten(1)  # (batch, 256)
+        
+        # 編碼問題
+        question_embeds = self.question_embedding(questions)
+        _, (question_features, _) = self.question_lstm(question_embeds)
+        question_features = question_features.squeeze(0)  # (batch, embed_dim)
+        
+        # 融合
+        combined = torch.cat([image_features, question_features], dim=1)
+        fused = self.fusion(combined)
+        
+        # 分類
+        logits = self.classifier(fused)
+        
+        return logits
+
+# 建立 VQA 模型
+NUM_ANSWERS = 1000  # 常見答案數量
+vqa_model = VQAModel(vocab_size=10000, num_answers=NUM_ANSWERS)
+
+print("VQA 模型:")
+print(f"參數量: {sum(p.numel() for p in vqa_model.parameters()):,}")
+
+# 測試
+images = torch.randn(4, 3, 224, 224)
+questions = torch.randint(0, 10000, (4, 15))
+
+logits = vqa_model(images, questions)
+print(f"\n輸入影像: {images.shape}")
+print(f"輸入問題: {questions.shape}")
+print(f"輸出 logits: {logits.shape}")
+
+# 預測答案
+predictions = logits.argmax(dim=-1)
+print(f"預測答案 ID: {predictions}")
+</code></pre>
+
+            <h3>使用預訓練模型的 VQA</h3>
+            <pre><code class="language-python"># 使用 Hugging Face 的預訓練模型
+"""
+from transformers import ViltProcessor, ViltForQuestionAnswering
+from PIL import Image
+
+# 載入模型
+processor = ViltProcessor.from_pretrained("dandelin/vilt-b32-finetuned-vqa")
+model = ViltForQuestionAnswering.from_pretrained("dandelin/vilt-b32-finetuned-vqa")
+
+# 準備輸入
+image = Image.open("example.jpg")
+question = "What is in the image?"
+
+# 處理
+inputs = processor(image, question, return_tensors="pt")
+
+# 預測
+outputs = model(**inputs)
+logits = outputs.logits
+predicted_answer_idx = logits.argmax(-1).item()
+predicted_answer = model.config.id2label[predicted_answer_idx]
+
+print(f"Question: {question}")
+print(f"Answer: {predicted_answer}")
+"""
+
+print("\n使用 Hugging Face 預訓練 VQA 模型的程式碼範例")
+</code></pre>
+
+            <div class="note-box">
+                <h4>VQA 資料集</h4>
+                <ul>
+                    <li><strong>VQA v2</strong> - 超過 1M 問答對</li>
+                    <li><strong>GQA</strong> - 結構化的視覺推理問題</li>
+                    <li><strong>OK-VQA</strong> - 需要外部知識的問題</li>
+                    <li><strong>TextVQA</strong> - 需要讀取影像中的文字</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="content">
+            <div class="exercise-section">
+                <h3>本週練習題</h3>
+                
+                <h4>基礎練習（必做）</h4>
+                <ol>
+                    <li>
+                        <strong>實作 Vision Transformer</strong>
+                        <ul>
+                            <li>從零實現 ViT 的 Patch Embedding</li>
+                            <li>實現完整的 ViT 模型</li>
+                            <li>在 CIFAR-10 上訓練並評估</li>
+                            <li>視覺化注意力圖</li>
+                        </ul>
+                    </li>
+                    
+                    <li>
+                        <strong>CLIP 對比學習</strong>
+                        <ul>
+                            <li>實現 CLIP 的對比損失</li>
+                            <li>訓練小型 CLIP 模型</li>
+                            <li>測試零樣本分類能力</li>
+                            <li>分析視覺-語言對齊效果</li>
+                        </ul>
+                    </li>
+                    
+                    <li>
+                        <strong>影像描述生成</strong>
+                        <ul>
+                            <li>實現 Encoder-Decoder 架構</li>
+                            <li>添加注意力機制</li>
+                            <li>在 Flickr8k 或 COCO 上訓練</li>
+                            <li>評估 BLEU 分數</li>
+                        </ul>
+                    </li>
+                </ol>
+
+                <h4>進階練習</h4>
+                <ol start="4">
+                    <li>
+                        <strong>構建 VQA 系統</strong>
+                        <ul>
+                            <li>實現完整的 VQA 模型</li>
+                            <li>使用跨模態注意力</li>
+                            <li>在 VQA v2 資料集上訓練</li>
+                            <li>分析不同類型問題的性能</li>
+                        </ul>
+                    </li>
+                    
+                    <li>
+                        <strong>多模態融合實驗</strong>
+                        <ul>
+                            <li>比較不同融合策略</li>
+                            <li>實現早期、晚期、混合融合</li>
+                            <li>分析融合時機的影響</li>
+                            <li>視覺化跨模態注意力</li>
+                        </ul>
+                    </li>
+                </ol>
+
+                <h4>挑戰練習</h4>
+                <ol start="6">
+                    <li>
+                        <strong>實現 Swin Transformer</strong>
+                        <ul>
+                            <li>實現移位窗口注意力</li>
+                            <li>構建層次化架構</li>
+                            <li>在影像分類和檢測任務上評估</li>
+                            <li>與標準 ViT 比較</li>
+                        </ul>
+                    </li>
+                    
+                    <li>
+                        <strong>多任務多模態學習</strong>
+                        <ul>
+                            <li>同時訓練 VQA、Captioning、Classification</li>
+                            <li>實現任務特定的輸出頭</li>
+                            <li>分析任務之間的遷移效果</li>
+                            <li>優化多任務訓練策略</li>
+                        </ul>
+                    </li>
+                </ol>
+            </div>
+        </div>
+
+        <div class="content">
+            <h2>本週總結</h2>
+            
+            <h3>重點回顧</h3>
+            <ul>
+                <li>理解 Vision Transformer 的架構與優勢</li>
+                <li>掌握 CLIP 的對比學習方法</li>
+                <li>學會多模態融合技術</li>
+                <li>實現影像描述生成系統</li>
+                <li>構建視覺問答應用</li>
+            </ul>
+
+            <h3>關鍵概念</h3>
+            <ul>
+                <li><strong>Patch Embedding</strong> - 將影像視為序列</li>
+                <li><strong>對比學習</strong> - 視覺-語言對齊</li>
+                <li><strong>跨模態注意力</strong> - 讓不同模態互相關注</li>
+                <li><strong>零樣本遷移</strong> - 在未見類別上泛化</li>
+                <li><strong>多模態融合</strong> - 整合視覺與語言資訊</li>
+            </ul>
+
+            <h3>多模態模型演進</h3>
+            <table>
+                <tr>
+                    <th>時期</th>
+                    <th>代表模型</th>
+                    <th>關鍵創新</th>
+                </tr>
+                <tr>
+                    <td>2017-2019</td>
+                    <td>Bottom-Up Attention</td>
+                    <td>區域特徵 + 注意力</td>
+                </tr>
+                <tr>
+                    <td>2020-2021</td>
+                    <td>ViT, CLIP</td>
+                    <td>Transformer、對比學習</td>
+                </tr>
+                <tr>
+                    <td>2021-2022</td>
+                    <td>DALL-E, Flamingo</td>
+                    <td>大規模生成、少樣本</td>
+                </tr>
+                <tr>
+                    <td>2022-2023</td>
+                    <td>GPT-4V, Gemini</td>
+                    <td>多模態大模型</td>
+                </tr>
+                <tr>
+                    <td>2023-現在</td>
+                    <td>LLaVA, CogVLM</td>
+                    <td>開源多模態 LLM</td>
+                </tr>
+            </table>
+
+            <h3>下週預告</h3>
+            <div class="note-box">
+                <h4>Week 11 - 強化學習基礎</h4>
+                <p>下週將學習強化學習的核心概念與算法：</p>
+                <ul>
+                    <li>MDP（Markov Decision Process）</li>
+                    <li>Q-Learning 與 DQN</li>
+                    <li>Policy Gradient 方法</li>
+                    <li>Actor-Critic 架構</li>
+                    <li>實戰：訓練遊戲 AI</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="nav-buttons">
+            <a href="llm-week9.html" class="btn btn-secondary">Week 9：進階 NLP 技術</a>
+            <a href="llm-week11.html" class="btn">Week 11：強化學習基礎</a>
+        </div>
+
+        <footer>
+            <p>LLM 與 AI/ML 課程 Week 10</p>
+            <p>Vision Transformer · CLIP · 多模態融合 · Image Captioning · VQA</p>
+            <p style="font-size: 0.9em; color: #95a5a6;">© 2025 All Rights Reserved</p>
+        </footer>
+    </div>
+</body>
+</html>

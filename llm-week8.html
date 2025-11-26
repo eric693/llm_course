@@ -1,0 +1,1495 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Week 8 - BERT 與 GPT | LLM 與 AI/ML 課程</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft JhengHei', Arial, sans-serif;
+            background: #f8f9fa;
+            color: #1a1a1a;
+            line-height: 1.7;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .nav {
+            background: white;
+            padding: 16px 28px;
+            border-radius: 8px;
+            margin-bottom: 32px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            border: 1px solid #e0e0e0;
+        }
+
+        .nav a {
+            color: #3498db;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 8px 16px;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+        }
+
+        .nav a:hover {
+            background: #ecf0f1;
+            color: #2980b9;
+        }
+
+        .nav span {
+            color: #6c757d;
+            font-weight: 500;
+        }
+
+        header {
+            background: linear-gradient(to right, #2c3e50, #34495e);
+            color: white;
+            padding: 56px 40px;
+            border-radius: 8px;
+            margin-bottom: 32px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            border-bottom: 3px solid #3498db;
+        }
+
+        header h1 {
+            font-size: 2.2em;
+            margin-bottom: 12px;
+            font-weight: 700;
+        }
+
+        header .subtitle {
+            font-size: 1.05em;
+            opacity: 0.9;
+            font-weight: 400;
+        }
+
+        .content {
+            background: white;
+            border-radius: 8px;
+            padding: 48px;
+            margin-bottom: 32px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            border: 1px solid #e0e0e0;
+        }
+
+        .content h2 {
+            color: #1a1a1a;
+            font-size: 1.9em;
+            margin-bottom: 24px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #3498db;
+            font-weight: 700;
+        }
+
+        .content h3 {
+            color: #2c3e50;
+            font-size: 1.5em;
+            margin: 36px 0 16px 0;
+            font-weight: 600;
+        }
+
+        .content h4 {
+            color: #34495e;
+            font-size: 1.2em;
+            margin: 24px 0 12px 0;
+            font-weight: 600;
+        }
+
+        .content p {
+            margin-bottom: 16px;
+            line-height: 1.8;
+            color: #4a4a4a;
+        }
+
+        pre[class*="language-"] {
+            margin: 24px 0;
+            border-radius: 6px;
+            border: 1px solid #d0d7de;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+        }
+
+        code[class*="language-"] {
+            font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
+            font-size: 0.92em;
+            line-height: 1.6;
+        }
+
+        .note-box {
+            background: #e3f2fd;
+            border-left: 4px solid #2196f3;
+            padding: 20px 24px;
+            margin: 24px 0;
+            border-radius: 4px;
+        }
+
+        .note-box h4 {
+            color: #1565c0;
+            margin-top: 0;
+            margin-bottom: 12px;
+            font-size: 1.1em;
+        }
+
+        .warning-box {
+            background: #fff3e0;
+            border-left: 4px solid #ff9800;
+            padding: 20px 24px;
+            margin: 24px 0;
+            border-radius: 4px;
+        }
+
+        .warning-box h4 {
+            color: #e65100;
+            margin-top: 0;
+            margin-bottom: 12px;
+            font-size: 1.1em;
+        }
+
+        .tip-box {
+            background: #f1f8e9;
+            border-left: 4px solid #8bc34a;
+            padding: 20px 24px;
+            margin: 24px 0;
+            border-radius: 4px;
+        }
+
+        .tip-box h4 {
+            color: #558b2f;
+            margin-top: 0;
+            margin-bottom: 12px;
+            font-size: 1.1em;
+        }
+
+        .concept-box {
+            background: #f3e5f5;
+            border-left: 4px solid #9c27b0;
+            padding: 20px 24px;
+            margin: 24px 0;
+            border-radius: 4px;
+        }
+
+        .concept-box h4 {
+            color: #6a1b9a;
+            margin-top: 0;
+            margin-bottom: 12px;
+            font-size: 1.1em;
+        }
+
+        .exercise-section {
+            background: #fafafa;
+            border: 1px solid #e0e0e0;
+            padding: 32px;
+            margin: 32px 0;
+            border-radius: 8px;
+        }
+
+        .exercise-section h3 {
+            color: #2c3e50;
+            margin-top: 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 24px 0;
+            background: white;
+        }
+
+        table th,
+        table td {
+            padding: 14px 16px;
+            text-align: left;
+            border: 1px solid #dee2e6;
+        }
+
+        table th {
+            background: #2c3e50;
+            color: white;
+            font-weight: 600;
+        }
+
+        table tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+
+        ul, ol {
+            margin-left: 28px;
+            margin-top: 12px;
+            margin-bottom: 16px;
+        }
+
+        li {
+            margin: 10px 0;
+            line-height: 1.7;
+            color: #4a4a4a;
+        }
+
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 48px;
+            gap: 16px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 28px;
+            background: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            border: none;
+        }
+
+        .btn:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
+        }
+
+        .btn-secondary {
+            background: #95a5a6;
+        }
+
+        .btn-secondary:hover {
+            background: #7f8c8d;
+            box-shadow: 0 4px 12px rgba(149, 165, 166, 0.3);
+        }
+
+        .highlight {
+            background: #fff9c4;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-weight: 500;
+        }
+
+        footer {
+            text-align: center;
+            padding: 32px 0;
+            color: #6c757d;
+            margin-top: 48px;
+            border-top: 1px solid #dee2e6;
+        }
+
+        footer p {
+            margin: 8px 0;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 12px;
+            }
+
+            .content {
+                padding: 24px 20px;
+            }
+
+            header {
+                padding: 32px 24px;
+            }
+
+            header h1 {
+                font-size: 1.8em;
+            }
+
+            .nav-buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="nav">
+            <a href="llm-week7.html">Week 7</a>
+            <span>Week 8 / 16</span>
+            <a href="llm-week9.html">Week 9</a>
+        </div>
+
+        <header>
+            <h1>Week 8 - BERT 與 GPT</h1>
+            <div class="subtitle">深入理解預訓練語言模型與預訓練-微調範式</div>
+        </header>
+
+        <div class="content">
+            <h2>本週學習內容</h2>
+            <ul>
+                <li>BERT 架構與預訓練任務（MLM、NSP）</li>
+                <li>GPT 架構與自回歸語言建模</li>
+                <li>預訓練-微調範式</li>
+                <li>使用 Hugging Face Transformers</li>
+                <li>實戰：BERT 文本分類與 GPT 文本生成</li>
+            </ul>
+
+            <div class="concept-box">
+                <h4>預訓練語言模型的革命</h4>
+                <p>BERT 和 GPT 開啟了 NLP 的新時代：</p>
+                <ul>
+                    <li><strong>預訓練-微調範式</strong> - 大規模無監督預訓練 + 下游任務微調</li>
+                    <li><strong>遷移學習</strong> - 預訓練模型捕捉通用語言知識</li>
+                    <li><strong>少樣本學習</strong> - 少量標註資料即可達到優秀性能</li>
+                    <li><strong>統一架構</strong> - 同一模型適用於多種 NLP 任務</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="content">
+            <h2>1. BERT（Bidirectional Encoder Representations from Transformers）</h2>
+            
+            <h3>BERT 的核心思想</h3>
+            <p><span class="highlight">BERT</span> 使用 Transformer Encoder，透過雙向上下文理解文本，是第一個真正雙向的預訓練模型。</p>
+
+            <div class="note-box">
+                <h4>BERT vs GPT vs ELMo</h4>
+                <ul>
+                    <li><strong>ELMo</strong> - 雙向 LSTM，但是淺層融合（分別訓練左右，然後拼接）</li>
+                    <li><strong>GPT</strong> - Transformer Decoder，單向（只看左邊）</li>
+                    <li><strong>BERT</strong> - Transformer Encoder，深度雙向（同時看左右）</li>
+                </ul>
+            </div>
+
+            <h3>BERT 架構</h3>
+            <pre><code class="language-python">import torch
+import torch.nn as nn
+import math
+
+class BERTEmbedding(nn.Module):
+    """
+    BERT 嵌入層
+    = Token Embedding + Segment Embedding + Position Embedding
+    """
+    def __init__(self, vocab_size, d_model, max_len=512, dropout=0.1):
+        super(BERTEmbedding, self).__init__()
+        
+        # Token Embedding
+        self.token_embed = nn.Embedding(vocab_size, d_model)
+        
+        # Segment Embedding (用於區分句子 A 和句子 B)
+        self.segment_embed = nn.Embedding(2, d_model)
+        
+        # Position Embedding (可學習的)
+        self.position_embed = nn.Embedding(max_len, d_model)
+        
+        self.dropout = nn.Dropout(dropout)
+        self.d_model = d_model
+    
+    def forward(self, token_ids, segment_ids=None):
+        """
+        token_ids: (batch_size, seq_len)
+        segment_ids: (batch_size, seq_len) - 0 表示句子 A，1 表示句子 B
+        """
+        batch_size, seq_len = token_ids.size()
+        
+        # Token Embedding
+        token_embeds = self.token_embed(token_ids)
+        
+        # Position Embedding
+        positions = torch.arange(seq_len, device=token_ids.device).unsqueeze(0).expand(batch_size, -1)
+        position_embeds = self.position_embed(positions)
+        
+        # Segment Embedding
+        if segment_ids is None:
+            segment_ids = torch.zeros_like(token_ids)
+        segment_embeds = self.segment_embed(segment_ids)
+        
+        # 相加並應用 dropout
+        embeddings = token_embeds + position_embeds + segment_embeds
+        embeddings = self.dropout(embeddings)
+        
+        return embeddings
+
+class BERTModel(nn.Module):
+    """簡化版 BERT 模型"""
+    def __init__(self, vocab_size, d_model=768, num_heads=12, num_layers=12, 
+                 d_ff=3072, max_len=512, dropout=0.1):
+        super(BERTModel, self).__init__()
+        
+        # Embedding
+        self.embedding = BERTEmbedding(vocab_size, d_model, max_len, dropout)
+        
+        # Transformer Encoder Layers
+        encoder_layer = nn.TransformerEncoderLayer(
+            d_model=d_model,
+            nhead=num_heads,
+            dim_feedforward=d_ff,
+            dropout=dropout,
+            activation='gelu',  # BERT 使用 GELU
+            batch_first=True
+        )
+        self.encoder = nn.TransformerEncoder(encoder_layer, num_layers)
+        
+        self.d_model = d_model
+    
+    def forward(self, token_ids, segment_ids=None, attention_mask=None):
+        """
+        token_ids: (batch_size, seq_len)
+        segment_ids: (batch_size, seq_len)
+        attention_mask: (batch_size, seq_len) - 1 表示有效 token，0 表示 padding
+        """
+        # Embedding
+        x = self.embedding(token_ids, segment_ids)
+        
+        # 建立注意力遮罩（PyTorch Transformer 使用加法遮罩）
+        if attention_mask is not None:
+            # 將 0/1 mask 轉換為加法 mask
+            attention_mask = attention_mask.unsqueeze(1).unsqueeze(2)
+            attention_mask = (1.0 - attention_mask) * -10000.0
+            attention_mask = attention_mask.squeeze(1)
+        
+        # Transformer Encoder
+        encoded = self.encoder(x, src_key_padding_mask=attention_mask)
+        
+        return encoded
+
+# 建立 BERT 模型
+VOCAB_SIZE = 30000
+bert = BERTModel(
+    vocab_size=VOCAB_SIZE,
+    d_model=768,
+    num_heads=12,
+    num_layers=12,
+    d_ff=3072,
+    max_len=512
+)
+
+print("BERT 模型架構:")
+print(bert)
+print(f"\n總參數量: {sum(p.numel() for p in bert.parameters()):,}")
+
+# 測試
+batch_size = 2
+seq_len = 128
+
+token_ids = torch.randint(0, VOCAB_SIZE, (batch_size, seq_len))
+segment_ids = torch.cat([
+    torch.zeros(batch_size, seq_len//2, dtype=torch.long),
+    torch.ones(batch_size, seq_len//2, dtype=torch.long)
+], dim=1)
+attention_mask = torch.ones(batch_size, seq_len)
+
+output = bert(token_ids, segment_ids, attention_mask)
+print(f"\n輸入形狀: {token_ids.shape}")
+print(f"輸出形狀: {output.shape}")
+</code></pre>
+
+            <h3>BERT 的特殊 Token</h3>
+            <div class="note-box">
+                <h4>BERT 使用的特殊標記</h4>
+                <ul>
+                    <li><strong>[CLS]</strong> - 分類標記，放在序列開頭，其輸出用於分類任務</li>
+                    <li><strong>[SEP]</strong> - 分隔標記，用於分隔兩個句子</li>
+                    <li><strong>[MASK]</strong> - 遮罩標記，用於 Masked Language Model</li>
+                    <li><strong>[PAD]</strong> - 填充標記，用於對齊序列長度</li>
+                    <li><strong>[UNK]</strong> - 未知標記，表示詞彙表外的詞</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="content">
+            <h2>2. BERT 預訓練任務</h2>
+            
+            <h3>Masked Language Model (MLM)</h3>
+            <p><span class="highlight">MLM</span> 是 BERT 的核心預訓練任務：隨機遮蔽輸入中的部分 token，讓模型預測被遮蔽的 token。</p>
+
+            <pre><code class="language-python">import torch
+import torch.nn as nn
+import random
+
+class MaskedLanguageModel(nn.Module):
+    """
+    Masked Language Model 預訓練任務
+    """
+    def __init__(self, bert_model, vocab_size):
+        super(MaskedLanguageModel, self).__init__()
+        
+        self.bert = bert_model
+        
+        # MLM 預測頭
+        self.mlm_head = nn.Sequential(
+            nn.Linear(bert_model.d_model, bert_model.d_model),
+            nn.GELU(),
+            nn.LayerNorm(bert_model.d_model),
+            nn.Linear(bert_model.d_model, vocab_size)
+        )
+    
+    def forward(self, token_ids, segment_ids=None, attention_mask=None):
+        # BERT 編碼
+        encoded = self.bert(token_ids, segment_ids, attention_mask)
+        
+        # MLM 預測
+        mlm_output = self.mlm_head(encoded)
+        
+        return mlm_output
+
+def create_mlm_data(tokens, mask_token_id, vocab_size, mask_prob=0.15):
+    """
+    建立 MLM 訓練資料
+    
+    BERT 的遮蔽策略：
+    - 80% 的時間：替換為 [MASK]
+    - 10% 的時間：替換為隨機 token
+    - 10% 的時間：保持不變
+    
+    參數:
+        tokens: 原始 token ids
+        mask_token_id: [MASK] token 的 id
+        vocab_size: 詞彙表大小
+        mask_prob: 遮蔽機率
+    """
+    tokens = tokens.clone()
+    labels = tokens.clone()
+    
+    # 隨機選擇要遮蔽的位置
+    probability_matrix = torch.full(tokens.shape, mask_prob)
+    masked_indices = torch.bernoulli(probability_matrix).bool()
+    
+    # 不遮蔽特殊 token（假設前 5 個是特殊 token）
+    masked_indices[:, :5] = False
+    
+    # 80% 替換為 [MASK]
+    indices_replaced = torch.bernoulli(torch.full(tokens.shape, 0.8)).bool() & masked_indices
+    tokens[indices_replaced] = mask_token_id
+    
+    # 10% 替換為隨機 token
+    indices_random = torch.bernoulli(torch.full(tokens.shape, 0.5)).bool() & masked_indices & ~indices_replaced
+    random_tokens = torch.randint(vocab_size, tokens.shape, dtype=torch.long)
+    tokens[indices_random] = random_tokens[indices_random]
+    
+    # 10% 保持不變（已經處理）
+    
+    # 只計算被遮蔽位置的損失
+    labels[~masked_indices] = -100  # CrossEntropyLoss 會忽略 -100
+    
+    return tokens, labels
+
+# 測試 MLM
+mlm_model = MaskedLanguageModel(bert, VOCAB_SIZE)
+
+# 原始 tokens
+original_tokens = torch.randint(5, VOCAB_SIZE, (2, 128))
+
+# 建立 MLM 資料
+MASK_TOKEN_ID = 4
+masked_tokens, labels = create_mlm_data(original_tokens, MASK_TOKEN_ID, VOCAB_SIZE)
+
+print("原始句子範例:")
+print(original_tokens[0, :20])
+print("\n遮蔽後的句子:")
+print(masked_tokens[0, :20])
+print("\n標籤（-100 表示不計算損失）:")
+print(labels[0, :20])
+
+# 前向傳播
+output = mlm_model(masked_tokens)
+print(f"\nMLM 輸出形狀: {output.shape}")  # (batch_size, seq_len, vocab_size)
+
+# 計算損失
+criterion = nn.CrossEntropyLoss()
+loss = criterion(output.view(-1, VOCAB_SIZE), labels.view(-1))
+print(f"MLM 損失: {loss.item():.4f}")
+</code></pre>
+
+            <h3>Next Sentence Prediction (NSP)</h3>
+            <p><span class="highlight">NSP</span> 讓 BERT 理解句子之間的關係：給定兩個句子，預測第二個句子是否是第一個句子的下一句。</p>
+
+            <pre><code class="language-python">class NextSentencePrediction(nn.Module):
+    """
+    Next Sentence Prediction 預訓練任務
+    """
+    def __init__(self, bert_model):
+        super(NextSentencePrediction, self).__init__()
+        
+        self.bert = bert_model
+        
+        # NSP 分類頭
+        self.nsp_head = nn.Linear(bert_model.d_model, 2)
+    
+    def forward(self, token_ids, segment_ids=None, attention_mask=None):
+        # BERT 編碼
+        encoded = self.bert(token_ids, segment_ids, attention_mask)
+        
+        # 取 [CLS] token 的輸出（第一個位置）
+        cls_output = encoded[:, 0, :]
+        
+        # NSP 預測
+        nsp_output = self.nsp_head(cls_output)
+        
+        return nsp_output
+
+def create_nsp_data(sentence_a, sentence_b, is_next):
+    """
+    建立 NSP 訓練資料
+    
+    參數:
+        sentence_a: 第一個句子的 token ids
+        sentence_b: 第二個句子的 token ids
+        is_next: 是否是連續句子（1 表示是，0 表示不是）
+    """
+    # 組合句子：[CLS] + sentence_a + [SEP] + sentence_b + [SEP]
+    CLS_TOKEN = 0
+    SEP_TOKEN = 1
+    
+    tokens = torch.cat([
+        torch.tensor([CLS_TOKEN]),
+        sentence_a,
+        torch.tensor([SEP_TOKEN]),
+        sentence_b,
+        torch.tensor([SEP_TOKEN])
+    ])
+    
+    # Segment IDs
+    segment_ids = torch.cat([
+        torch.zeros(len(sentence_a) + 2, dtype=torch.long),  # [CLS] + sentence_a + [SEP]
+        torch.ones(len(sentence_b) + 1, dtype=torch.long)     # sentence_b + [SEP]
+    ])
+    
+    label = torch.tensor(is_next, dtype=torch.long)
+    
+    return tokens, segment_ids, label
+
+# 測試 NSP
+nsp_model = NextSentencePrediction(bert)
+
+# 建立測試資料
+sentence_a = torch.randint(5, VOCAB_SIZE, (20,))
+sentence_b = torch.randint(5, VOCAB_SIZE, (25,))
+
+# 正例：連續句子
+tokens_pos, segments_pos, label_pos = create_nsp_data(sentence_a, sentence_b, is_next=1)
+
+print("NSP 輸入範例:")
+print(f"Tokens 長度: {len(tokens_pos)}")
+print(f"Segment IDs: {segments_pos}")
+print(f"標籤: {label_pos.item()}")
+
+# 批次處理（需要 padding）
+# 這裡簡化為單個樣本
+tokens_batch = tokens_pos.unsqueeze(0)
+segments_batch = segments_pos.unsqueeze(0)
+
+output = nsp_model(tokens_batch, segments_batch)
+print(f"\nNSP 輸出形狀: {output.shape}")  # (batch_size, 2)
+print(f"預測機率: {torch.softmax(output, dim=-1)}")
+</code></pre>
+
+            <h3>BERT 完整預訓練</h3>
+            <pre><code class="language-python">class BERTPretraining(nn.Module):
+    """
+    BERT 完整預訓練模型（MLM + NSP）
+    """
+    def __init__(self, bert_model, vocab_size):
+        super(BERTPretraining, self).__init__()
+        
+        self.bert = bert_model
+        
+        # MLM 頭
+        self.mlm_head = nn.Sequential(
+            nn.Linear(bert_model.d_model, bert_model.d_model),
+            nn.GELU(),
+            nn.LayerNorm(bert_model.d_model),
+            nn.Linear(bert_model.d_model, vocab_size)
+        )
+        
+        # NSP 頭
+        self.nsp_head = nn.Linear(bert_model.d_model, 2)
+    
+    def forward(self, token_ids, segment_ids=None, attention_mask=None):
+        # BERT 編碼
+        encoded = self.bert(token_ids, segment_ids, attention_mask)
+        
+        # MLM 預測
+        mlm_output = self.mlm_head(encoded)
+        
+        # NSP 預測（使用 [CLS] token）
+        cls_output = encoded[:, 0, :]
+        nsp_output = self.nsp_head(cls_output)
+        
+        return mlm_output, nsp_output
+
+# 建立完整預訓練模型
+bert_pretrain = BERTPretraining(bert, VOCAB_SIZE)
+
+print(f"BERT 預訓練模型參數量: {sum(p.numel() for p in bert_pretrain.parameters()):,}")
+
+# 測試
+mlm_output, nsp_output = bert_pretrain(masked_tokens, segment_ids)
+print(f"\nMLM 輸出形狀: {mlm_output.shape}")
+print(f"NSP 輸出形狀: {nsp_output.shape}")
+</code></pre>
+
+            <div class="tip-box">
+                <h4>BERT 預訓練技巧</h4>
+                <ul>
+                    <li><strong>大量資料</strong> - BERT 在 BooksCorpus (800M words) + Wikipedia (2,500M words) 上訓練</li>
+                    <li><strong>長序列</strong> - 最大序列長度 512，90% 的步數使用較短序列以加速</li>
+                    <li><strong>動態遮蔽</strong> - 每個 epoch 重新遮蔽，避免總是遮蔽相同的 token</li>
+                    <li><strong>學習率</strong> - 1e-4，warmup 步數 10,000</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="content">
+            <h2>3. GPT（Generative Pre-trained Transformer）</h2>
+            
+            <h3>GPT 的核心思想</h3>
+            <p><span class="highlight">GPT</span> 使用 Transformer Decoder，採用自回歸語言建模，從左到右生成文本。</p>
+
+            <div class="concept-box">
+                <h4>GPT 的特點</h4>
+                <ul>
+                    <li><strong>單向建模</strong> - 只能看到左邊的上下文（因果注意力）</li>
+                    <li><strong>生成式</strong> - 擅長文本生成任務</li>
+                    <li><strong>零樣本學習</strong> - GPT-3 展示了強大的 few-shot 能力</li>
+                    <li><strong>規模擴展</strong> - GPT 系列不斷擴大模型規模</li>
+                </ul>
+            </div>
+
+            <pre><code class="language-python">import torch
+import torch.nn as nn
+
+class GPTModel(nn.Module):
+    """GPT 模型（簡化版）"""
+    def __init__(self, vocab_size, d_model=768, num_heads=12, num_layers=12,
+                 d_ff=3072, max_len=1024, dropout=0.1):
+        super(GPTModel, self).__init__()
+        
+        # Token Embedding
+        self.token_embed = nn.Embedding(vocab_size, d_model)
+        
+        # Position Embedding
+        self.position_embed = nn.Embedding(max_len, d_model)
+        
+        # Transformer Decoder Layers (只使用 self-attention 部分)
+        decoder_layer = nn.TransformerDecoderLayer(
+            d_model=d_model,
+            nhead=num_heads,
+            dim_feedforward=d_ff,
+            dropout=dropout,
+            activation='gelu',
+            batch_first=True
+        )
+        self.decoder = nn.TransformerDecoder(decoder_layer, num_layers)
+        
+        # 輸出投影
+        self.lm_head = nn.Linear(d_model, vocab_size, bias=False)
+        
+        # 權重綁定（Token Embedding 和 LM Head 共享權重）
+        self.lm_head.weight = self.token_embed.weight
+        
+        self.dropout = nn.Dropout(dropout)
+        self.d_model = d_model
+    
+    def forward(self, input_ids):
+        """
+        input_ids: (batch_size, seq_len)
+        """
+        batch_size, seq_len = input_ids.size()
+        
+        # Token Embedding
+        token_embeds = self.token_embed(input_ids)
+        
+        # Position Embedding
+        positions = torch.arange(seq_len, device=input_ids.device).unsqueeze(0).expand(batch_size, -1)
+        position_embeds = self.position_embed(positions)
+        
+        # 組合 Embedding
+        x = self.dropout(token_embeds + position_embeds)
+        
+        # 建立因果遮罩
+        causal_mask = torch.triu(torch.ones(seq_len, seq_len, device=input_ids.device), diagonal=1).bool()
+        
+        # Transformer Decoder（這裡簡化，只使用 self-attention）
+        # 實際 GPT 不使用標準的 Decoder，而是修改過的 Decoder 層
+        memory = torch.zeros_like(x)  # 空的 memory（因為我們只用 self-attention）
+        decoded = self.decoder(x, memory, tgt_mask=causal_mask)
+        
+        # Language Model Head
+        logits = self.lm_head(decoded)
+        
+        return logits
+    
+    def generate(self, input_ids, max_new_tokens=50, temperature=1.0, top_k=None):
+        """
+        文本生成（自回歸）
+        
+        input_ids: (batch_size, seq_len) 起始 tokens
+        max_new_tokens: 生成的最大 token 數
+        temperature: 控制隨機性
+        top_k: Top-K 採樣
+        """
+        self.eval()
+        
+        for _ in range(max_new_tokens):
+            # 前向傳播
+            with torch.no_grad():
+                logits = self(input_ids)
+            
+            # 取最後一個位置的 logits
+            logits = logits[:, -1, :] / temperature
+            
+            # Top-K 採樣
+            if top_k is not None:
+                v, _ = torch.topk(logits, top_k)
+                logits[logits < v[:, [-1]]] = -float('Inf')
+            
+            # Softmax 得到機率
+            probs = torch.softmax(logits, dim=-1)
+            
+            # 採樣下一個 token
+            next_token = torch.multinomial(probs, num_samples=1)
+            
+            # 添加到輸入序列
+            input_ids = torch.cat([input_ids, next_token], dim=1)
+        
+        return input_ids
+
+# 建立 GPT 模型
+VOCAB_SIZE = 50000
+gpt = GPTModel(
+    vocab_size=VOCAB_SIZE,
+    d_model=768,
+    num_heads=12,
+    num_layers=12,
+    d_ff=3072,
+    max_len=1024
+)
+
+print("GPT 模型架構:")
+print(gpt)
+print(f"\n總參數量: {sum(p.numel() for p in gpt.parameters()):,}")
+
+# 測試
+batch_size = 2
+seq_len = 50
+input_ids = torch.randint(0, VOCAB_SIZE, (batch_size, seq_len))
+
+logits = gpt(input_ids)
+print(f"\n輸入形狀: {input_ids.shape}")
+print(f"輸出形狀: {logits.shape}")
+
+# 測試生成
+prompt = torch.randint(0, VOCAB_SIZE, (1, 10))
+generated = gpt.generate(prompt, max_new_tokens=20, temperature=0.8)
+print(f"\n提示形狀: {prompt.shape}")
+print(f"生成序列形狀: {generated.shape}")
+</code></pre>
+
+            <h3>GPT 預訓練任務</h3>
+            <p>GPT 使用<strong>因果語言建模（Causal Language Modeling）</strong>：給定前面的 tokens，預測下一個 token。</p>
+
+            <pre><code class="language-python">def train_gpt_step(model, input_ids, optimizer, criterion):
+    """
+    GPT 訓練的一步
+    
+    輸入：[w1, w2, w3, w4, w5]
+    目標：[w2, w3, w4, w5, w6]（向左平移一位）
+    """
+    model.train()
+    
+    # 輸入和目標
+    inputs = input_ids[:, :-1]   # 去掉最後一個 token
+    targets = input_ids[:, 1:]   # 去掉第一個 token
+    
+    # 前向傳播
+    logits = model(inputs)
+    
+    # 計算損失
+    loss = criterion(logits.reshape(-1, logits.size(-1)), targets.reshape(-1))
+    
+    # 反向傳播
+    optimizer.zero_grad()
+    loss.backward()
+    optimizer.step()
+    
+    return loss.item()
+
+# 測試訓練步驟
+criterion = nn.CrossEntropyLoss()
+optimizer = torch.optim.Adam(gpt.parameters(), lr=1e-4)
+
+sample_data = torch.randint(0, VOCAB_SIZE, (4, 100))
+loss = train_gpt_step(gpt, sample_data, optimizer, criterion)
+print(f"GPT 訓練損失: {loss:.4f}")
+</code></pre>
+
+            <div class="note-box">
+                <h4>GPT 系列演進</h4>
+                <table>
+                    <tr>
+                        <th>模型</th>
+                        <th>參數量</th>
+                        <th>層數</th>
+                        <th>d_model</th>
+                        <th>特點</th>
+                    </tr>
+                    <tr>
+                        <td>GPT-1</td>
+                        <td>117M</td>
+                        <td>12</td>
+                        <td>768</td>
+                        <td>預訓練-微調範式</td>
+                    </tr>
+                    <tr>
+                        <td>GPT-2</td>
+                        <td>1.5B</td>
+                        <td>48</td>
+                        <td>1600</td>
+                        <td>零樣本學習</td>
+                    </tr>
+                    <tr>
+                        <td>GPT-3</td>
+                        <td>175B</td>
+                        <td>96</td>
+                        <td>12288</td>
+                        <td>少樣本學習、湧現能力</td>
+                    </tr>
+                    <tr>
+                        <td>GPT-4</td>
+                        <td>未公開</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>多模態、更強推理</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <div class="content">
+            <h2>4. BERT vs GPT 比較</h2>
+            
+            <table>
+                <tr>
+                    <th>特性</th>
+                    <th>BERT</th>
+                    <th>GPT</th>
+                </tr>
+                <tr>
+                    <td>架構</td>
+                    <td>Transformer Encoder</td>
+                    <td>Transformer Decoder</td>
+                </tr>
+                <tr>
+                    <td>注意力機制</td>
+                    <td>雙向（看左右）</td>
+                    <td>單向/因果（只看左）</td>
+                </tr>
+                <tr>
+                    <td>預訓練任務</td>
+                    <td>MLM + NSP</td>
+                    <td>因果語言建模</td>
+                </tr>
+                <tr>
+                    <td>擅長任務</td>
+                    <td>分類、NER、QA 等理解任務</td>
+                    <td>文本生成、對話等生成任務</td>
+                </tr>
+                <tr>
+                    <td>輸入格式</td>
+                    <td>單句或句子對</td>
+                    <td>單向文本序列</td>
+                </tr>
+                <tr>
+                    <td>特殊 Token</td>
+                    <td>[CLS], [SEP], [MASK]</td>
+                    <td>較少特殊 token</td>
+                </tr>
+                <tr>
+                    <td>微調方式</td>
+                    <td>添加任務特定層</td>
+                    <td>提示工程或微調</td>
+                </tr>
+                <tr>
+                    <td>規模擴展</td>
+                    <td>BERT-Base (110M), Large (340M)</td>
+                    <td>GPT-3 (175B), 持續擴大</td>
+                </tr>
+            </table>
+
+            <div class="concept-box">
+                <h4>何時使用 BERT vs GPT？</h4>
+                <ul>
+                    <li><strong>使用 BERT</strong>：
+                        <ul>
+                            <li>文本分類（情感分析、主題分類）</li>
+                            <li>命名實體識別（NER）</li>
+                            <li>問答系統（需要理解上下文）</li>
+                            <li>文本相似度計算</li>
+                        </ul>
+                    </li>
+                    <li><strong>使用 GPT</strong>：
+                        <ul>
+                            <li>文本生成（故事、文章）</li>
+                            <li>對話系統</li>
+                            <li>文本摘要</li>
+                            <li>代碼生成</li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="content">
+            <h2>5. 使用 Hugging Face Transformers</h2>
+            
+            <h3>安裝與載入模型</h3>
+            <pre><code class="language-python"># 安裝 Transformers
+# !pip install transformers torch
+
+from transformers import BertTokenizer, BertModel, BertForSequenceClassification
+from transformers import GPT2Tokenizer, GPT2LMHeadModel
+import torch
+
+# ===== BERT =====
+print("載入 BERT...")
+
+# 載入 tokenizer 和模型
+bert_tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
+bert_model = BertModel.from_pretrained('bert-base-uncased')
+
+# 文本編碼
+text = "Hello, how are you?"
+encoded = bert_tokenizer(text, return_tensors='pt', padding=True, truncation=True)
+
+print(f"\n編碼後的輸入:")
+print(f"input_ids: {encoded['input_ids']}")
+print(f"token_type_ids: {encoded['token_type_ids']}")
+print(f"attention_mask: {encoded['attention_mask']}")
+
+# 解碼
+decoded = bert_tokenizer.decode(encoded['input_ids'][0])
+print(f"\n解碼後: {decoded}")
+
+# 前向傳播
+with torch.no_grad():
+    outputs = bert_model(**encoded)
+
+print(f"\nBERT 輸出形狀:")
+print(f"last_hidden_state: {outputs.last_hidden_state.shape}")
+print(f"pooler_output: {outputs.pooler_output.shape}")
+
+# ===== GPT-2 =====
+print("\n\n載入 GPT-2...")
+
+# 載入 tokenizer 和模型
+gpt_tokenizer = GPT2Tokenizer.from_pretrained('gpt2')
+gpt_model = GPT2LMHeadModel.from_pretrained('gpt2')
+
+# 設定 pad_token（GPT2 預設沒有）
+gpt_tokenizer.pad_token = gpt_tokenizer.eos_token
+
+# 文本編碼
+prompt = "Once upon a time"
+encoded = gpt_tokenizer(prompt, return_tensors='pt')
+
+print(f"\n編碼後的輸入:")
+print(f"input_ids: {encoded['input_ids']}")
+
+# 生成文本
+with torch.no_grad():
+    output = gpt_model.generate(
+        encoded['input_ids'],
+        max_length=50,
+        num_return_sequences=1,
+        temperature=0.8,
+        top_k=50,
+        top_p=0.95,
+        do_sample=True
+    )
+
+generated_text = gpt_tokenizer.decode(output[0], skip_special_tokens=True)
+print(f"\n生成的文本:")
+print(generated_text)
+</code></pre>
+
+            <h3>BERT 微調：文本分類</h3>
+            <pre><code class="language-python">from transformers import BertForSequenceClassification, AdamW, get_linear_schedule_with_warmup
+from torch.utils.data import Dataset, DataLoader
+import torch.nn.functional as F
+
+class TextClassificationDataset(Dataset):
+    """文本分類資料集"""
+    def __init__(self, texts, labels, tokenizer, max_len=128):
+        self.texts = texts
+        self.labels = labels
+        self.tokenizer = tokenizer
+        self.max_len = max_len
+    
+    def __len__(self):
+        return len(self.texts)
+    
+    def __getitem__(self, idx):
+        text = self.texts[idx]
+        label = self.labels[idx]
+        
+        encoding = self.tokenizer(
+            text,
+            max_length=self.max_len,
+            padding='max_length',
+            truncation=True,
+            return_tensors='pt'
+        )
+        
+        return {
+            'input_ids': encoding['input_ids'].flatten(),
+            'attention_mask': encoding['attention_mask'].flatten(),
+            'label': torch.tensor(label, dtype=torch.long)
+        }
+
+# 準備資料
+texts = [
+    "I love this movie!",
+    "This is the worst film ever.",
+    "Amazing performance by the actors.",
+    "Boring and predictable plot.",
+    "A masterpiece of cinema!",
+    "Waste of time and money."
+]
+labels = [1, 0, 1, 0, 1, 0]  # 1: 正面, 0: 負面
+
+# 建立資料集
+tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
+dataset = TextClassificationDataset(texts, labels, tokenizer)
+dataloader = DataLoader(dataset, batch_size=2, shuffle=True)
+
+# 載入預訓練模型（用於分類）
+model = BertForSequenceClassification.from_pretrained(
+    'bert-base-uncased',
+    num_labels=2
+)
+
+# 訓練設定
+device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+model = model.to(device)
+
+optimizer = AdamW(model.parameters(), lr=2e-5)
+epochs = 3
+total_steps = len(dataloader) * epochs
+
+scheduler = get_linear_schedule_with_warmup(
+    optimizer,
+    num_warmup_steps=0,
+    num_training_steps=total_steps
+)
+
+# 訓練
+print("開始訓練...")
+model.train()
+
+for epoch in range(epochs):
+    total_loss = 0
+    
+    for batch in dataloader:
+        # 移到 GPU
+        input_ids = batch['input_ids'].to(device)
+        attention_mask = batch['attention_mask'].to(device)
+        labels = batch['label'].to(device)
+        
+        # 前向傳播
+        outputs = model(
+            input_ids=input_ids,
+            attention_mask=attention_mask,
+            labels=labels
+        )
+        
+        loss = outputs.loss
+        total_loss += loss.item()
+        
+        # 反向傳播
+        optimizer.zero_grad()
+        loss.backward()
+        optimizer.step()
+        scheduler.step()
+    
+    avg_loss = total_loss / len(dataloader)
+    print(f"Epoch {epoch+1}/{epochs}, Loss: {avg_loss:.4f}")
+
+print("\n訓練完成！")
+
+# 測試
+model.eval()
+test_text = "This movie is fantastic!"
+
+encoding = tokenizer(
+    test_text,
+    return_tensors='pt',
+    padding=True,
+    truncation=True,
+    max_length=128
+)
+
+input_ids = encoding['input_ids'].to(device)
+attention_mask = encoding['attention_mask'].to(device)
+
+with torch.no_grad():
+    outputs = model(input_ids=input_ids, attention_mask=attention_mask)
+    predictions = torch.argmax(outputs.logits, dim=-1)
+    probabilities = F.softmax(outputs.logits, dim=-1)
+
+print(f"\n測試文本: {test_text}")
+print(f"預測: {'正面' if predictions.item() == 1 else '負面'}")
+print(f"機率: {probabilities.cpu().numpy()}")
+</code></pre>
+
+            <h3>GPT 微調：文本生成</h3>
+            <pre><code class="language-python">from transformers import GPT2Tokenizer, GPT2LMHeadModel, TextDataset, DataCollatorForLanguageModeling
+from transformers import Trainer, TrainingArguments
+
+# 準備資料（這裡用簡單範例，實際應該是大量文本）
+texts = """
+Once upon a time, there was a beautiful princess.
+She lived in a castle on top of a hill.
+One day, a brave knight came to visit.
+They became the best of friends.
+And they lived happily ever after.
+"""
+
+# 儲存為文件
+with open('training_data.txt', 'w') as f:
+    f.write(texts)
+
+# 載入模型和 tokenizer
+tokenizer = GPT2Tokenizer.from_pretrained('gpt2')
+model = GPT2LMHeadModel.from_pretrained('gpt2')
+
+# 設定特殊 token
+tokenizer.pad_token = tokenizer.eos_token
+
+# 建立資料集
+def load_dataset(file_path, tokenizer, block_size=128):
+    dataset = TextDataset(
+        tokenizer=tokenizer,
+        file_path=file_path,
+        block_size=block_size
+    )
+    return dataset
+
+train_dataset = load_dataset('training_data.txt', tokenizer)
+
+# Data collator
+data_collator = DataCollatorForLanguageModeling(
+    tokenizer=tokenizer,
+    mlm=False  # GPT 使用因果語言建模，不是 MLM
+)
+
+# 訓練參數
+training_args = TrainingArguments(
+    output_dir='./gpt2-finetuned',
+    overwrite_output_dir=True,
+    num_train_epochs=3,
+    per_device_train_batch_size=2,
+    save_steps=10,
+    save_total_limit=2,
+    logging_steps=10,
+)
+
+# 訓練器
+trainer = Trainer(
+    model=model,
+    args=training_args,
+    data_collator=data_collator,
+    train_dataset=train_dataset,
+)
+
+# 開始訓練
+print("開始微調 GPT-2...")
+# trainer.train()  # 取消註解以執行訓練
+
+# 生成文本
+print("\n生成文本:")
+model.eval()
+
+prompt = "Once upon a time"
+encoded = tokenizer(prompt, return_tensors='pt')
+
+with torch.no_grad():
+    output = model.generate(
+        encoded['input_ids'],
+        max_length=100,
+        num_return_sequences=3,
+        temperature=0.9,
+        top_k=50,
+        top_p=0.95,
+        do_sample=True
+    )
+
+for i, sequence in enumerate(output):
+    text = tokenizer.decode(sequence, skip_special_tokens=True)
+    print(f"\n生成 {i+1}:")
+    print(text)
+</code></pre>
+
+            <div class="tip-box">
+                <h4>Hugging Face 最佳實踐</h4>
+                <ul>
+                    <li><strong>模型選擇</strong> - 在 Model Hub 上選擇適合任務的預訓練模型</li>
+                    <li><strong>快取管理</strong> - 模型會自動下載到 ~/.cache/huggingface</li>
+                    <li><strong>GPU 使用</strong> - 使用 .to(device) 移動模型到 GPU</li>
+                    <li><strong>批次處理</strong> - 使用 DataLoader 提升效率</li>
+                    <li><strong>混合精度</strong> - 使用 fp16=True 加速訓練</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="content">
+            <div class="exercise-section">
+                <h3>本週練習題</h3>
+                
+                <h4>基礎練習（必做）</h4>
+                <ol>
+                    <li>
+                        <strong>BERT Embedding 分析</strong>
+                        <ul>
+                            <li>實作 BERT 的三種 Embedding</li>
+                            <li>視覺化不同 Embedding 的效果</li>
+                            <li>理解 Segment Embedding 的作用</li>
+                            <li>比較可學習與固定位置編碼</li>
+                        </ul>
+                    </li>
+                    
+                    <li>
+                        <strong>MLM 任務實作</strong>
+                        <ul>
+                            <li>實現完整的 MLM 資料準備</li>
+                            <li>訓練簡單的 MLM 模型</li>
+                            <li>評估預測準確率</li>
+                            <li>分析哪些詞容易預測</li>
+                        </ul>
+                    </li>
+                    
+                    <li>
+                        <strong>使用 Hugging Face</strong>
+                        <ul>
+                            <li>載入 BERT 和 GPT-2 模型</li>
+                            <li>理解 tokenizer 的工作原理</li>
+                            <li>測試不同的生成參數</li>
+                            <li>比較不同模型的效果</li>
+                        </ul>
+                    </li>
+                </ol>
+
+                <h4>進階練習</h4>
+                <ol start="4">
+                    <li>
+                        <strong>BERT 文本分類</strong>
+                        <ul>
+                            <li>在真實資料集上微調 BERT（如 IMDb、SST-2）</li>
+                            <li>實驗不同的學習率和 batch size</li>
+                            <li>比較不同 BERT 變體（BERT、RoBERTa、DistilBERT）</li>
+                            <li>達到 90% 以上準確率</li>
+                        </ul>
+                    </li>
+                    
+                    <li>
+                        <strong>GPT 文本生成</strong>
+                        <ul>
+                            <li>微調 GPT-2 在特定領域文本</li>
+                            <li>實驗不同的採樣策略（temperature、top-k、top-p）</li>
+                            <li>實現 beam search 解碼</li>
+                            <li>評估生成質量（perplexity）</li>
+                        </ul>
+                    </li>
+                </ol>
+
+                <h4>挑戰練習</h4>
+                <ol start="6">
+                    <li>
+                        <strong>從零預訓練小型 BERT</strong>
+                        <ul>
+                            <li>在小型語料上預訓練 BERT</li>
+                            <li>實現 MLM 和 NSP 任務</li>
+                            <li>比較預訓練對下游任務的影響</li>
+                            <li>分析訓練過程中的指標變化</li>
+                        </ul>
+                    </li>
+                    
+                    <li>
+                        <strong>多任務學習</strong>
+                        <ul>
+                            <li>同時訓練多個下游任務</li>
+                            <li>實現任務特定的輸出層</li>
+                            <li>分析不同任務之間的遷移</li>
+                            <li>比較多任務 vs 單任務效果</li>
+                        </ul>
+                    </li>
+                </ol>
+            </div>
+        </div>
+
+        <div class="content">
+            <h2>本週總結</h2>
+            
+            <h3>重點回顧</h3>
+            <ul>
+                <li>理解 BERT 的雙向編碼器架構</li>
+                <li>掌握 MLM 和 NSP 預訓練任務</li>
+                <li>理解 GPT 的自回歸語言建模</li>
+                <li>學會使用 Hugging Face Transformers</li>
+                <li>掌握預訓練-微調範式</li>
+            </ul>
+
+            <h3>關鍵概念</h3>
+            <ul>
+                <li><strong>預訓練-微調</strong> - 現代 NLP 的標準範式</li>
+                <li><strong>雙向 vs 單向</strong> - BERT 看全局，GPT 看左邊</li>
+                <li><strong>MLM</strong> - 遮蔽語言模型，BERT 的核心</li>
+                <li><strong>因果語言建模</strong> - GPT 的預訓練目標</li>
+                <li><strong>遷移學習</strong> - 預訓練知識遷移到下游任務</li>
+            </ul>
+
+            <h3>預訓練模型的影響</h3>
+            <div class="note-box">
+                <h4>BERT 和 GPT 之後的發展</h4>
+                <ul>
+                    <li><strong>BERT 家族</strong> - RoBERTa、ALBERT、DistilBERT、ELECTRA</li>
+                    <li><strong>GPT 家族</strong> - GPT-2、GPT-3、GPT-4、ChatGPT</li>
+                    <li><strong>統一模型</strong> - T5、BART（結合 Encoder-Decoder）</li>
+                    <li><strong>多語言模型</strong> - mBERT、XLM-R</li>
+                    <li><strong>領域特定</strong> - BioBERT、SciBERT、CodeBERT</li>
+                </ul>
+            </div>
+
+            <h3>下週預告</h3>
+            <div class="note-box">
+                <h4>Week 9 - 進階 NLP 技術</h4>
+                <p>下週將學習更進階的 NLP 技術：</p>
+                <ul>
+                    <li>Prompt Engineering 與提示學習</li>
+                    <li>Few-Shot 與 Zero-Shot 學習</li>
+                    <li>模型壓縮與知識蒸餾</li>
+                    <li>LoRA、Adapter 等參數高效微調</li>
+                    <li>實戰：構建問答系統</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="nav-buttons">
+            <a href="llm-week7.html" class="btn btn-secondary">Week 7：Transformer 架構</a>
+            <a href="llm-week9.html" class="btn">Week 9：進階 NLP 技術</a>
+        </div>
+
+        <footer>
+            <p>LLM 與 AI/ML 課程 Week 8</p>
+            <p>BERT · GPT · 預訓練語言模型 · Hugging Face · 微調</p>
+            <p style="font-size: 0.9em; color: #95a5a6;">© 2025 All Rights Reserved</p>
+        </footer>
+    </div>
+</body>
+</html>

@@ -1,0 +1,1639 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Week 2 - 機器學習數學基礎 | LLM 與 AI/ML 課程</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft JhengHei', Arial, sans-serif;
+            background: #f8f9fa;
+            color: #1a1a1a;
+            line-height: 1.7;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .nav {
+            background: white;
+            padding: 16px 28px;
+            border-radius: 8px;
+            margin-bottom: 32px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            border: 1px solid #e0e0e0;
+        }
+
+        .nav a {
+            color: #3498db;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 8px 16px;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+        }
+
+        .nav a:hover {
+            background: #ecf0f1;
+            color: #2980b9;
+        }
+
+        .nav span {
+            color: #6c757d;
+            font-weight: 500;
+        }
+
+        header {
+            background: linear-gradient(to right, #2c3e50, #34495e);
+            color: white;
+            padding: 56px 40px;
+            border-radius: 8px;
+            margin-bottom: 32px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            border-bottom: 3px solid #3498db;
+        }
+
+        header h1 {
+            font-size: 2.2em;
+            margin-bottom: 12px;
+            font-weight: 700;
+        }
+
+        header .subtitle {
+            font-size: 1.05em;
+            opacity: 0.9;
+            font-weight: 400;
+        }
+
+        .content {
+            background: white;
+            border-radius: 8px;
+            padding: 48px;
+            margin-bottom: 32px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            border: 1px solid #e0e0e0;
+        }
+
+        .content h2 {
+            color: #1a1a1a;
+            font-size: 1.9em;
+            margin-bottom: 24px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #3498db;
+            font-weight: 700;
+        }
+
+        .content h3 {
+            color: #2c3e50;
+            font-size: 1.5em;
+            margin: 36px 0 16px 0;
+            font-weight: 600;
+        }
+
+        .content h4 {
+            color: #34495e;
+            font-size: 1.2em;
+            margin: 24px 0 12px 0;
+            font-weight: 600;
+        }
+
+        .content p {
+            margin-bottom: 16px;
+            line-height: 1.8;
+            color: #4a4a4a;
+        }
+
+        pre[class*="language-"] {
+            margin: 24px 0;
+            border-radius: 6px;
+            border: 1px solid #d0d7de;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+        }
+
+        code[class*="language-"] {
+            font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
+            font-size: 0.92em;
+            line-height: 1.6;
+        }
+
+        .note-box {
+            background: #e3f2fd;
+            border-left: 4px solid #2196f3;
+            padding: 20px 24px;
+            margin: 24px 0;
+            border-radius: 4px;
+        }
+
+        .note-box h4 {
+            color: #1565c0;
+            margin-top: 0;
+            margin-bottom: 12px;
+            font-size: 1.1em;
+        }
+
+        .warning-box {
+            background: #fff3e0;
+            border-left: 4px solid #ff9800;
+            padding: 20px 24px;
+            margin: 24px 0;
+            border-radius: 4px;
+        }
+
+        .warning-box h4 {
+            color: #e65100;
+            margin-top: 0;
+            margin-bottom: 12px;
+            font-size: 1.1em;
+        }
+
+        .tip-box {
+            background: #f1f8e9;
+            border-left: 4px solid #8bc34a;
+            padding: 20px 24px;
+            margin: 24px 0;
+            border-radius: 4px;
+        }
+
+        .tip-box h4 {
+            color: #558b2f;
+            margin-top: 0;
+            margin-bottom: 12px;
+            font-size: 1.1em;
+        }
+
+        .concept-box {
+            background: #f3e5f5;
+            border-left: 4px solid #9c27b0;
+            padding: 20px 24px;
+            margin: 24px 0;
+            border-radius: 4px;
+        }
+
+        .concept-box h4 {
+            color: #6a1b9a;
+            margin-top: 0;
+            margin-bottom: 12px;
+            font-size: 1.1em;
+        }
+
+        .exercise-section {
+            background: #fafafa;
+            border: 1px solid #e0e0e0;
+            padding: 32px;
+            margin: 32px 0;
+            border-radius: 8px;
+        }
+
+        .exercise-section h3 {
+            color: #2c3e50;
+            margin-top: 0;
+        }
+
+        .math-formula {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            padding: 16px 20px;
+            margin: 20px 0;
+            border-radius: 4px;
+            font-family: 'Times New Roman', serif;
+            text-align: center;
+            font-size: 1.1em;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 24px 0;
+            background: white;
+        }
+
+        table th,
+        table td {
+            padding: 14px 16px;
+            text-align: left;
+            border: 1px solid #dee2e6;
+        }
+
+        table th {
+            background: #2c3e50;
+            color: white;
+            font-weight: 600;
+        }
+
+        table tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+
+        ul, ol {
+            margin-left: 28px;
+            margin-top: 12px;
+            margin-bottom: 16px;
+        }
+
+        li {
+            margin: 10px 0;
+            line-height: 1.7;
+            color: #4a4a4a;
+        }
+
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 48px;
+            gap: 16px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 28px;
+            background: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            border: none;
+        }
+
+        .btn:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
+        }
+
+        .btn-secondary {
+            background: #95a5a6;
+        }
+
+        .btn-secondary:hover {
+            background: #7f8c8d;
+            box-shadow: 0 4px 12px rgba(149, 165, 166, 0.3);
+        }
+
+        .highlight {
+            background: #fff9c4;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-weight: 500;
+        }
+
+        footer {
+            text-align: center;
+            padding: 32px 0;
+            color: #6c757d;
+            margin-top: 48px;
+            border-top: 1px solid #dee2e6;
+        }
+
+        footer p {
+            margin: 8px 0;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 12px;
+            }
+
+            .content {
+                padding: 24px 20px;
+            }
+
+            header {
+                padding: 32px 24px;
+            }
+
+            header h1 {
+                font-size: 1.8em;
+            }
+
+            .nav-buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="nav">
+            <a href="llm-week1.html">Week 1</a>
+            <span>Week 2 / 16</span>
+            <a href="llm-week3.html">Week 3</a>
+        </div>
+
+        <header>
+            <h1>Week 2 - 機器學習數學基礎</h1>
+            <div class="subtitle">掌握 AI/ML 必備的線性代數、微積分、機率統計與最佳化</div>
+        </header>
+
+        <div class="content">
+            <h2>本週學習內容</h2>
+            <ul>
+                <li>線性代數：向量、矩陣運算、特徵值與特徵向量</li>
+                <li>微積分：導數、梯度、偏微分、鏈式法則</li>
+                <li>機率統計：機率分佈、期望值、變異數、貝氏定理</li>
+                <li>最佳化：梯度下降法、損失函數、學習率</li>
+                <li>實戰：從零實現梯度下降演算法</li>
+            </ul>
+
+            <div class="concept-box">
+                <h4>為什麼要學習數學？</h4>
+                <p>數學是理解機器學習的基礎，它幫助我們：</p>
+                <ul>
+                    <li><strong>理解演算法原理</strong> - 知道模型背後在做什麼</li>
+                    <li><strong>調試與優化</strong> - 知道為什麼模型不收斂或過擬合</li>
+                    <li><strong>創新與改進</strong> - 能夠修改和設計新演算法</li>
+                    <li><strong>閱讀論文</strong> - 理解最新研究成果</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="content">
+            <h2>1. 線性代數基礎</h2>
+            
+            <h3>向量（Vector）</h3>
+            <p><span class="highlight">向量</span>是具有大小和方向的量，在機器學習中用來表示特徵、參數等。</p>
+
+            <div class="note-box">
+                <h4>向量的表示</h4>
+                <p>向量通常用粗體小寫字母表示：<strong>v</strong></p>
+                <div class="math-formula">
+                    v = [v₁, v₂, v₃, ..., vₙ]
+                </div>
+            </div>
+
+            <h4>向量運算</h4>
+            <pre><code class="language-python">import numpy as np
+
+# 建立向量
+v1 = np.array([1, 2, 3])
+v2 = np.array([4, 5, 6])
+
+# 向量加法
+print("向量加法:", v1 + v2)  # [5 7 9]
+
+# 向量減法
+print("向量減法:", v1 - v2)  # [-3 -3 -3]
+
+# 純量乘法（Scalar Multiplication）
+print("純量乘法:", 2 * v1)  # [2 4 6]
+
+# 點積（Dot Product）- 衡量向量相似度
+dot_product = np.dot(v1, v2)
+print("點積:", dot_product)  # 32 = 1*4 + 2*5 + 3*6
+
+# 向量長度（範數，Norm）
+length = np.linalg.norm(v1)
+print("向量長度:", length)  # 3.74...
+
+# 單位向量（Unit Vector）- 長度為 1 的向量
+unit_v1 = v1 / np.linalg.norm(v1)
+print("單位向量:", unit_v1)
+print("單位向量長度:", np.linalg.norm(unit_v1))  # 1.0
+</code></pre>
+
+            <div class="concept-box">
+                <h4>點積的意義</h4>
+                <p>點積在機器學習中非常重要：</p>
+                <ul>
+                    <li><strong>相似度</strong> - 點積越大，向量越相似（方向越接近）</li>
+                    <li><strong>線性模型</strong> - y = w · x + b（權重與特徵的點積）</li>
+                    <li><strong>神經網路</strong> - 每一層都在計算點積</li>
+                </ul>
+            </div>
+
+            <h3>矩陣（Matrix）</h3>
+            <p><span class="highlight">矩陣</span>是二維的數字陣列，用大寫字母表示：<strong>A</strong></p>
+
+            <h4>矩陣運算</h4>
+            <pre><code class="language-python">import numpy as np
+
+# 建立矩陣
+A = np.array([[1, 2, 3],
+              [4, 5, 6]])
+
+B = np.array([[7, 8],
+              [9, 10],
+              [11, 12]])
+
+print("矩陣 A 形狀:", A.shape)  # (2, 3) - 2列3行
+
+# 矩陣轉置（Transpose）
+print("A 的轉置:\n", A.T)
+
+# 矩陣乘法（重要！）
+# A (2×3) @ B (3×2) = C (2×2)
+C = np.dot(A, B)  # 或 A @ B
+print("矩陣乘法:\n", C)
+
+# 解釋：C[i,j] = A 的第 i 列與 B 的第 j 行的點積
+# C[0,0] = [1,2,3] · [7,9,11] = 1*7 + 2*9 + 3*11 = 58
+
+# 元素級乘法（Element-wise）
+D = np.array([[1, 2, 3],
+              [4, 5, 6]])
+E = np.array([[2, 2, 2],
+              [3, 3, 3]])
+print("元素級乘法:\n", D * E)  # 對應元素相乘
+</code></pre>
+
+            <div class="note-box">
+                <h4>矩陣乘法規則</h4>
+                <p>矩陣 A (m×n) 和矩陣 B (n×p) 相乘：</p>
+                <ul>
+                    <li>A 的<strong>列數</strong>必須等於 B 的<strong>行數</strong></li>
+                    <li>結果矩陣 C 的形狀是 (m×p)</li>
+                    <li>C[i,j] = A 的第 i 列與 B 的第 j 行的點積</li>
+                </ul>
+            </div>
+
+            <h4>特殊矩陣</h4>
+            <pre><code class="language-python">import numpy as np
+
+# 單位矩陣（Identity Matrix）- 對角線為 1，其餘為 0
+I = np.eye(3)
+print("單位矩陣:\n", I)
+# [[1 0 0]
+#  [0 1 0]
+#  [0 0 1]]
+
+# 性質：A @ I = I @ A = A
+
+# 對角矩陣（Diagonal Matrix）
+D = np.diag([1, 2, 3])
+print("對角矩陣:\n", D)
+
+# 零矩陣
+Z = np.zeros((2, 3))
+print("零矩陣:\n", Z)
+</code></pre>
+
+            <h3>特徵值與特徵向量</h3>
+            <p>對於方陣 A，如果存在向量 v 和純量 λ 使得：</p>
+            <div class="math-formula">
+                A · v = λ · v
+            </div>
+            <p>則 λ 是<strong>特徵值</strong>（eigenvalue），v 是對應的<strong>特徵向量</strong>（eigenvector）。</p>
+
+            <pre><code class="language-python">import numpy as np
+
+# 建立矩陣
+A = np.array([[4, 2],
+              [1, 3]])
+
+# 計算特徵值和特徵向量
+eigenvalues, eigenvectors = np.linalg.eig(A)
+
+print("特徵值:", eigenvalues)
+print("特徵向量:\n", eigenvectors)
+
+# 驗證：A @ v = λ @ v
+v1 = eigenvectors[:, 0]
+lambda1 = eigenvalues[0]
+
+print("\n驗證:")
+print("A @ v1 =", A @ v1)
+print("λ1 * v1 =", lambda1 * v1)
+# 兩者應該相等（或方向相同）
+</code></pre>
+
+            <div class="concept-box">
+                <h4>特徵值/特徵向量的應用</h4>
+                <ul>
+                    <li><strong>PCA（主成分分析）</strong> - 降維技術</li>
+                    <li><strong>圖論</strong> - PageRank 演算法</li>
+                    <li><strong>穩定性分析</strong> - 動態系統</li>
+                    <li><strong>數據壓縮</strong> - 找出重要方向</li>
+                </ul>
+            </div>
+
+            <h3>矩陣分解</h3>
+            <pre><code class="language-python">import numpy as np
+
+A = np.array([[1, 2, 3],
+              [4, 5, 6],
+              [7, 8, 9]])
+
+# SVD 分解（Singular Value Decomposition）
+# A = U @ S @ V^T
+U, S, Vt = np.linalg.svd(A)
+
+print("U 形狀:", U.shape)
+print("S (奇異值):", S)
+print("V^T 形狀:", Vt.shape)
+
+# 重建矩陣
+S_matrix = np.diag(S)
+A_reconstructed = U @ S_matrix @ Vt
+print("\n重建的 A:\n", A_reconstructed)
+</code></pre>
+
+            <div class="tip-box">
+                <h4>線性代數在深度學習中的應用</h4>
+                <ul>
+                    <li><strong>資料表示</strong> - 輸入、權重、輸出都是矩陣/向量</li>
+                    <li><strong>前向傳播</strong> - 矩陣乘法串聯</li>
+                    <li><strong>反向傳播</strong> - 矩陣的梯度計算</li>
+                    <li><strong>參數更新</strong> - 向量運算</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="content">
+            <h2>2. 微積分基礎</h2>
+            
+            <h3>導數（Derivative）</h3>
+            <p><span class="highlight">導數</span>描述函數在某一點的變化率，是最佳化的核心概念。</p>
+
+            <div class="math-formula">
+                f'(x) = lim(h→0) [f(x+h) - f(x)] / h
+            </div>
+
+            <h4>常見函數的導數</h4>
+            <table>
+                <tr>
+                    <th>函數</th>
+                    <th>導數</th>
+                </tr>
+                <tr>
+                    <td>f(x) = c（常數）</td>
+                    <td>f'(x) = 0</td>
+                </tr>
+                <tr>
+                    <td>f(x) = x</td>
+                    <td>f'(x) = 1</td>
+                </tr>
+                <tr>
+                    <td>f(x) = x²</td>
+                    <td>f'(x) = 2x</td>
+                </tr>
+                <tr>
+                    <td>f(x) = xⁿ</td>
+                    <td>f'(x) = n·xⁿ⁻¹</td>
+                </tr>
+                <tr>
+                    <td>f(x) = eˣ</td>
+                    <td>f'(x) = eˣ</td>
+                </tr>
+                <tr>
+                    <td>f(x) = ln(x)</td>
+                    <td>f'(x) = 1/x</td>
+                </tr>
+                <tr>
+                    <td>f(x) = sin(x)</td>
+                    <td>f'(x) = cos(x)</td>
+                </tr>
+            </table>
+
+            <h4>數值計算導數</h4>
+            <pre><code class="language-python">import numpy as np
+import matplotlib.pyplot as plt
+
+# 定義函數
+def f(x):
+    return x**2
+
+# 數值計算導數
+def numerical_derivative(f, x, h=1e-5):
+    return (f(x + h) - f(x)) / h
+
+# 測試
+x = 3
+derivative = numerical_derivative(f, x)
+print(f"f(x) = x² 在 x={x} 的導數: {derivative}")
+print(f"理論值: {2*x}")
+
+# 視覺化
+x_vals = np.linspace(-5, 5, 100)
+y_vals = f(x_vals)
+y_derivative = 2 * x_vals  # f'(x) = 2x
+
+plt.figure(figsize=(10, 6))
+plt.plot(x_vals, y_vals, label='f(x) = x²', linewidth=2)
+plt.plot(x_vals, y_derivative, label="f'(x) = 2x", linewidth=2, linestyle='--')
+plt.axhline(y=0, color='k', linewidth=0.5)
+plt.axvline(x=0, color='k', linewidth=0.5)
+plt.grid(True, alpha=0.3)
+plt.legend()
+plt.title('函數與其導數')
+plt.xlabel('x')
+plt.ylabel('y')
+plt.show()
+</code></pre>
+
+            <h3>偏微分（Partial Derivative）</h3>
+            <p>對於多變數函數 f(x, y)，<span class="highlight">偏微分</span>是對其中一個變數求導，其他變數視為常數。</p>
+
+            <div class="math-formula">
+                ∂f/∂x : 對 x 的偏微分<br>
+                ∂f/∂y : 對 y 的偏微分
+            </div>
+
+            <pre><code class="language-python">import numpy as np
+
+# 定義多變數函數
+def f(x, y):
+    return x**2 + 2*x*y + y**2
+
+# 數值計算偏微分
+def partial_derivative_x(f, x, y, h=1e-5):
+    return (f(x + h, y) - f(x, y)) / h
+
+def partial_derivative_y(f, x, y, h=1e-5):
+    return (f(x, y + h) - f(x, y)) / h
+
+# 測試
+x, y = 2, 3
+df_dx = partial_derivative_x(f, x, y)
+df_dy = partial_derivative_y(f, x, y)
+
+print(f"在點 ({x}, {y}):")
+print(f"∂f/∂x = {df_dx}")
+print(f"∂f/∂y = {df_dy}")
+
+# 理論值
+# f(x,y) = x² + 2xy + y²
+# ∂f/∂x = 2x + 2y
+# ∂f/∂y = 2x + 2y
+print(f"\n理論值:")
+print(f"∂f/∂x = {2*x + 2*y}")
+print(f"∂f/∂y = {2*x + 2*y}")
+</code></pre>
+
+            <h3>梯度（Gradient）</h3>
+            <p><span class="highlight">梯度</span>是函數所有偏微分組成的向量，指向函數增長最快的方向。</p>
+
+            <div class="math-formula">
+                ∇f = [∂f/∂x₁, ∂f/∂x₂, ..., ∂f/∂xₙ]
+            </div>
+
+            <pre><code class="language-python">import numpy as np
+
+# 定義函數
+def f(x):
+    """f(x) = x₁² + x₂²"""
+    return x[0]**2 + x[1]**2
+
+# 計算梯度
+def gradient(f, x, h=1e-5):
+    grad = np.zeros_like(x)
+    for i in range(len(x)):
+        x_plus = x.copy()
+        x_plus[i] += h
+        grad[i] = (f(x_plus) - f(x)) / h
+    return grad
+
+# 測試
+x = np.array([3.0, 4.0])
+grad = gradient(f, x)
+print(f"在點 {x} 的梯度: {grad}")
+print(f"理論梯度: {2*x}")  # ∇f = [2x₁, 2x₂]
+
+# 梯度的大小（範數）
+grad_magnitude = np.linalg.norm(grad)
+print(f"梯度大小: {grad_magnitude}")
+</code></pre>
+
+            <div class="concept-box">
+                <h4>梯度的重要性質</h4>
+                <ul>
+                    <li><strong>方向</strong> - 指向函數增長最快的方向</li>
+                    <li><strong>大小</strong> - 表示變化的速率</li>
+                    <li><strong>梯度下降</strong> - 沿著負梯度方向可以找到最小值</li>
+                    <li><strong>極值點</strong> - 梯度為零的點可能是極值點</li>
+                </ul>
+            </div>
+
+            <h3>鏈式法則（Chain Rule）</h3>
+            <p><span class="highlight">鏈式法則</span>用於計算複合函數的導數，是反向傳播的數學基礎。</p>
+
+            <div class="math-formula">
+                如果 y = f(u) 且 u = g(x)，則<br>
+                dy/dx = (dy/du) · (du/dx)
+            </div>
+
+            <pre><code class="language-python">import numpy as np
+
+# 範例：計算 y = (3x + 2)² 的導數
+# 令 u = 3x + 2, y = u²
+# dy/dx = (dy/du) · (du/dx) = 2u · 3 = 2(3x+2) · 3 = 6(3x+2)
+
+def compute_with_chain_rule(x):
+    # 前向傳播
+    u = 3*x + 2
+    y = u**2
+    
+    # 反向傳播
+    dy_du = 2*u        # y = u² 對 u 的導數
+    du_dx = 3          # u = 3x+2 對 x 的導數
+    dy_dx = dy_du * du_dx  # 鏈式法則
+    
+    return y, dy_dx
+
+x = 2
+y, derivative = compute_with_chain_rule(x)
+print(f"x = {x}")
+print(f"y = {y}")
+print(f"dy/dx = {derivative}")
+
+# 驗證
+def f(x):
+    return (3*x + 2)**2
+
+h = 1e-5
+numerical_derivative = (f(x + h) - f(x)) / h
+print(f"數值導數: {numerical_derivative}")
+</code></pre>
+
+            <div class="note-box">
+                <h4>鏈式法則在深度學習中的應用</h4>
+                <p>神經網路的反向傳播就是鏈式法則的應用：</p>
+                <ul>
+                    <li>前向傳播：x → h₁ → h₂ → ... → y</li>
+                    <li>反向傳播：∂L/∂x = (∂L/∂y) · (∂y/∂h₂) · ... · (∂h₁/∂x)</li>
+                    <li>每一層的梯度通過鏈式法則連接起來</li>
+                </ul>
+            </div>
+
+            <h3>泰勒展開式（Taylor Series）</h3>
+            <p>泰勒展開式用一個多項式來近似函數，在最佳化中很重要。</p>
+
+            <div class="math-formula">
+                f(x) ≈ f(a) + f'(a)(x-a) + f''(a)(x-a)²/2! + ...
+            </div>
+
+            <pre><code class="language-python">import numpy as np
+import matplotlib.pyplot as plt
+
+# 用泰勒展開近似 e^x
+def taylor_exp(x, n_terms=5):
+    """
+    e^x 的泰勒展開（在 x=0 處）
+    e^x = 1 + x + x²/2! + x³/3! + ...
+    """
+    result = 0
+    for n in range(n_terms):
+        result += x**n / np.math.factorial(n)
+    return result
+
+# 視覺化
+x_vals = np.linspace(-2, 2, 100)
+y_exact = np.exp(x_vals)
+y_taylor_2 = np.array([taylor_exp(x, 2) for x in x_vals])
+y_taylor_5 = np.array([taylor_exp(x, 5) for x in x_vals])
+y_taylor_10 = np.array([taylor_exp(x, 10) for x in x_vals])
+
+plt.figure(figsize=(10, 6))
+plt.plot(x_vals, y_exact, label='e^x (exact)', linewidth=2)
+plt.plot(x_vals, y_taylor_2, label='Taylor (2 terms)', linewidth=2, linestyle='--')
+plt.plot(x_vals, y_taylor_5, label='Taylor (5 terms)', linewidth=2, linestyle='--')
+plt.plot(x_vals, y_taylor_10, label='Taylor (10 terms)', linewidth=2, linestyle=':')
+plt.legend()
+plt.grid(True, alpha=0.3)
+plt.title('泰勒展開近似 e^x')
+plt.xlabel('x')
+plt.ylabel('y')
+plt.ylim(-2, 8)
+plt.show()
+</code></pre>
+        </div>
+
+        <div class="content">
+            <h2>3. 機率統計基礎</h2>
+            
+            <h3>機率分佈（Probability Distribution）</h3>
+            <p><span class="highlight">機率分佈</span>描述隨機變數取不同值的可能性。</p>
+
+            <h4>常見機率分佈</h4>
+            <pre><code class="language-python">import numpy as np
+import matplotlib.pyplot as plt
+from scipy import stats
+
+fig, axes = plt.subplots(2, 2, figsize=(12, 10))
+
+# 1. 均勻分佈（Uniform Distribution）
+x = np.linspace(0, 1, 100)
+axes[0, 0].plot(x, stats.uniform.pdf(x), linewidth=2)
+axes[0, 0].set_title('均勻分佈')
+axes[0, 0].set_xlabel('x')
+axes[0, 0].set_ylabel('機率密度')
+axes[0, 0].grid(True, alpha=0.3)
+
+# 2. 常態分佈（Normal Distribution）
+x = np.linspace(-4, 4, 100)
+axes[0, 1].plot(x, stats.norm.pdf(x, 0, 1), label='μ=0, σ=1', linewidth=2)
+axes[0, 1].plot(x, stats.norm.pdf(x, 0, 0.5), label='μ=0, σ=0.5', linewidth=2)
+axes[0, 1].plot(x, stats.norm.pdf(x, 1, 1), label='μ=1, σ=1', linewidth=2)
+axes[0, 1].set_title('常態分佈')
+axes[0, 1].set_xlabel('x')
+axes[0, 1].set_ylabel('機率密度')
+axes[0, 1].legend()
+axes[0, 1].grid(True, alpha=0.3)
+
+# 3. 伯努利分佈（Bernoulli Distribution）
+# 二元分類問題
+x = [0, 1]
+p = 0.7
+axes[1, 0].bar(x, [1-p, p], width=0.3)
+axes[1, 0].set_title('伯努利分佈 (p=0.7)')
+axes[1, 0].set_xlabel('x')
+axes[1, 0].set_ylabel('機率')
+axes[1, 0].set_xticks([0, 1])
+axes[1, 0].grid(True, alpha=0.3)
+
+# 4. 指數分佈（Exponential Distribution）
+x = np.linspace(0, 5, 100)
+axes[1, 1].plot(x, stats.expon.pdf(x, scale=1), label='λ=1', linewidth=2)
+axes[1, 1].plot(x, stats.expon.pdf(x, scale=0.5), label='λ=2', linewidth=2)
+axes[1, 1].set_title('指數分佈')
+axes[1, 1].set_xlabel('x')
+axes[1, 1].set_ylabel('機率密度')
+axes[1, 1].legend()
+axes[1, 1].grid(True, alpha=0.3)
+
+plt.tight_layout()
+plt.show()
+</code></pre>
+
+            <h3>期望值與變異數</h3>
+            <p><strong>期望值</strong>（Expected Value）是隨機變數的平均值。<br>
+               <strong>變異數</strong>（Variance）衡量資料的分散程度。</p>
+
+            <div class="math-formula">
+                期望值: E[X] = μ = Σ x · P(x)<br>
+                變異數: Var(X) = σ² = E[(X - μ)²]<br>
+                標準差: σ = √Var(X)
+            </div>
+
+            <pre><code class="language-python">import numpy as np
+
+# 產生隨機樣本
+np.random.seed(42)
+data = np.random.normal(loc=5, scale=2, size=1000)
+
+# 計算統計量
+mean = np.mean(data)
+variance = np.var(data)
+std = np.std(data)
+median = np.median(data)
+
+print(f"期望值（平均數）: {mean:.2f}")
+print(f"變異數: {variance:.2f}")
+print(f"標準差: {std:.2f}")
+print(f"中位數: {median:.2f}")
+
+# 視覺化
+import matplotlib.pyplot as plt
+
+plt.figure(figsize=(10, 6))
+plt.hist(data, bins=50, density=True, alpha=0.7, edgecolor='black')
+plt.axvline(mean, color='red', linestyle='--', linewidth=2, label=f'Mean = {mean:.2f}')
+plt.axvline(mean - std, color='green', linestyle=':', linewidth=2, label=f'±1 std')
+plt.axvline(mean + std, color='green', linestyle=':', linewidth=2)
+plt.xlabel('值')
+plt.ylabel('機率密度')
+plt.title('常態分佈樣本')
+plt.legend()
+plt.grid(True, alpha=0.3)
+plt.show()
+</code></pre>
+
+            <h3>貝氏定理（Bayes' Theorem）</h3>
+            <p><span class="highlight">貝氏定理</span>描述如何根據新證據更新信念，是機器學習的重要基礎。</p>
+
+            <div class="math-formula">
+                P(A|B) = P(B|A) · P(A) / P(B)
+            </div>
+
+            <div class="note-box">
+                <h4>貝氏定理的直觀理解</h4>
+                <ul>
+                    <li><strong>P(A|B)</strong> - 後驗機率（已知 B 發生，A 發生的機率）</li>
+                    <li><strong>P(B|A)</strong> - 似然（已知 A 發生，B 發生的機率）</li>
+                    <li><strong>P(A)</strong> - 先驗機率（A 發生的初始信念）</li>
+                    <li><strong>P(B)</strong> - 證據（B 發生的總機率）</li>
+                </ul>
+            </div>
+
+            <pre><code class="language-python"># 貝氏定理範例：疾病診斷
+# 假設：
+# - 某疾病的患病率（先驗）：1%
+# - 檢測的準確率：95%（真陽性率）
+# - 誤報率：5%（偽陽性率）
+# 問：檢測呈陽性時，真正患病的機率是多少？
+
+# 先驗機率
+P_disease = 0.01         # 患病機率
+P_healthy = 0.99         # 健康機率
+
+# 似然
+P_positive_given_disease = 0.95   # 患病者檢測陽性
+P_positive_given_healthy = 0.05   # 健康者檢測陽性
+
+# 證據（檢測陽性的總機率）
+P_positive = (P_positive_given_disease * P_disease + 
+              P_positive_given_healthy * P_healthy)
+
+# 貝氏定理：檢測陽性時真正患病的機率
+P_disease_given_positive = (P_positive_given_disease * P_disease) / P_positive
+
+print(f"檢測陽性時，真正患病的機率: {P_disease_given_positive:.2%}")
+print(f"即使檢測陽性，只有約 {P_disease_given_positive:.1%} 的機會真正患病")
+print(f"這是因為疾病本身很罕見（先驗機率僅 1%）")
+</code></pre>
+
+            <div class="concept-box">
+                <h4>貝氏定理在機器學習中的應用</h4>
+                <ul>
+                    <li><strong>樸素貝氏分類器</strong> - 垃圾郵件過濾、文本分類</li>
+                    <li><strong>貝氏最佳化</strong> - 超參數調整</li>
+                    <li><strong>隱馬可夫模型</strong> - 語音辨識</li>
+                    <li><strong>變分推論</strong> - 變分自編碼器（VAE）</li>
+                </ul>
+            </div>
+
+            <h3>中央極限定理（Central Limit Theorem）</h3>
+            <p>大量獨立隨機變數的和（或平均）趨向於常態分佈，無論原始分佈為何。</p>
+
+            <pre><code class="language-python">import numpy as np
+import matplotlib.pyplot as plt
+
+# 原始分佈：均勻分佈 [0, 1]
+np.random.seed(42)
+
+fig, axes = plt.subplots(2, 2, figsize=(12, 10))
+
+# 不同樣本大小
+sample_sizes = [1, 5, 30, 100]
+
+for idx, n in enumerate(sample_sizes):
+    # 產生 10000 個樣本均值
+    sample_means = []
+    for _ in range(10000):
+        sample = np.random.uniform(0, 1, n)
+        sample_means.append(np.mean(sample))
+    
+    ax = axes[idx // 2, idx % 2]
+    ax.hist(sample_means, bins=50, density=True, alpha=0.7, edgecolor='black')
+    ax.set_title(f'樣本大小 n = {n}')
+    ax.set_xlabel('樣本均值')
+    ax.set_ylabel('機率密度')
+    ax.grid(True, alpha=0.3)
+
+plt.tight_layout()
+plt.show()
+
+print("觀察：隨著樣本大小增加，分佈越來越接近常態分佈")
+</code></pre>
+        </div>
+
+        <div class="content">
+            <h2>4. 最佳化基礎</h2>
+            
+            <h3>損失函數（Loss Function）</h3>
+            <p><span class="highlight">損失函數</span>衡量模型預測與真實值之間的差距，訓練的目標是最小化損失。</p>
+
+            <h4>常見損失函數</h4>
+            <pre><code class="language-python">import numpy as np
+import matplotlib.pyplot as plt
+
+# 準備資料
+y_true = np.array([1, 2, 3, 4, 5])
+y_pred_good = np.array([1.1, 2.0, 2.9, 4.1, 4.9])
+y_pred_bad = np.array([2, 1, 4, 3, 6])
+
+# 1. 均方誤差（Mean Squared Error, MSE）
+def mse_loss(y_true, y_pred):
+    return np.mean((y_true - y_pred) ** 2)
+
+# 2. 平均絕對誤差（Mean Absolute Error, MAE）
+def mae_loss(y_true, y_pred):
+    return np.mean(np.abs(y_true - y_pred))
+
+# 3. Huber Loss（結合 MSE 和 MAE）
+def huber_loss(y_true, y_pred, delta=1.0):
+    error = y_true - y_pred
+    is_small_error = np.abs(error) <= delta
+    squared_loss = 0.5 * error ** 2
+    linear_loss = delta * (np.abs(error) - 0.5 * delta)
+    return np.mean(np.where(is_small_error, squared_loss, linear_loss))
+
+print("好的預測:")
+print(f"MSE: {mse_loss(y_true, y_pred_good):.4f}")
+print(f"MAE: {mae_loss(y_true, y_pred_good):.4f}")
+
+print("\n壞的預測:")
+print(f"MSE: {mse_loss(y_true, y_pred_bad):.4f}")
+print(f"MAE: {mae_loss(y_true, y_pred_bad):.4f}")
+
+# 視覺化不同損失函數
+errors = np.linspace(-3, 3, 100)
+mse_vals = errors ** 2
+mae_vals = np.abs(errors)
+huber_vals = np.where(np.abs(errors) <= 1, 
+                      0.5 * errors ** 2, 
+                      np.abs(errors) - 0.5)
+
+plt.figure(figsize=(10, 6))
+plt.plot(errors, mse_vals, label='MSE', linewidth=2)
+plt.plot(errors, mae_vals, label='MAE', linewidth=2)
+plt.plot(errors, huber_vals, label='Huber (δ=1)', linewidth=2)
+plt.xlabel('預測誤差')
+plt.ylabel('損失')
+plt.title('不同損失函數的比較')
+plt.legend()
+plt.grid(True, alpha=0.3)
+plt.show()
+</code></pre>
+
+            <div class="note-box">
+                <h4>損失函數的選擇</h4>
+                <ul>
+                    <li><strong>MSE</strong> - 對大誤差懲罰重，適合回歸問題</li>
+                    <li><strong>MAE</strong> - 對離群值較不敏感</li>
+                    <li><strong>交叉熵</strong> - 分類問題的標準損失函數</li>
+                    <li><strong>Huber Loss</strong> - 結合 MSE 和 MAE 的優點</li>
+                </ul>
+            </div>
+
+            <h3>梯度下降法（Gradient Descent）</h3>
+            <p><span class="highlight">梯度下降</span>是機器學習中最基本的最佳化演算法，通過迭代更新參數來最小化損失函數。</p>
+
+            <div class="math-formula">
+                θ_new = θ_old - α · ∇L(θ)<br>
+                <br>
+                θ: 參數<br>
+                α: 學習率<br>
+                ∇L(θ): 損失函數的梯度
+            </div>
+
+            <h4>從零實現梯度下降</h4>
+            <pre><code class="language-python">import numpy as np
+import matplotlib.pyplot as plt
+
+# 目標：找到函數 f(x) = (x - 3)² + 5 的最小值
+def f(x):
+    """目標函數"""
+    return (x - 3)**2 + 5
+
+def df(x):
+    """目標函數的導數"""
+    return 2 * (x - 3)
+
+# 梯度下降演算法
+def gradient_descent(initial_x, learning_rate, n_iterations):
+    x = initial_x
+    history = [x]
+    
+    for i in range(n_iterations):
+        # 計算梯度
+        gradient = df(x)
+        
+        # 更新參數
+        x = x - learning_rate * gradient
+        
+        history.append(x)
+        
+        if i % 10 == 0:
+            print(f"Iteration {i}: x = {x:.4f}, f(x) = {f(x):.4f}, gradient = {gradient:.4f}")
+    
+    return x, history
+
+# 執行梯度下降
+initial_x = 0
+learning_rate = 0.1
+n_iterations = 50
+
+final_x, history = gradient_descent(initial_x, learning_rate, n_iterations)
+
+print(f"\n最終結果:")
+print(f"x = {final_x:.4f}")
+print(f"f(x) = {f(final_x):.4f}")
+print(f"理論最小值: x = 3, f(x) = 5")
+
+# 視覺化
+x_vals = np.linspace(-1, 7, 100)
+y_vals = f(x_vals)
+
+plt.figure(figsize=(12, 5))
+
+# 左圖：函數曲線與梯度下降路徑
+plt.subplot(1, 2, 1)
+plt.plot(x_vals, y_vals, 'b-', linewidth=2, label='f(x)')
+plt.plot(history, [f(x) for x in history], 'ro-', markersize=4, label='梯度下降路徑')
+plt.plot(3, 5, 'g*', markersize=15, label='最小值')
+plt.xlabel('x')
+plt.ylabel('f(x)')
+plt.title('梯度下降過程')
+plt.legend()
+plt.grid(True, alpha=0.3)
+
+# 右圖：收斂曲線
+plt.subplot(1, 2, 2)
+plt.plot([f(x) for x in history], 'b-', linewidth=2)
+plt.axhline(y=5, color='r', linestyle='--', label='最小值')
+plt.xlabel('迭代次數')
+plt.ylabel('f(x)')
+plt.title('損失函數收斂')
+plt.legend()
+plt.grid(True, alpha=0.3)
+
+plt.tight_layout()
+plt.show()
+</code></pre>
+
+            <h3>學習率的影響</h3>
+            <pre><code class="language-python">import numpy as np
+import matplotlib.pyplot as plt
+
+def f(x):
+    return (x - 3)**2 + 5
+
+def df(x):
+    return 2 * (x - 3)
+
+def gradient_descent_compare(initial_x, learning_rates, n_iterations=50):
+    fig, axes = plt.subplots(1, 3, figsize=(15, 5))
+    
+    for idx, lr in enumerate(learning_rates):
+        x = initial_x
+        history = [x]
+        
+        for _ in range(n_iterations):
+            gradient = df(x)
+            x = x - lr * gradient
+            history.append(x)
+        
+        x_vals = np.linspace(-5, 10, 100)
+        y_vals = f(x_vals)
+        
+        axes[idx].plot(x_vals, y_vals, 'b-', linewidth=2, alpha=0.5)
+        axes[idx].plot(history, [f(x) for x in history], 'ro-', markersize=3)
+        axes[idx].plot(3, 5, 'g*', markersize=15)
+        axes[idx].set_xlabel('x')
+        axes[idx].set_ylabel('f(x)')
+        axes[idx].set_title(f'學習率 = {lr}')
+        axes[idx].grid(True, alpha=0.3)
+        axes[idx].set_ylim([0, 50])
+    
+    plt.tight_layout()
+    plt.show()
+
+# 比較不同學習率
+learning_rates = [0.01, 0.1, 0.9]  # 太小、適中、太大
+gradient_descent_compare(0, learning_rates)
+
+print("觀察:")
+print("- 學習率太小 (0.01): 收斂很慢")
+print("- 學習率適中 (0.1): 穩定收斂")
+print("- 學習率太大 (0.9): 可能震盪或發散")
+</code></pre>
+
+            <div class="warning-box">
+                <h4>學習率選擇的注意事項</h4>
+                <ul>
+                    <li><strong>太小</strong> - 收斂速度慢，訓練時間長</li>
+                    <li><strong>太大</strong> - 可能震盪、發散，無法收斂</li>
+                    <li><strong>自適應</strong> - 使用 Adam、RMSprop 等自適應學習率方法</li>
+                    <li><strong>學習率衰減</strong> - 訓練過程中逐漸降低學習率</li>
+                </ul>
+            </div>
+
+            <h3>多變數梯度下降</h3>
+            <pre><code class="language-python">import numpy as np
+import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
+
+# 目標：最小化 f(x, y) = (x - 3)² + (y - 2)²
+def f(x, y):
+    return (x - 3)**2 + (y - 2)**2
+
+def gradient_f(x, y):
+    """計算梯度"""
+    df_dx = 2 * (x - 3)
+    df_dy = 2 * (y - 2)
+    return np.array([df_dx, df_dy])
+
+# 多變數梯度下降
+def gradient_descent_2d(initial_point, learning_rate, n_iterations):
+    point = np.array(initial_point, dtype=float)
+    history = [point.copy()]
+    
+    for i in range(n_iterations):
+        # 計算梯度
+        grad = gradient_f(point[0], point[1])
+        
+        # 更新參數
+        point = point - learning_rate * grad
+        
+        history.append(point.copy())
+        
+        if i % 10 == 0:
+            print(f"Iteration {i}: ({point[0]:.4f}, {point[1]:.4f}), f = {f(point[0], point[1]):.4f}")
+    
+    return point, np.array(history)
+
+# 執行
+initial_point = [0, 0]
+learning_rate = 0.1
+n_iterations = 50
+
+final_point, history = gradient_descent_2d(initial_point, learning_rate, n_iterations)
+
+print(f"\n最終結果: ({final_point[0]:.4f}, {final_point[1]:.4f})")
+print(f"f(x, y) = {f(final_point[0], final_point[1]):.4f}")
+print(f"理論最小值: (3, 2), f = 0")
+
+# 視覺化
+fig = plt.figure(figsize=(15, 5))
+
+# 3D 曲面圖
+ax1 = fig.add_subplot(131, projection='3d')
+x = np.linspace(-1, 7, 50)
+y = np.linspace(-1, 5, 50)
+X, Y = np.meshgrid(x, y)
+Z = f(X, Y)
+
+ax1.plot_surface(X, Y, Z, alpha=0.6, cmap='viridis')
+ax1.plot(history[:, 0], history[:, 1], 
+         [f(h[0], h[1]) for h in history], 
+         'ro-', markersize=3, linewidth=2)
+ax1.set_xlabel('x')
+ax1.set_ylabel('y')
+ax1.set_zlabel('f(x, y)')
+ax1.set_title('3D 視圖')
+
+# 等高線圖
+ax2 = fig.add_subplot(132)
+contour = ax2.contour(X, Y, Z, levels=20)
+ax2.clabel(contour, inline=True, fontsize=8)
+ax2.plot(history[:, 0], history[:, 1], 'ro-', markersize=4)
+ax2.plot(3, 2, 'g*', markersize=15)
+ax2.set_xlabel('x')
+ax2.set_ylabel('y')
+ax2.set_title('等高線圖')
+ax2.grid(True, alpha=0.3)
+
+# 收斂曲線
+ax3 = fig.add_subplot(133)
+losses = [f(h[0], h[1]) for h in history]
+ax3.plot(losses, 'b-', linewidth=2)
+ax3.set_xlabel('迭代次數')
+ax3.set_ylabel('f(x, y)')
+ax3.set_title('損失函數收斂')
+ax3.grid(True, alpha=0.3)
+
+plt.tight_layout()
+plt.show()
+</code></pre>
+
+            <h3>梯度下降變體</h3>
+            <div class="note-box">
+                <h4>主要變體</h4>
+                <ul>
+                    <li><strong>批次梯度下降（Batch GD）</strong> - 使用全部資料計算梯度</li>
+                    <li><strong>隨機梯度下降（SGD）</strong> - 每次使用一個樣本</li>
+                    <li><strong>小批次梯度下降（Mini-batch GD）</strong> - 使用小批次資料（最常用）</li>
+                    <li><strong>動量法（Momentum）</strong> - 加入慣性，加速收斂</li>
+                    <li><strong>Adam</strong> - 自適應學習率，當前最流行</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="content">
+            <h2>5. 綜合實戰：線性回歸</h2>
+            
+            <h3>從零實現線性回歸</h3>
+            <p>結合本週所學，實現一個完整的線性回歸模型。</p>
+
+            <pre><code class="language-python">import numpy as np
+import matplotlib.pyplot as plt
+
+class LinearRegression:
+    def __init__(self, learning_rate=0.01, n_iterations=1000):
+        self.learning_rate = learning_rate
+        self.n_iterations = n_iterations
+        self.weights = None
+        self.bias = None
+        self.losses = []
+    
+    def fit(self, X, y):
+        """訓練模型"""
+        n_samples, n_features = X.shape
+        
+        # 初始化參數
+        self.weights = np.zeros(n_features)
+        self.bias = 0
+        
+        # 梯度下降
+        for i in range(self.n_iterations):
+            # 前向傳播：計算預測值
+            y_pred = self.predict(X)
+            
+            # 計算損失（MSE）
+            loss = np.mean((y - y_pred) ** 2)
+            self.losses.append(loss)
+            
+            # 反向傳播：計算梯度
+            dw = (2 / n_samples) * X.T @ (y_pred - y)
+            db = (2 / n_samples) * np.sum(y_pred - y)
+            
+            # 更新參數
+            self.weights -= self.learning_rate * dw
+            self.bias -= self.learning_rate * db
+            
+            if i % 100 == 0:
+                print(f"Iteration {i}: Loss = {loss:.4f}")
+    
+    def predict(self, X):
+        """預測"""
+        return X @ self.weights + self.bias
+
+# 生成模擬資料
+np.random.seed(42)
+X = 2 * np.random.rand(100, 1)
+y = 4 + 3 * X.squeeze() + np.random.randn(100)
+
+# 訓練模型
+model = LinearRegression(learning_rate=0.1, n_iterations=1000)
+model.fit(X, y)
+
+# 預測
+y_pred = model.predict(X)
+
+print(f"\n訓練完成!")
+print(f"學到的參數: w = {model.weights[0]:.4f}, b = {model.bias:.4f}")
+print(f"真實參數: w = 3, b = 4")
+
+# 視覺化
+fig, axes = plt.subplots(1, 2, figsize=(14, 5))
+
+# 左圖：擬合結果
+axes[0].scatter(X, y, alpha=0.5, label='資料點')
+axes[0].plot(X, y_pred, 'r-', linewidth=2, label='擬合線')
+axes[0].set_xlabel('X')
+axes[0].set_ylabel('y')
+axes[0].set_title('線性回歸擬合結果')
+axes[0].legend()
+axes[0].grid(True, alpha=0.3)
+
+# 右圖：損失函數
+axes[1].plot(model.losses, 'b-', linewidth=2)
+axes[1].set_xlabel('迭代次數')
+axes[1].set_ylabel('損失（MSE）')
+axes[1].set_title('訓練過程')
+axes[1].grid(True, alpha=0.3)
+
+plt.tight_layout()
+plt.show()
+
+# 計算 R² 分數
+from sklearn.metrics import r2_score
+r2 = r2_score(y, y_pred)
+print(f"\nR² 分數: {r2:.4f}")
+</code></pre>
+
+            <h3>比較不同最佳化器</h3>
+            <pre><code class="language-python">import numpy as np
+import matplotlib.pyplot as plt
+
+# 實現不同的最佳化器
+class SGDOptimizer:
+    def __init__(self, learning_rate=0.01):
+        self.learning_rate = learning_rate
+    
+    def update(self, params, grads):
+        return params - self.learning_rate * grads
+
+class MomentumOptimizer:
+    def __init__(self, learning_rate=0.01, momentum=0.9):
+        self.learning_rate = learning_rate
+        self.momentum = momentum
+        self.velocity = None
+    
+    def update(self, params, grads):
+        if self.velocity is None:
+            self.velocity = np.zeros_like(params)
+        
+        self.velocity = self.momentum * self.velocity - self.learning_rate * grads
+        return params + self.velocity
+
+class AdamOptimizer:
+    def __init__(self, learning_rate=0.01, beta1=0.9, beta2=0.999, epsilon=1e-8):
+        self.learning_rate = learning_rate
+        self.beta1 = beta1
+        self.beta2 = beta2
+        self.epsilon = epsilon
+        self.m = None
+        self.v = None
+        self.t = 0
+    
+    def update(self, params, grads):
+        if self.m is None:
+            self.m = np.zeros_like(params)
+            self.v = np.zeros_like(params)
+        
+        self.t += 1
+        self.m = self.beta1 * self.m + (1 - self.beta1) * grads
+        self.v = self.beta2 * self.v + (1 - self.beta2) * (grads ** 2)
+        
+        m_hat = self.m / (1 - self.beta1 ** self.t)
+        v_hat = self.v / (1 - self.beta2 ** self.t)
+        
+        return params - self.learning_rate * m_hat / (np.sqrt(v_hat) + self.epsilon)
+
+# 比較不同最佳化器
+def compare_optimizers():
+    # 目標函數
+    def f(x, y):
+        return (x - 3)**2 + (y - 2)**2
+    
+    def gradient_f(x, y):
+        return np.array([2*(x-3), 2*(y-2)])
+    
+    optimizers = {
+        'SGD': SGDOptimizer(0.1),
+        'Momentum': MomentumOptimizer(0.1, 0.9),
+        'Adam': AdamOptimizer(0.5)
+    }
+    
+    fig, axes = plt.subplots(1, 3, figsize=(15, 5))
+    
+    for idx, (name, optimizer) in enumerate(optimizers.items()):
+        point = np.array([0.0, 0.0])
+        history = [point.copy()]
+        
+        for _ in range(50):
+            grad = gradient_f(point[0], point[1])
+            point = optimizer.update(point, grad)
+            history.append(point.copy())
+        
+        history = np.array(history)
+        
+        # 繪製等高線
+        x = np.linspace(-1, 7, 50)
+        y = np.linspace(-1, 5, 50)
+        X, Y = np.meshgrid(x, y)
+        Z = f(X, Y)
+        
+        axes[idx].contour(X, Y, Z, levels=20, alpha=0.6)
+        axes[idx].plot(history[:, 0], history[:, 1], 'ro-', markersize=3, linewidth=2)
+        axes[idx].plot(3, 2, 'g*', markersize=15)
+        axes[idx].set_xlabel('x')
+        axes[idx].set_ylabel('y')
+        axes[idx].set_title(f'{name}')
+        axes[idx].grid(True, alpha=0.3)
+    
+    plt.tight_layout()
+    plt.show()
+
+compare_optimizers()
+</code></pre>
+        </div>
+
+        <div class="content">
+            <div class="exercise-section">
+                <h3>本週練習題</h3>
+                
+                <h4>基礎練習（必做）</h4>
+                <ol>
+                    <li>
+                        <strong>向量與矩陣運算</strong>
+                        <ul>
+                            <li>實現向量點積、外積</li>
+                            <li>實現矩陣乘法（不使用 NumPy）</li>
+                            <li>計算矩陣的特徵值和特徵向量</li>
+                            <li>實現 QR 分解</li>
+                        </ul>
+                    </li>
+                    
+                    <li>
+                        <strong>導數計算</strong>
+                        <ul>
+                            <li>手動計算常見函數的導數</li>
+                            <li>實現數值微分函數</li>
+                            <li>驗證鏈式法則</li>
+                            <li>計算多變數函數的梯度</li>
+                        </ul>
+                    </li>
+                    
+                    <li>
+                        <strong>機率統計實驗</strong>
+                        <ul>
+                            <li>模擬不同的機率分佈</li>
+                            <li>驗證中央極限定理</li>
+                            <li>應用貝氏定理解決實際問題</li>
+                            <li>計算協方差和相關係數</li>
+                        </ul>
+                    </li>
+                </ol>
+
+                <h4>進階練習</h4>
+                <ol start="4">
+                    <li>
+                        <strong>實現梯度下降變體</strong>
+                        <ul>
+                            <li>實現 SGD with Momentum</li>
+                            <li>實現 RMSprop</li>
+                            <li>實現 Adam 優化器</li>
+                            <li>比較不同優化器的效能</li>
+                        </ul>
+                    </li>
+                    
+                    <li>
+                        <strong>從零實現邏輯回歸</strong>
+                        <ul>
+                            <li>實現 Sigmoid 函數</li>
+                            <li>實現交叉熵損失</li>
+                            <li>使用梯度下降訓練</li>
+                            <li>評估分類效果</li>
+                        </ul>
+                    </li>
+                </ol>
+
+                <h4>挑戰練習</h4>
+                <ol start="6">
+                    <li>
+                        <strong>實現多項式回歸</strong>
+                        <ul>
+                            <li>擴展線性回歸到多項式</li>
+                            <li>實現正則化（L1, L2）</li>
+                            <li>比較不同階數的效果</li>
+                            <li>處理過擬合問題</li>
+                        </ul>
+                    </li>
+                    
+                    <li>
+                        <strong>實現簡單神經網路</strong>
+                        <ul>
+                            <li>實現前向傳播</li>
+                            <li>實現反向傳播（鏈式法則）</li>
+                            <li>訓練 XOR 問題</li>
+                            <li>視覺化決策邊界</li>
+                        </ul>
+                    </li>
+                </ol>
+            </div>
+        </div>
+
+        <div class="content">
+            <h2>本週總結</h2>
+            
+            <h3>重點回顧</h3>
+            <ul>
+                <li>掌握線性代數：向量、矩陣運算、特徵值</li>
+                <li>理解微積分：導數、梯度、鏈式法則</li>
+                <li>熟悉機率統計：分佈、期望值、貝氏定理</li>
+                <li>掌握最佳化：梯度下降、損失函數</li>
+                <li>從零實現線性回歸</li>
+            </ul>
+
+            <h3>關鍵概念</h3>
+            <ul>
+                <li><strong>梯度</strong> - 指向函數增長最快的方向</li>
+                <li><strong>梯度下降</strong> - 沿負梯度方向尋找最小值</li>
+                <li><strong>學習率</strong> - 控制更新步長的超參數</li>
+                <li><strong>損失函數</strong> - 衡量模型預測誤差</li>
+            </ul>
+
+            <h3>下週預告</h3>
+            <div class="note-box">
+                <h4>Week 3 - 機器學習入門</h4>
+                <p>下週將學習傳統機器學習演算法：</p>
+                <ul>
+                    <li>監督式學習：線性/邏輯回歸、決策樹</li>
+                    <li>非監督式學習：K-Means、PCA</li>
+                    <li>模型評估：交叉驗證、混淆矩陣</li>
+                    <li>Scikit-learn 完整使用</li>
+                    <li>實戰：信用卡詐欺偵測系統</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="nav-buttons">
+            <a href="llm-week1.html" class="btn btn-secondary">Week 1：Python 與數據處理</a>
+            <a href="llm-week3.html" class="btn">Week 3：機器學習入門</a>
+        </div>
+
+        <footer>
+            <p>LLM 與 AI/ML 課程 Week 2</p>
+            <p>線性代數 · 微積分 · 機率統計 · 最佳化 · 梯度下降</p>
+            <p style="font-size: 0.9em; color: #95a5a6;">© 2025 All Rights Reserved</p>
+        </footer>
+    </div>
+</body>
+</html>
