@@ -1,0 +1,1740 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Week 15 - LLM 應用開發 | LLM 與 AI/ML 課程</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft JhengHei', Arial, sans-serif;
+            background: #f8f9fa;
+            color: #1a1a1a;
+            line-height: 1.7;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .nav {
+            background: white;
+            padding: 16px 28px;
+            border-radius: 8px;
+            margin-bottom: 32px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            border: 1px solid #e0e0e0;
+        }
+
+        .nav a {
+            color: #3498db;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 8px 16px;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+        }
+
+        .nav a:hover {
+            background: #ecf0f1;
+            color: #2980b9;
+        }
+
+        .nav span {
+            color: #6c757d;
+            font-weight: 500;
+        }
+
+        header {
+            background: linear-gradient(to right, #2c3e50, #34495e);
+            color: white;
+            padding: 56px 40px;
+            border-radius: 8px;
+            margin-bottom: 32px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            border-bottom: 3px solid #3498db;
+        }
+
+        header h1 {
+            font-size: 2.2em;
+            margin-bottom: 12px;
+            font-weight: 700;
+        }
+
+        header .subtitle {
+            font-size: 1.05em;
+            opacity: 0.9;
+            font-weight: 400;
+        }
+
+        .content {
+            background: white;
+            border-radius: 8px;
+            padding: 48px;
+            margin-bottom: 32px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            border: 1px solid #e0e0e0;
+        }
+
+        .content h2 {
+            color: #1a1a1a;
+            font-size: 1.9em;
+            margin-bottom: 24px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #3498db;
+            font-weight: 700;
+        }
+
+        .content h3 {
+            color: #2c3e50;
+            font-size: 1.5em;
+            margin: 36px 0 16px 0;
+            font-weight: 600;
+        }
+
+        .content h4 {
+            color: #34495e;
+            font-size: 1.2em;
+            margin: 24px 0 12px 0;
+            font-weight: 600;
+        }
+
+        .content p {
+            margin-bottom: 16px;
+            line-height: 1.8;
+            color: #4a4a4a;
+        }
+
+        pre[class*="language-"] {
+            margin: 24px 0;
+            border-radius: 6px;
+            border: 1px solid #d0d7de;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+        }
+
+        code[class*="language-"] {
+            font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
+            font-size: 0.92em;
+            line-height: 1.6;
+        }
+
+        .note-box {
+            background: #e3f2fd;
+            border-left: 4px solid #2196f3;
+            padding: 20px 24px;
+            margin: 24px 0;
+            border-radius: 4px;
+        }
+
+        .note-box h4 {
+            color: #1565c0;
+            margin-top: 0;
+            margin-bottom: 12px;
+            font-size: 1.1em;
+        }
+
+        .warning-box {
+            background: #fff3e0;
+            border-left: 4px solid #ff9800;
+            padding: 20px 24px;
+            margin: 24px 0;
+            border-radius: 4px;
+        }
+
+        .warning-box h4 {
+            color: #e65100;
+            margin-top: 0;
+            margin-bottom: 12px;
+            font-size: 1.1em;
+        }
+
+        .tip-box {
+            background: #f1f8e9;
+            border-left: 4px solid #8bc34a;
+            padding: 20px 24px;
+            margin: 24px 0;
+            border-radius: 4px;
+        }
+
+        .tip-box h4 {
+            color: #558b2f;
+            margin-top: 0;
+            margin-bottom: 12px;
+            font-size: 1.1em;
+        }
+
+        .concept-box {
+            background: #f3e5f5;
+            border-left: 4px solid #9c27b0;
+            padding: 20px 24px;
+            margin: 24px 0;
+            border-radius: 4px;
+        }
+
+        .concept-box h4 {
+            color: #6a1b9a;
+            margin-top: 0;
+            margin-bottom: 12px;
+            font-size: 1.1em;
+        }
+
+        .exercise-section {
+            background: #fafafa;
+            border: 1px solid #e0e0e0;
+            padding: 32px;
+            margin: 32px 0;
+            border-radius: 8px;
+        }
+
+        .exercise-section h3 {
+            color: #2c3e50;
+            margin-top: 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 24px 0;
+            background: white;
+        }
+
+        table th,
+        table td {
+            padding: 14px 16px;
+            text-align: left;
+            border: 1px solid #dee2e6;
+        }
+
+        table th {
+            background: #2c3e50;
+            color: white;
+            font-weight: 600;
+        }
+
+        table tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+
+        ul, ol {
+            margin-left: 28px;
+            margin-top: 12px;
+            margin-bottom: 16px;
+        }
+
+        li {
+            margin: 10px 0;
+            line-height: 1.7;
+            color: #4a4a4a;
+        }
+
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 48px;
+            gap: 16px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 28px;
+            background: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            border: none;
+        }
+
+        .btn:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
+        }
+
+        .btn-secondary {
+            background: #95a5a6;
+        }
+
+        .btn-secondary:hover {
+            background: #7f8c8d;
+            box-shadow: 0 4px 12px rgba(149, 165, 166, 0.3);
+        }
+
+        .highlight {
+            background: #fff9c4;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-weight: 500;
+        }
+
+        footer {
+            text-align: center;
+            padding: 32px 0;
+            color: #6c757d;
+            margin-top: 48px;
+            border-top: 1px solid #dee2e6;
+        }
+
+        footer p {
+            margin: 8px 0;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 12px;
+            }
+
+            .content {
+                padding: 24px 20px;
+            }
+
+            header {
+                padding: 32px 24px;
+            }
+
+            header h1 {
+                font-size: 1.8em;
+            }
+
+            .nav-buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="nav">
+            <a href="llm-week14.html">Week 14</a>
+            <span>Week 15 / 16</span>
+            <a href="llm-week16.html">Week 16</a>
+        </div>
+
+        <header>
+            <h1>Week 15 - LLM 應用開發</h1>
+            <div class="subtitle">RAG 系統、LLM Agent 與實戰應用</div>
+        </header>
+
+        <div class="content">
+            <h2>本週學習內容</h2>
+            <ul>
+                <li>RAG 系統深入（檢索、重排、生成）</li>
+                <li>LLM Agent 開發（工具使用、規劃、記憶）</li>
+                <li>LangChain 與 LlamaIndex 框架</li>
+                <li>提示工程進階技巧</li>
+                <li>實戰：問答系統、代碼助手、聊天機器人</li>
+            </ul>
+
+            <div class="concept-box">
+                <h4>LLM 應用的核心挑戰</h4>
+                <p>將 LLM 應用於實際場景需要解決：</p>
+                <ul>
+                    <li><strong>知識更新</strong> - 預訓練模型知識過時</li>
+                    <li><strong>領域知識</strong> - 缺乏特定領域的深入知識</li>
+                    <li><strong>工具使用</strong> - 無法直接執行計算或查詢</li>
+                    <li><strong>長期記憶</strong> - 上下文窗口有限</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="content">
+            <h2>1. RAG 系統深入</h2>
+            
+            <h3>RAG 完整流程</h3>
+            <p><span class="highlight">RAG（Retrieval-Augmented Generation）</span> 通過檢索外部知識增強生成能力。</p>
+
+            <pre><code class="language-python">import numpy as np
+from typing import List, Dict, Tuple
+import torch
+import torch.nn.functional as F
+
+class AdvancedRAGSystem:
+    """
+    進階 RAG 系統
+    
+    完整流程：
+    1. 文檔處理（分塊、嵌入）
+    2. 檢索（向量搜索）
+    3. 重排（Reranking）
+    4. 生成（帶上下文）
+    """
+    
+    def __init__(self, embedding_model, llm, tokenizer, chunk_size=512, chunk_overlap=50):
+        self.embedding_model = embedding_model
+        self.llm = llm
+        self.tokenizer = tokenizer
+        self.chunk_size = chunk_size
+        self.chunk_overlap = chunk_overlap
+        
+        # 文檔庫
+        self.documents = []
+        self.document_embeddings = []
+        self.chunks = []
+        self.chunk_embeddings = []
+    
+    def chunk_document(self, text: str) -> List[str]:
+        """
+        分塊策略
+        
+        使用滑動窗口，保持上下文連續性
+        """
+        words = text.split()
+        chunks = []
+        
+        for i in range(0, len(words), self.chunk_size - self.chunk_overlap):
+            chunk = ' '.join(words[i:i + self.chunk_size])
+            chunks.append(chunk)
+            
+            if i + self.chunk_size >= len(words):
+                break
+        
+        return chunks
+    
+    def embed_text(self, text: str) -> np.ndarray:
+        """
+        文本嵌入
+        
+        使用預訓練的嵌入模型
+        """
+        # 簡化實作（實際應該使用 sentence-transformers）
+        """
+        from sentence_transformers import SentenceTransformer
+        
+        model = SentenceTransformer('all-MiniLM-L6-v2')
+        embedding = model.encode(text)
+        """
+        
+        # 模擬嵌入
+        embedding = np.random.randn(384)
+        embedding = embedding / np.linalg.norm(embedding)
+        
+        return embedding
+    
+    def add_documents(self, documents: List[str]):
+        """
+        添加文檔到知識庫
+        """
+        for doc in documents:
+            # 分塊
+            doc_chunks = self.chunk_document(doc)
+            
+            # 嵌入
+            for chunk in doc_chunks:
+                chunk_emb = self.embed_text(chunk)
+                
+                self.chunks.append(chunk)
+                self.chunk_embeddings.append(chunk_emb)
+            
+            # 存儲原始文檔
+            self.documents.append(doc)
+            doc_emb = self.embed_text(doc)
+            self.document_embeddings.append(doc_emb)
+        
+        # 轉換為矩陣
+        self.chunk_embeddings = np.vstack(self.chunk_embeddings)
+        self.document_embeddings = np.vstack(self.document_embeddings)
+    
+    def retrieve(self, query: str, top_k: int = 5) -> List[Tuple[str, float]]:
+        """
+        檢索相關文檔塊
+        
+        使用餘弦相似度
+        """
+        # 查詢嵌入
+        query_emb = self.embed_text(query)
+        
+        # 計算相似度
+        similarities = np.dot(self.chunk_embeddings, query_emb)
+        
+        # 排序
+        top_indices = np.argsort(similarities)[::-1][:top_k]
+        
+        # 返回結果
+        results = [
+            (self.chunks[idx], similarities[idx])
+            for idx in top_indices
+        ]
+        
+        return results
+    
+    def rerank(self, query: str, candidates: List[Tuple[str, float]], top_k: int = 3) -> List[str]:
+        """
+        重排
+        
+        使用交叉編碼器或 LLM 進行更精確的排序
+        """
+        # 簡化實作（實際應該使用 CrossEncoder）
+        """
+        from sentence_transformers import CrossEncoder
+        
+        model = CrossEncoder('cross-encoder/ms-marco-MiniLM-L-12-v2')
+        pairs = [[query, candidate[0]] for candidate in candidates]
+        scores = model.predict(pairs)
+        
+        # 按分數排序
+        ranked = sorted(zip(candidates, scores), key=lambda x: x[1], reverse=True)
+        """
+        
+        # 這裡直接返回原始排序
+        return [candidate[0] for candidate in candidates[:top_k]]
+    
+    def generate_prompt(self, query: str, context_chunks: List[str]) -> str:
+        """
+        構建帶上下文的提示
+        """
+        context = "\n\n".join([f"文檔 {i+1}:\n{chunk}" 
+                               for i, chunk in enumerate(context_chunks)])
+        
+        prompt = f"""根據以下文檔回答問題。如果文檔中沒有相關信息，請說「我不知道」。
+
+{context}
+
+問題：{query}
+
+答案："""
+        
+        return prompt
+    
+    def answer_question(self, query: str, top_k: int = 5, rerank_top_k: int = 3) -> Dict:
+        """
+        回答問題（完整 RAG 流程）
+        """
+        # 1. 檢索
+        retrieved = self.retrieve(query, top_k=top_k)
+        
+        # 2. 重排
+        reranked = self.rerank(query, retrieved, top_k=rerank_top_k)
+        
+        # 3. 生成提示
+        prompt = self.generate_prompt(query, reranked)
+        
+        # 4. 生成答案
+        inputs = self.tokenizer(prompt, return_tensors='pt', truncation=True, max_length=2048)
+        
+        with torch.no_grad():
+            outputs = self.llm.generate(
+                **inputs,
+                max_new_tokens=200,
+                temperature=0.7,
+                top_p=0.9,
+                do_sample=True
+            )
+        
+        answer = self.tokenizer.decode(outputs[0], skip_special_tokens=True)
+        # 提取答案部分（去掉提示）
+        answer = answer.split("答案：")[-1].strip()
+        
+        return {
+            'answer': answer,
+            'sources': reranked,
+            'retrieved_count': len(retrieved)
+        }
+
+# 測試 RAG 系統
+print("進階 RAG 系統")
+print("\n核心組件:")
+print("1. 文檔分塊 - 滑動窗口，保持上下文")
+print("2. 向量檢索 - 餘弦相似度快速檢索")
+print("3. 重排 - CrossEncoder 精確排序")
+print("4. 上下文生成 - 帶引用的回答")
+
+# 簡化示例
+documents = [
+    "Python is a high-level programming language. It was created by Guido van Rossum.",
+    "Machine learning is a subset of AI. It allows computers to learn from data.",
+    "Deep learning uses neural networks with multiple layers."
+]
+
+print(f"\n知識庫: {len(documents)} 個文檔")
+</code></pre>
+
+            <h3>RAG 優化技巧</h3>
+            <div class="tip-box">
+                <h4>提升 RAG 性能的方法</h4>
+                <ul>
+                    <li><strong>混合檢索</strong> - 結合向量搜索和關鍵字搜索（BM25）</li>
+                    <li><strong>查詢改寫</strong> - 改寫查詢獲得更好的檢索結果</li>
+                    <li><strong>元資料過濾</strong> - 先用元資料篩選，再向量檢索</li>
+                    <li><strong>上下文壓縮</strong> - 只保留最相關的句子</li>
+                    <li><strong>迭代檢索</strong> - 根據初步答案再次檢索</li>
+                </ul>
+            </div>
+
+            <pre><code class="language-python">class HybridRetrieval:
+    """
+    混合檢索
+    
+    結合向量搜索（語義）和 BM25（關鍵字）
+    """
+    
+    def __init__(self, alpha=0.5):
+        self.alpha = alpha  # 向量搜索權重
+    
+    def bm25_score(self, query: str, document: str) -> float:
+        """
+        BM25 分數（簡化版）
+        """
+        # 簡化實作
+        query_terms = set(query.lower().split())
+        doc_terms = document.lower().split()
+        
+        # 計算詞頻
+        score = 0
+        for term in query_terms:
+            tf = doc_terms.count(term)
+            if tf > 0:
+                score += np.log(1 + tf)
+        
+        return score
+    
+    def hybrid_search(self, query: str, documents: List[str], 
+                     doc_embeddings: np.ndarray, top_k: int = 5) -> List[Tuple[str, float]]:
+        """
+        混合搜索
+        
+        score = alpha * vector_score + (1 - alpha) * bm25_score
+        """
+        # 向量搜索分數
+        query_emb = np.random.randn(384)  # 簡化
+        query_emb = query_emb / np.linalg.norm(query_emb)
+        
+        vector_scores = np.dot(doc_embeddings, query_emb)
+        vector_scores = (vector_scores - vector_scores.min()) / (vector_scores.max() - vector_scores.min() + 1e-8)
+        
+        # BM25 分數
+        bm25_scores = np.array([self.bm25_score(query, doc) for doc in documents])
+        bm25_scores = (bm25_scores - bm25_scores.min()) / (bm25_scores.max() - bm25_scores.min() + 1e-8)
+        
+        # 混合分數
+        hybrid_scores = self.alpha * vector_scores + (1 - self.alpha) * bm25_scores
+        
+        # 排序
+        top_indices = np.argsort(hybrid_scores)[::-1][:top_k]
+        
+        results = [(documents[idx], hybrid_scores[idx]) for idx in top_indices]
+        
+        return results
+
+print("\n混合檢索:")
+print("向量搜索 - 捕捉語義相似度")
+print("BM25 - 捕捉關鍵字匹配")
+print("結合兩者 - 更準確的檢索")
+</code></pre>
+        </div>
+
+        <div class="content">
+            <h2>2. LLM Agent 開發</h2>
+            
+            <h3>Agent 架構</h3>
+            <p><span class="highlight">LLM Agent</span> 可以使用工具、進行規劃、維護記憶，自主完成複雜任務。</p>
+
+            <pre><code class="language-python">from typing import Callable, Any
+from dataclasses import dataclass
+
+@dataclass
+class Tool:
+    """工具定義"""
+    name: str
+    description: str
+    function: Callable
+    
+    def __call__(self, *args, **kwargs):
+        return self.function(*args, **kwargs)
+
+class LLMAgent:
+    """
+    LLM Agent
+    
+    核心能力：
+    1. 工具使用（Tool Use）
+    2. 規劃（Planning）
+    3. 記憶（Memory）
+    4. 反思（Reflection）
+    """
+    
+    def __init__(self, llm, tokenizer, tools: List[Tool]):
+        self.llm = llm
+        self.tokenizer = tokenizer
+        self.tools = {tool.name: tool for tool in tools}
+        
+        # 記憶
+        self.conversation_history = []
+        self.working_memory = []
+    
+    def get_tools_description(self) -> str:
+        """獲取工具描述"""
+        descriptions = []
+        for tool in self.tools.values():
+            descriptions.append(f"- {tool.name}: {tool.description}")
+        
+        return "\n".join(descriptions)
+    
+    def parse_action(self, response: str) -> Tuple[str, str]:
+        """
+        解析 LLM 輸出的動作
+        
+        格式：Action: tool_name
+             Input: tool_input
+        """
+        lines = response.strip().split('\n')
+        
+        action = None
+        action_input = None
+        
+        for line in lines:
+            if line.startswith('Action:'):
+                action = line.split('Action:')[1].strip()
+            elif line.startswith('Input:'):
+                action_input = line.split('Input:')[1].strip()
+        
+        return action, action_input
+    
+    def plan_and_execute(self, task: str, max_iterations: int = 5) -> str:
+        """
+        規劃並執行任務
+        
+        使用 ReAct 模式：Reasoning + Acting
+        """
+        # 初始提示
+        prompt = f"""你是一個能使用工具的 AI 助手。請一步步思考並使用工具來完成任務。
+
+可用工具：
+{self.get_tools_description()}
+
+任務：{task}
+
+請使用以下格式：
+Thought: 我需要做什麼
+Action: 工具名稱
+Input: 工具輸入
+Observation: 工具輸出
+... (重複思考-行動-觀察)
+Thought: 我現在知道最終答案了
+Final Answer: 最終答案
+
+開始！
+"""
+        
+        full_prompt = prompt
+        
+        for i in range(max_iterations):
+            # LLM 思考和決策
+            inputs = self.tokenizer(full_prompt, return_tensors='pt', truncation=True)
+            
+            with torch.no_grad():
+                outputs = self.llm.generate(
+                    **inputs,
+                    max_new_tokens=200,
+                    temperature=0.7,
+                    do_sample=True
+                )
+            
+            response = self.tokenizer.decode(outputs[0], skip_special_tokens=True)
+            response = response.split(full_prompt)[-1].strip()
+            
+            full_prompt += "\n" + response
+            
+            # 檢查是否完成
+            if "Final Answer:" in response:
+                final_answer = response.split("Final Answer:")[1].strip()
+                return final_answer
+            
+            # 解析動作
+            action, action_input = self.parse_action(response)
+            
+            if action and action in self.tools:
+                # 執行工具
+                observation = self.tools[action](action_input)
+                full_prompt += f"\nObservation: {observation}\n"
+            else:
+                full_prompt += "\nObservation: 無效的動作或工具\n"
+        
+        return "達到最大迭代次數，無法完成任務"
+    
+    def add_memory(self, key: str, value: Any):
+        """添加到記憶"""
+        self.working_memory.append({'key': key, 'value': value})
+    
+    def get_memory(self, key: str) -> Any:
+        """從記憶中檢索"""
+        for item in reversed(self.working_memory):
+            if item['key'] == key:
+                return item['value']
+        return None
+
+# 定義工具
+def calculator(expression: str) -> str:
+    """計算器工具"""
+    try:
+        result = eval(expression)
+        return str(result)
+    except:
+        return "計算錯誤"
+
+def search(query: str) -> str:
+    """搜索工具（模擬）"""
+    # 實際應該調用真實搜索 API
+    return f"關於 '{query}' 的搜索結果..."
+
+def python_repl(code: str) -> str:
+    """Python 執行器"""
+    try:
+        # 實際應該在沙箱中執行
+        namespace = {}
+        exec(code, namespace)
+        return str(namespace.get('result', 'No result'))
+    except Exception as e:
+        return f"執行錯誤: {str(e)}"
+
+# 建立工具
+tools = [
+    Tool("calculator", "計算數學表達式", calculator),
+    Tool("search", "搜索網路資訊", search),
+    Tool("python", "執行 Python 程式碼", python_repl)
+]
+
+print("\nLLM Agent 架構:")
+print("能力:")
+print("1. 工具使用 - 呼叫外部工具")
+print("2. 規劃 - 分解複雜任務")
+print("3. 記憶 - 維護工作記憶")
+print("4. 反思 - 評估和調整策略")
+print(f"\n已註冊 {len(tools)} 個工具")
+</code></pre>
+
+            <h3>ReAct 模式</h3>
+            <div class="concept-box">
+                <h4>ReAct: Reasoning + Acting</h4>
+                <p>ReAct 將推理和行動交織在一起：</p>
+                <ul>
+                    <li><strong>Thought</strong> - 思考下一步該做什麼</li>
+                    <li><strong>Action</strong> - 選擇並執行工具</li>
+                    <li><strong>Observation</strong> - 觀察工具執行結果</li>
+                    <li><strong>循環</strong> - 重複直到得到最終答案</li>
+                </ul>
+            </div>
+
+            <pre><code class="language-python">class ReActAgent:
+    """
+    ReAct Agent 實作
+    
+    更詳細的實作範例
+    """
+    
+    def __init__(self, llm, tokenizer, tools):
+        self.llm = llm
+        self.tokenizer = tokenizer
+        self.tools = tools
+    
+    def run(self, question: str) -> str:
+        """
+        執行 ReAct 循環
+        """
+        scratchpad = ""
+        
+        for step in range(5):
+            # 構建提示
+            prompt = self.construct_prompt(question, scratchpad)
+            
+            # LLM 推理
+            thought_action = self.get_llm_response(prompt)
+            
+            # 解析
+            if "Final Answer:" in thought_action:
+                return thought_action.split("Final Answer:")[1].strip()
+            
+            # 提取動作
+            action, action_input = self.extract_action(thought_action)
+            
+            # 執行工具
+            if action in self.tools:
+                observation = self.tools[action](action_input)
+            else:
+                observation = "Invalid action"
+            
+            # 更新 scratchpad
+            scratchpad += f"\n{thought_action}\nObservation: {observation}\n"
+        
+        return "Could not find answer"
+    
+    def construct_prompt(self, question: str, scratchpad: str) -> str:
+        """構建提示"""
+        tool_desc = "\n".join([f"{name}: {tool.description}" 
+                               for name, tool in self.tools.items()])
+        
+        prompt = f"""Answer the question using these tools:
+{tool_desc}
+
+Use this format:
+Thought: reasoning
+Action: tool_name
+Input: input
+Observation: result
+... (repeat)
+Final Answer: answer
+
+Question: {question}
+{scratchpad}"""
+        
+        return prompt
+    
+    def get_llm_response(self, prompt: str) -> str:
+        """獲取 LLM 回應"""
+        # 簡化
+        return "Thought: Need to calculate\nAction: calculator\nInput: 2+2"
+    
+    def extract_action(self, text: str) -> Tuple[str, str]:
+        """提取動作"""
+        # 簡化解析
+        return "calculator", "2+2"
+
+print("\nReAct 模式示例:")
+print("問題: 'What is 15% of 200?'")
+print("\nThought: 需要計算 15% of 200")
+print("Action: calculator")
+print("Input: 200 * 0.15")
+print("Observation: 30.0")
+print("Thought: 我現在知道答案了")
+print("Final Answer: 30")
+</code></pre>
+        </div>
+
+        <div class="content">
+            <h2>3. LangChain 與 LlamaIndex</h2>
+            
+            <h3>LangChain 核心概念</h3>
+            <p><span class="highlight">LangChain</span> 是構建 LLM 應用的主流框架。</p>
+
+            <pre><code class="language-python"># LangChain 使用範例
+"""
+from langchain.llms import OpenAI
+from langchain.chains import LLMChain
+from langchain.prompts import PromptTemplate
+from langchain.agents import initialize_agent, Tool
+from langchain.memory import ConversationBufferMemory
+
+# 1. 基本鏈
+llm = OpenAI(temperature=0.7)
+
+prompt = PromptTemplate(
+    input_variables=["product"],
+    template="What is a good name for a company that makes {product}?"
+)
+
+chain = LLMChain(llm=llm, prompt=prompt)
+response = chain.run("eco-friendly water bottles")
+
+# 2. 記憶
+memory = ConversationBufferMemory()
+conversation = ConversationChain(
+    llm=llm,
+    memory=memory,
+    verbose=True
+)
+
+conversation.predict(input="Hi, my name is Alice")
+conversation.predict(input="What's my name?")
+
+# 3. Agent
+tools = [
+    Tool(
+        name="Calculator",
+        func=lambda x: str(eval(x)),
+        description="useful for math"
+    )
+]
+
+agent = initialize_agent(
+    tools,
+    llm,
+    agent="zero-shot-react-description",
+    verbose=True
+)
+
+agent.run("What is 25% of 300?")
+
+# 4. 文檔載入和處理
+from langchain.document_loaders import TextLoader
+from langchain.text_splitter import RecursiveCharacterTextSplitter
+from langchain.embeddings import OpenAIEmbeddings
+from langchain.vectorstores import FAISS
+
+# 載入文檔
+loader = TextLoader("document.txt")
+documents = loader.load()
+
+# 分割
+text_splitter = RecursiveCharacterTextSplitter(
+    chunk_size=1000,
+    chunk_overlap=200
+)
+docs = text_splitter.split_documents(documents)
+
+# 嵌入和向量存儲
+embeddings = OpenAIEmbeddings()
+vectorstore = FAISS.from_documents(docs, embeddings)
+
+# 檢索
+retriever = vectorstore.as_retriever()
+relevant_docs = retriever.get_relevant_documents("query")
+
+# 5. RAG 鏈
+from langchain.chains import RetrievalQA
+
+qa = RetrievalQA.from_chain_type(
+    llm=llm,
+    chain_type="stuff",
+    retriever=retriever
+)
+
+answer = qa.run("What is mentioned about AI?")
+"""
+
+print("LangChain 核心組件:")
+print("\n1. LLMs - 語言模型包裝器")
+print("2. Prompts - 提示模板")
+print("3. Chains - 組合多個組件")
+print("4. Agents - 動態決策和工具使用")
+print("5. Memory - 對話歷史管理")
+print("6. Document Loaders - 載入各種格式")
+print("7. Vector Stores - 向量數據庫整合")
+</code></pre>
+
+            <h3>LlamaIndex 核心概念</h3>
+            <pre><code class="language-python"># LlamaIndex 使用範例
+"""
+from llama_index import (
+    VectorStoreIndex,
+    SimpleDirectoryReader,
+    ServiceContext,
+    StorageContext
+)
+from llama_index.llms import OpenAI
+
+# 1. 載入文檔
+documents = SimpleDirectoryReader('data').load_data()
+
+# 2. 建立索引
+index = VectorStoreIndex.from_documents(documents)
+
+# 3. 查詢
+query_engine = index.as_query_engine()
+response = query_engine.query("What is mentioned about AI?")
+
+# 4. 聊天引擎
+chat_engine = index.as_chat_engine()
+response = chat_engine.chat("Tell me about the document")
+
+# 5. 自定義 LLM
+llm = OpenAI(model="gpt-4", temperature=0)
+service_context = ServiceContext.from_defaults(llm=llm)
+
+index = VectorStoreIndex.from_documents(
+    documents,
+    service_context=service_context
+)
+
+# 6. 持久化
+index.storage_context.persist(persist_dir="./storage")
+
+# 載入
+from llama_index import load_index_from_storage
+storage_context = StorageContext.from_defaults(persist_dir="./storage")
+index = load_index_from_storage(storage_context)
+
+# 7. 組合索引
+from llama_index import ComposableGraph
+from llama_index.indices.list import SummaryIndex
+
+# 為每個文檔建立索引
+indices = [
+    VectorStoreIndex.from_documents([doc])
+    for doc in documents
+]
+
+# 組合
+graph = ComposableGraph.from_indices(
+    SummaryIndex,
+    indices,
+    index_summaries=["Summary of doc 1", "Summary of doc 2"]
+)
+
+query_engine = graph.as_query_engine()
+response = query_engine.query("Compare the documents")
+"""
+
+print("\nLlamaIndex 核心概念:")
+print("\n1. Data Connectors - 連接數據源")
+print("2. Indices - 組織數據結構")
+print("3. Query Engine - 檢索和查詢")
+print("4. Chat Engine - 對話界面")
+print("5. Composability - 組合多個索引")
+</code></pre>
+
+            <div class="note-box">
+                <h4>LangChain vs LlamaIndex</h4>
+                <table>
+                    <tr>
+                        <th>特性</th>
+                        <th>LangChain</th>
+                        <th>LlamaIndex</th>
+                    </tr>
+                    <tr>
+                        <td>核心關注</td>
+                        <td>通用 LLM 應用</td>
+                        <td>數據索引和檢索</td>
+                    </tr>
+                    <tr>
+                        <td>Agent 支援</td>
+                        <td>強大</td>
+                        <td>基本</td>
+                    </tr>
+                    <tr>
+                        <td>RAG 實作</td>
+                        <td>靈活</td>
+                        <td>專精</td>
+                    </tr>
+                    <tr>
+                        <td>學習曲線</td>
+                        <td>中等</td>
+                        <td>較低</td>
+                    </tr>
+                    <tr>
+                        <td>適用場景</td>
+                        <td>複雜應用、Agent</td>
+                        <td>問答、搜索</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <div class="content">
+            <h2>4. 提示工程進階技巧</h2>
+            
+            <h3>高級提示模式</h3>
+            <pre><code class="language-python">class AdvancedPrompting:
+    """
+    進階提示工程技巧
+    """
+    
+    @staticmethod
+    def chain_of_thought(question: str) -> str:
+        """
+        思維鏈（Chain-of-Thought）
+        
+        引導模型逐步推理
+        """
+        prompt = f"""讓我們一步步思考這個問題。
+
+問題：{question}
+
+解答步驟：
+1."""
+        
+        return prompt
+    
+    @staticmethod
+    def self_consistency(question: str, n: int = 5) -> str:
+        """
+        自我一致性
+        
+        生成多個推理路徑，選擇最一致的答案
+        """
+        prompt = f"""請用不同的方法解決這個問題。
+
+問題：{question}
+
+方法 1:"""
+        
+        return prompt
+    
+    @staticmethod
+    def tree_of_thoughts(question: str) -> str:
+        """
+        思維樹（Tree of Thoughts）
+        
+        探索多條推理路徑
+        """
+        prompt = f"""讓我們探索多種解決方案。
+
+問題：{question}
+
+可能的方法：
+A)
+B)
+C)
+
+評估每種方法："""
+        
+        return prompt
+    
+    @staticmethod
+    def reflexion(question: str, previous_attempt: str) -> str:
+        """
+        反思（Reflexion）
+        
+        反思之前的嘗試並改進
+        """
+        prompt = f"""之前的嘗試：
+{previous_attempt}
+
+反思：這個嘗試的問題是什麼？
+
+改進的方案："""
+        
+        return prompt
+    
+    @staticmethod
+    def role_prompting(role: str, task: str) -> str:
+        """
+        角色提示
+        
+        讓模型扮演特定角色
+        """
+        prompt = f"""你是一位{role}。
+
+任務：{task}
+
+請以{role}的專業角度回答："""
+        
+        return prompt
+    
+    @staticmethod
+    def few_shot_with_reasoning(examples: List[Dict], question: str) -> str:
+        """
+        帶推理的少樣本學習
+        """
+        prompt = "以下是一些範例：\n\n"
+        
+        for i, ex in enumerate(examples, 1):
+            prompt += f"範例 {i}:\n"
+            prompt += f"問題：{ex['question']}\n"
+            prompt += f"推理：{ex['reasoning']}\n"
+            prompt += f"答案：{ex['answer']}\n\n"
+        
+        prompt += f"現在回答：\n問題：{question}\n推理："
+        
+        return prompt
+
+# 展示進階提示技巧
+adv_prompting = AdvancedPrompting()
+
+print("進階提示工程技巧:")
+print("\n1. Chain-of-Thought")
+cot = adv_prompting.chain_of_thought("What is 15% of 200?")
+print(cot)
+
+print("\n2. Role Prompting")
+role = adv_prompting.role_prompting("資深 Python 工程師", "解釋裝飾器")
+print(role[:150] + "...")
+
+print("\n3. Self-Consistency")
+print("生成多個推理路徑，投票選擇答案")
+
+print("\n4. Tree of Thoughts")
+print("探索多個分支，評估每個分支")
+
+print("\n5. Reflexion")
+print("從錯誤中學習，迭代改進")
+</code></pre>
+
+            <h3>提示優化</h3>
+            <div class="tip-box">
+                <h4>提示工程最佳實踐</h4>
+                <ul>
+                    <li><strong>明確性</strong> - 清晰的指令和期望</li>
+                    <li><strong>上下文</strong> - 提供足夠的背景信息</li>
+                    <li><strong>範例</strong> - 展示期望的輸出格式</li>
+                    <li><strong>分步驟</strong> - 分解複雜任務</li>
+                    <li><strong>約束</strong> - 明確限制（長度、格式、風格）</li>
+                    <li><strong>迭代</strong> - 測試和優化提示</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="content">
+            <h2>5. 實戰項目</h2>
+            
+            <h3>項目 1：智能問答系統</h3>
+            <pre><code class="language-python">class IntelligentQASystem:
+    """
+    智能問答系統
+    
+    功能：
+    - 文檔上傳和處理
+    - 語義檢索
+    - 引用來源
+    - 多輪對話
+    """
+    
+    def __init__(self, llm, tokenizer):
+        self.llm = llm
+        self.tokenizer = tokenizer
+        self.rag = AdvancedRAGSystem(None, llm, tokenizer)
+        self.conversation_history = []
+    
+    def upload_documents(self, file_paths: List[str]):
+        """上傳文檔"""
+        documents = []
+        
+        for path in file_paths:
+            with open(path, 'r', encoding='utf-8') as f:
+                content = f.read()
+                documents.append(content)
+        
+        self.rag.add_documents(documents)
+        
+        return f"已上傳 {len(documents)} 個文檔"
+    
+    def ask(self, question: str) -> Dict:
+        """
+        提問
+        
+        返回答案和來源
+        """
+        # 考慮對話歷史
+        context = self.get_conversation_context()
+        full_question = f"{context}\n當前問題：{question}" if context else question
+        
+        # RAG 回答
+        result = self.rag.answer_question(full_question)
+        
+        # 更新歷史
+        self.conversation_history.append({
+            'question': question,
+            'answer': result['answer']
+        })
+        
+        return result
+    
+    def get_conversation_context(self) -> str:
+        """獲取對話上下文"""
+        if not self.conversation_history:
+            return ""
+        
+        # 只保留最近 3 輪
+        recent = self.conversation_history[-3:]
+        
+        context = "對話歷史：\n"
+        for turn in recent:
+            context += f"Q: {turn['question']}\nA: {turn['answer']}\n"
+        
+        return context
+
+print("\n項目 1：智能問答系統")
+print("功能：")
+print("- 支援多種文檔格式")
+print("- 語義檢索")
+print("- 引用來源")
+print("- 多輪對話記憶")
+</code></pre>
+
+            <h3>項目 2：代碼助手</h3>
+            <pre><code class="language-python">class CodeAssistant:
+    """
+    代碼助手
+    
+    功能：
+    - 代碼生成
+    - 代碼解釋
+    - Bug 修復
+    - 代碼優化
+    """
+    
+    def __init__(self, llm, tokenizer):
+        self.llm = llm
+        self.tokenizer = tokenizer
+    
+    def generate_code(self, description: str, language: str = "python") -> str:
+        """
+        生成代碼
+        """
+        prompt = f"""請生成 {language} 代碼來實現以下功能：
+
+功能描述：{description}
+
+要求：
+- 包含完整的函數定義
+- 添加類型提示
+- 包含文檔字串
+- 添加錯誤處理
+- 包含使用範例
+
+代碼：
+```{language}
+"""
+        
+        inputs = self.tokenizer(prompt, return_tensors='pt')
+        
+        with torch.no_grad():
+            outputs = self.llm.generate(
+                **inputs,
+                max_new_tokens=500,
+                temperature=0.2,
+                top_p=0.95
+            )
+        
+        code = self.tokenizer.decode(outputs[0], skip_special_tokens=True)
+        code = code.split("```" + language)[1].split("```")[0] if "```" in code else code
+        
+        return code.strip()
+    
+    def explain_code(self, code: str) -> str:
+        """
+        解釋代碼
+        """
+        prompt = f"""請詳細解釋以下代碼：
+
+```python
+{code}
+```
+
+請說明：
+1. 代碼的功能
+2. 每個部分的作用
+3. 使用的算法或技術
+4. 時間和空間複雜度（如果適用）
+
+解釋："""
+        
+        # 生成解釋
+        return "代碼解釋..."
+    
+    def fix_bug(self, buggy_code: str, error_message: str) -> str:
+        """
+        修復 Bug
+        """
+        prompt = f"""以下代碼有錯誤：
+
+```python
+{buggy_code}
+```
+
+錯誤信息：
+{error_message}
+
+請：
+1. 找出問題所在
+2. 提供修復後的代碼
+3. 解釋為什麼會出現這個錯誤
+
+分析："""
+        
+        # 生成修復建議
+        return "Bug 修復建議..."
+    
+    def optimize_code(self, code: str) -> str:
+        """
+        優化代碼
+        """
+        prompt = f"""請優化以下代碼：
+
+```python
+{code}
+```
+
+優化方向：
+- 性能優化
+- 可讀性改進
+- 最佳實踐
+- 錯誤處理
+
+優化後的代碼：
+```python
+"""
+        
+        # 生成優化版本
+        return "優化後的代碼..."
+
+print("\n項目 2：代碼助手")
+print("功能：")
+print("- 根據描述生成代碼")
+print("- 解釋複雜代碼")
+print("- 自動 Bug 檢測和修復")
+print("- 代碼優化建議")
+</code></pre>
+
+            <h3>項目 3：多功能聊天機器人</h3>
+            <pre><code class="language-python">class MultiModalChatbot:
+    """
+    多功能聊天機器人
+    
+    功能：
+    - 閒聊對話
+    - 任務執行（Agent）
+    - 知識問答（RAG）
+    - 代碼協助
+    """
+    
+    def __init__(self, llm, tokenizer):
+        self.llm = llm
+        self.tokenizer = tokenizer
+        
+        # 子系統
+        self.qa_system = IntelligentQASystem(llm, tokenizer)
+        self.code_assistant = CodeAssistant(llm, tokenizer)
+        self.agent = None  # LLMAgent
+        
+        # 記憶
+        self.conversation_memory = []
+    
+    def classify_intent(self, message: str) -> str:
+        """
+        分類用戶意圖
+        """
+        # 簡化實作（實際應該用分類器）
+        if any(word in message.lower() for word in ['code', 'program', 'function', '程式', '代碼']):
+            return 'code'
+        elif any(word in message.lower() for word in ['search', 'find', 'what is', '什麼是', '查找']):
+            return 'knowledge'
+        elif any(word in message.lower() for word in ['calculate', 'compute', '計算']):
+            return 'task'
+        else:
+            return 'chat'
+    
+    def respond(self, message: str) -> str:
+        """
+        生成回應
+        """
+        # 分類意圖
+        intent = self.classify_intent(message)
+        
+        if intent == 'code':
+            # 代碼相關
+            return self.code_assistant.generate_code(message)
+        
+        elif intent == 'knowledge':
+            # 知識問答
+            result = self.qa_system.ask(message)
+            return result['answer']
+        
+        elif intent == 'task':
+            # 任務執行（需要工具）
+            if self.agent:
+                return self.agent.plan_and_execute(message)
+            else:
+                return "任務執行功能未啟用"
+        
+        else:
+            # 一般對話
+            return self.chat(message)
+    
+    def chat(self, message: str) -> str:
+        """
+        一般對話
+        """
+        # 構建提示（帶歷史）
+        history = "\n".join([
+            f"User: {turn['user']}\nAssistant: {turn['assistant']}"
+            for turn in self.conversation_memory[-5:]
+        ])
+        
+        prompt = f"{history}\nUser: {message}\nAssistant:"
+        
+        # 生成回應
+        inputs = self.tokenizer(prompt, return_tensors='pt', truncation=True)
+        
+        with torch.no_grad():
+            outputs = self.llm.generate(
+                **inputs,
+                max_new_tokens=150,
+                temperature=0.7,
+                top_p=0.9
+            )
+        
+        response = self.tokenizer.decode(outputs[0], skip_special_tokens=True)
+        response = response.split("Assistant:")[-1].strip()
+        
+        # 更新記憶
+        self.conversation_memory.append({
+            'user': message,
+            'assistant': response
+        })
+        
+        return response
+
+print("\n項目 3：多功能聊天機器人")
+print("功能：")
+print("- 意圖分類")
+print("- 多模式切換（閒聊、問答、任務、代碼）")
+print("- 對話記憶")
+print("- 個性化回應")
+</code></pre>
+        </div>
+
+        <div class="content">
+            <div class="exercise-section">
+                <h3>本週練習題</h3>
+                
+                <h4>基礎練習（必做）</h4>
+                <ol>
+                    <li>
+                        <strong>實作基礎 RAG 系統</strong>
+                        <ul>
+                            <li>文檔分塊和嵌入</li>
+                            <li>向量檢索</li>
+                            <li>生成帶引用的答案</li>
+                            <li>在實際文檔上測試</li>
+                        </ul>
+                    </li>
+                    
+                    <li>
+                        <strong>使用 LangChain</strong>
+                        <ul>
+                            <li>建立簡單的 LLMChain</li>
+                            <li>實作帶記憶的對話</li>
+                            <li>使用文檔載入器</li>
+                            <li>建立 QA 鏈</li>
+                        </ul>
+                    </li>
+                    
+                    <li>
+                        <strong>提示工程實驗</strong>
+                        <ul>
+                            <li>實作 Chain-of-Thought</li>
+                            <li>比較不同提示的效果</li>
+                            <li>Few-shot 學習</li>
+                            <li>角色提示</li>
+                        </ul>
+                    </li>
+                </ol>
+
+                <h4>進階練習</h4>
+                <ol start="4">
+                    <li>
+                        <strong>構建 LLM Agent</strong>
+                        <ul>
+                            <li>定義多個工具</li>
+                            <li>實作 ReAct 模式</li>
+                            <li>添加記憶系統</li>
+                            <li>測試多步推理任務</li>
+                        </ul>
+                    </li>
+                    
+                    <li>
+                        <strong>進階 RAG 系統</strong>
+                        <ul>
+                            <li>實作混合檢索</li>
+                            <li>添加重排模型</li>
+                            <li>查詢改寫</li>
+                            <li>上下文壓縮</li>
+                        </ul>
+                    </li>
+                </ol>
+
+                <h4>挑戰練習</h4>
+                <ol start="6">
+                    <li>
+                        <strong>完整應用開發</strong>
+                        <ul>
+                            <li>選擇一個實戰項目（QA、代碼助手、聊天機器人）</li>
+                            <li>實作完整功能</li>
+                            <li>添加 UI 界面（Gradio/Streamlit）</li>
+                            <li>部署和測試</li>
+                        </ul>
+                    </li>
+                    
+                    <li>
+                        <strong>多 Agent 協作</strong>
+                        <ul>
+                            <li>設計多個專門 Agent</li>
+                            <li>實作 Agent 間通訊</li>
+                            <li>協調和任務分配</li>
+                            <li>測試複雜任務</li>
+                        </ul>
+                    </li>
+                </ol>
+            </div>
+        </div>
+
+        <div class="content">
+            <h2>本週總結</h2>
+            
+            <h3>重點回顧</h3>
+            <ul>
+                <li>掌握 RAG 系統的完整實作</li>
+                <li>理解 LLM Agent 的架構和原理</li>
+                <li>學會使用 LangChain 和 LlamaIndex</li>
+                <li>掌握進階提示工程技巧</li>
+                <li>構建實際的 LLM 應用</li>
+            </ul>
+
+            <h3>關鍵概念</h3>
+            <ul>
+                <li><strong>RAG</strong> - 檢索增強生成，解決知識更新問題</li>
+                <li><strong>Agent</strong> - 自主決策和工具使用</li>
+                <li><strong>ReAct</strong> - 推理和行動交織</li>
+                <li><strong>框架</strong> - LangChain/LlamaIndex 加速開發</li>
+                <li><strong>提示工程</strong> - 引導模型產生期望輸出</li>
+            </ul>
+
+            <h3>LLM 應用架構模式</h3>
+            <table>
+                <tr>
+                    <th>模式</th>
+                    <th>適用場景</th>
+                    <th>核心技術</th>
+                </tr>
+                <tr>
+                    <td>RAG</td>
+                    <td>知識問答、文檔查詢</td>
+                    <td>向量檢索、重排</td>
+                </tr>
+                <tr>
+                    <td>Agent</td>
+                    <td>複雜任務、工具使用</td>
+                    <td>ReAct、規劃</td>
+                </tr>
+                <tr>
+                    <td>Fine-tuning</td>
+                    <td>特定領域、風格</td>
+                    <td>LoRA、全量微調</td>
+                </tr>
+                <tr>
+                    <td>Prompt Engineering</td>
+                    <td>快速原型、靈活調整</td>
+                    <td>Few-shot、CoT</td>
+                </tr>
+            </table>
+
+            <h3>下週預告</h3>
+            <div class="note-box">
+                <h4>Week 16 - 未來趨勢與總結</h4>
+                <p>最後一週將展望 LLM 的未來並總結課程：</p>
+                <ul>
+                    <li>多模態大模型（GPT-4V、Gemini）</li>
+                    <li>長文本處理（100K+ tokens）</li>
+                    <li>小型化與端側部署</li>
+                    <li>新興應用領域</li>
+                    <li>課程總結與學習路徑</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="nav-buttons">
+            <a href="llm-week14.html" class="btn btn-secondary">Week 14：評估與基準</a>
+            <a href="llm-week16.html" class="btn">Week 16：未來趨勢</a>
+        </div>
+
+        <footer>
+            <p>LLM 與 AI/ML 課程 Week 15</p>
+            <p>RAG · LLM Agent · ReAct · LangChain · LlamaIndex · 提示工程 · 實戰應用</p>
+            <p style="font-size: 0.9em; color: #95a5a6;">© 2025 All Rights Reserved</p>
+        </footer>
+    </div>
+</body>
+</html>

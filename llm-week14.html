@@ -1,0 +1,1530 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Week 14 - LLM 評估與基準測試 | LLM 與 AI/ML 課程</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft JhengHei', Arial, sans-serif;
+            background: #f8f9fa;
+            color: #1a1a1a;
+            line-height: 1.7;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .nav {
+            background: white;
+            padding: 16px 28px;
+            border-radius: 8px;
+            margin-bottom: 32px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            border: 1px solid #e0e0e0;
+        }
+
+        .nav a {
+            color: #3498db;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 8px 16px;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+        }
+
+        .nav a:hover {
+            background: #ecf0f1;
+            color: #2980b9;
+        }
+
+        .nav span {
+            color: #6c757d;
+            font-weight: 500;
+        }
+
+        header {
+            background: linear-gradient(to right, #2c3e50, #34495e);
+            color: white;
+            padding: 56px 40px;
+            border-radius: 8px;
+            margin-bottom: 32px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            border-bottom: 3px solid #3498db;
+        }
+
+        header h1 {
+            font-size: 2.2em;
+            margin-bottom: 12px;
+            font-weight: 700;
+        }
+
+        header .subtitle {
+            font-size: 1.05em;
+            opacity: 0.9;
+            font-weight: 400;
+        }
+
+        .content {
+            background: white;
+            border-radius: 8px;
+            padding: 48px;
+            margin-bottom: 32px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            border: 1px solid #e0e0e0;
+        }
+
+        .content h2 {
+            color: #1a1a1a;
+            font-size: 1.9em;
+            margin-bottom: 24px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #3498db;
+            font-weight: 700;
+        }
+
+        .content h3 {
+            color: #2c3e50;
+            font-size: 1.5em;
+            margin: 36px 0 16px 0;
+            font-weight: 600;
+        }
+
+        .content h4 {
+            color: #34495e;
+            font-size: 1.2em;
+            margin: 24px 0 12px 0;
+            font-weight: 600;
+        }
+
+        .content p {
+            margin-bottom: 16px;
+            line-height: 1.8;
+            color: #4a4a4a;
+        }
+
+        pre[class*="language-"] {
+            margin: 24px 0;
+            border-radius: 6px;
+            border: 1px solid #d0d7de;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+        }
+
+        code[class*="language-"] {
+            font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
+            font-size: 0.92em;
+            line-height: 1.6;
+        }
+
+        .note-box {
+            background: #e3f2fd;
+            border-left: 4px solid #2196f3;
+            padding: 20px 24px;
+            margin: 24px 0;
+            border-radius: 4px;
+        }
+
+        .note-box h4 {
+            color: #1565c0;
+            margin-top: 0;
+            margin-bottom: 12px;
+            font-size: 1.1em;
+        }
+
+        .warning-box {
+            background: #fff3e0;
+            border-left: 4px solid #ff9800;
+            padding: 20px 24px;
+            margin: 24px 0;
+            border-radius: 4px;
+        }
+
+        .warning-box h4 {
+            color: #e65100;
+            margin-top: 0;
+            margin-bottom: 12px;
+            font-size: 1.1em;
+        }
+
+        .tip-box {
+            background: #f1f8e9;
+            border-left: 4px solid #8bc34a;
+            padding: 20px 24px;
+            margin: 24px 0;
+            border-radius: 4px;
+        }
+
+        .tip-box h4 {
+            color: #558b2f;
+            margin-top: 0;
+            margin-bottom: 12px;
+            font-size: 1.1em;
+        }
+
+        .concept-box {
+            background: #f3e5f5;
+            border-left: 4px solid #9c27b0;
+            padding: 20px 24px;
+            margin: 24px 0;
+            border-radius: 4px;
+        }
+
+        .concept-box h4 {
+            color: #6a1b9a;
+            margin-top: 0;
+            margin-bottom: 12px;
+            font-size: 1.1em;
+        }
+
+        .exercise-section {
+            background: #fafafa;
+            border: 1px solid #e0e0e0;
+            padding: 32px;
+            margin: 32px 0;
+            border-radius: 8px;
+        }
+
+        .exercise-section h3 {
+            color: #2c3e50;
+            margin-top: 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 24px 0;
+            background: white;
+        }
+
+        table th,
+        table td {
+            padding: 14px 16px;
+            text-align: left;
+            border: 1px solid #dee2e6;
+        }
+
+        table th {
+            background: #2c3e50;
+            color: white;
+            font-weight: 600;
+        }
+
+        table tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+
+        ul, ol {
+            margin-left: 28px;
+            margin-top: 12px;
+            margin-bottom: 16px;
+        }
+
+        li {
+            margin: 10px 0;
+            line-height: 1.7;
+            color: #4a4a4a;
+        }
+
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 48px;
+            gap: 16px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 28px;
+            background: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            border: none;
+        }
+
+        .btn:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
+        }
+
+        .btn-secondary {
+            background: #95a5a6;
+        }
+
+        .btn-secondary:hover {
+            background: #7f8c8d;
+            box-shadow: 0 4px 12px rgba(149, 165, 166, 0.3);
+        }
+
+        .highlight {
+            background: #fff9c4;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-weight: 500;
+        }
+
+        footer {
+            text-align: center;
+            padding: 32px 0;
+            color: #6c757d;
+            margin-top: 48px;
+            border-top: 1px solid #dee2e6;
+        }
+
+        footer p {
+            margin: 8px 0;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 12px;
+            }
+
+            .content {
+                padding: 24px 20px;
+            }
+
+            header {
+                padding: 32px 24px;
+            }
+
+            header h1 {
+                font-size: 1.8em;
+            }
+
+            .nav-buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="nav">
+            <a href="llm-week13.html">Week 13</a>
+            <span>Week 14 / 16</span>
+            <a href="llm-week15.html">Week 15</a>
+        </div>
+
+        <header>
+            <h1>Week 14 - LLM 評估與基準測試</h1>
+            <div class="subtitle">自動評估、人工評估與主流基準</div>
+        </header>
+
+        <div class="content">
+            <h2>本週學習內容</h2>
+            <ul>
+                <li>自動評估指標（BLEU、ROUGE、BERTScore、Perplexity）</li>
+                <li>人工評估方法與設計</li>
+                <li>主流基準測試（MMLU、HellaSwag、HumanEval、TruthfulQA）</li>
+                <li>安全性與偏見評估</li>
+                <li>實戰：構建完整評估框架</li>
+            </ul>
+
+            <div class="concept-box">
+                <h4>為什麼評估很重要？</h4>
+                <p>評估是 LLM 開發的關鍵環節：</p>
+                <ul>
+                    <li><strong>衡量進步</strong> - 量化模型改進</li>
+                    <li><strong>比較模型</strong> - 客觀比較不同方法</li>
+                    <li><strong>發現問題</strong> - 識別模型弱點</li>
+                    <li><strong>指導優化</strong> - 決定改進方向</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="content">
+            <h2>1. 自動評估指標</h2>
+            
+            <h3>Perplexity（困惑度）</h3>
+            <p><span class="highlight">Perplexity</span> 是最常用的語言模型評估指標，衡量模型預測的不確定性。</p>
+
+            <pre><code class="language-python">import torch
+import torch.nn.functional as F
+import numpy as np
+from collections import Counter
+
+class AutomaticMetrics:
+    """
+    自動評估指標集合
+    """
+    
+    @staticmethod
+    def perplexity(model, tokenizer, text):
+        """
+        計算困惑度
+        
+        PPL = exp(average negative log-likelihood)
+        PPL 越低越好，表示模型越確定
+        """
+        # Tokenize
+        inputs = tokenizer(text, return_tensors='pt')
+        input_ids = inputs['input_ids']
+        
+        # 計算 log-likelihood
+        with torch.no_grad():
+            outputs = model(input_ids, labels=input_ids)
+            loss = outputs.loss  # 負對數似然的平均值
+        
+        # 計算困惑度
+        ppl = torch.exp(loss)
+        
+        return ppl.item()
+    
+    @staticmethod
+    def bleu_score(reference, hypothesis, n=4):
+        """
+        BLEU (Bilingual Evaluation Understudy)
+        
+        評估機器翻譯質量，基於 n-gram 精確度
+        """
+        def get_ngrams(tokens, n):
+            """獲取 n-gram"""
+            return [tuple(tokens[i:i+n]) for i in range(len(tokens)-n+1)]
+        
+        # Tokenize（簡化，實際應該用專門的分詞器）
+        ref_tokens = reference.split()
+        hyp_tokens = hypothesis.split()
+        
+        # 計算各階 n-gram 精確度
+        precisions = []
+        
+        for i in range(1, n+1):
+            ref_ngrams = Counter(get_ngrams(ref_tokens, i))
+            hyp_ngrams = Counter(get_ngrams(hyp_tokens, i))
+            
+            # 計算匹配數
+            matches = sum((hyp_ngrams & ref_ngrams).values())
+            total = sum(hyp_ngrams.values())
+            
+            if total == 0:
+                precision = 0
+            else:
+                precision = matches / total
+            
+            precisions.append(precision)
+        
+        # 幾何平均
+        if min(precisions) == 0:
+            bleu = 0
+        else:
+            bleu = np.exp(np.mean(np.log(precisions)))
+        
+        # 簡短懲罰（Brevity Penalty）
+        if len(hyp_tokens) < len(ref_tokens):
+            bp = np.exp(1 - len(ref_tokens) / len(hyp_tokens))
+        else:
+            bp = 1.0
+        
+        return bp * bleu
+    
+    @staticmethod
+    def rouge_score(reference, hypothesis):
+        """
+        ROUGE (Recall-Oriented Understudy for Gisting Evaluation)
+        
+        評估摘要質量，基於召回率
+        """
+        ref_tokens = set(reference.split())
+        hyp_tokens = set(hypothesis.split())
+        
+        # ROUGE-1: 單字重疊
+        overlap = ref_tokens & hyp_tokens
+        
+        if len(ref_tokens) == 0:
+            recall = 0
+        else:
+            recall = len(overlap) / len(ref_tokens)
+        
+        if len(hyp_tokens) == 0:
+            precision = 0
+        else:
+            precision = len(overlap) / len(hyp_tokens)
+        
+        if precision + recall == 0:
+            f1 = 0
+        else:
+            f1 = 2 * precision * recall / (precision + recall)
+        
+        return {
+            'rouge-1-r': recall,
+            'rouge-1-p': precision,
+            'rouge-1-f': f1
+        }
+
+# 測試自動評估指標
+metrics = AutomaticMetrics()
+
+# BLEU 測試
+reference = "The cat is on the mat"
+hypothesis = "The cat is sitting on the mat"
+bleu = metrics.bleu_score(reference, hypothesis)
+print(f"BLEU Score: {bleu:.4f}")
+
+# ROUGE 測試
+rouge = metrics.rouge_score(reference, hypothesis)
+print(f"\nROUGE Scores:")
+print(f"  Recall: {rouge['rouge-1-r']:.4f}")
+print(f"  Precision: {rouge['rouge-1-p']:.4f}")
+print(f"  F1: {rouge['rouge-1-f']:.4f}")
+</code></pre>
+
+            <h3>BERTScore</h3>
+            <p>使用 BERT 嵌入計算語義相似度，比 n-gram 方法更準確。</p>
+
+            <pre><code class="language-python">class BERTScoreMetric:
+    """
+    BERTScore - 基於 BERT 的語義相似度評估
+    """
+    def __init__(self, model_name='bert-base-uncased'):
+        # 實際應該使用 bert-score 庫
+        print("BERTScore 初始化")
+        print(f"使用模型: {model_name}")
+    
+    def compute(self, references, candidates):
+        """
+        計算 BERTScore
+        
+        返回: Precision, Recall, F1
+        """
+        # 簡化實作（實際應該使用預訓練 BERT）
+        """
+        from bert_score import score
+        
+        P, R, F1 = score(
+            candidates, 
+            references, 
+            lang='en',
+            model_type='bert-base-uncased'
+        )
+        
+        return {
+            'precision': P.mean().item(),
+            'recall': R.mean().item(),
+            'f1': F1.mean().item()
+        }
+        """
+        
+        # 模擬結果
+        return {
+            'precision': 0.85,
+            'recall': 0.87,
+            'f1': 0.86
+        }
+
+# 測試 BERTScore
+bert_score = BERTScoreMetric()
+result = bert_score.compute(
+    ["The cat is on the mat"],
+    ["A feline is sitting on the rug"]
+)
+
+print("\nBERTScore:")
+print(f"  Precision: {result['precision']:.4f}")
+print(f"  Recall: {result['recall']:.4f}")
+print(f"  F1: {result['f1']:.4f}")
+print("\n優點: 捕捉語義相似度，不只是字面匹配")
+</code></pre>
+
+            <div class="note-box">
+                <h4>自動指標的局限性</h4>
+                <ul>
+                    <li><strong>BLEU/ROUGE</strong> - 只看表面，忽略語義</li>
+                    <li><strong>Perplexity</strong> - 不能直接反映生成質量</li>
+                    <li><strong>BERTScore</strong> - 計算成本高，可能偏向某些表達</li>
+                    <li><strong>共同問題</strong> - 無法評估創意、真實性、有用性</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="content">
+            <h2>2. 人工評估方法</h2>
+            
+            <h3>評估維度</h3>
+            <p>人工評估可以評估自動指標無法捕捉的質量維度。</p>
+
+            <pre><code class="language-python">class HumanEvaluationFramework:
+    """
+    人工評估框架
+    """
+    
+    def __init__(self):
+        # 評估維度
+        self.dimensions = {
+            'fluency': {
+                'name': '流暢度',
+                'description': '語言是否自然流暢',
+                'scale': '1-5 分',
+                'examples': {
+                    1: '語法錯誤多，難以理解',
+                    3: '基本通順，有些不自然',
+                    5: '完全流暢自然'
+                }
+            },
+            'coherence': {
+                'name': '連貫性',
+                'description': '邏輯是否一致，前後呼應',
+                'scale': '1-5 分',
+                'examples': {
+                    1: '邏輯混亂，自相矛盾',
+                    3: '基本連貫，有些跳躍',
+                    5: '邏輯嚴密，完美連貫'
+                }
+            },
+            'relevance': {
+                'name': '相關性',
+                'description': '是否回答問題/滿足需求',
+                'scale': '1-5 分',
+                'examples': {
+                    1: '完全偏題',
+                    3: '部分相關',
+                    5: '完全切題'
+                }
+            },
+            'factuality': {
+                'name': '真實性',
+                'description': '事實陳述是否正確',
+                'scale': '1-5 分',
+                'examples': {
+                    1: '多處事實錯誤',
+                    3: '大部分正確，有些錯誤',
+                    5: '完全準確'
+                }
+            },
+            'helpfulness': {
+                'name': '有用性',
+                'description': '是否對使用者有幫助',
+                'scale': '1-5 分',
+                'examples': {
+                    1: '無用或誤導',
+                    3: '有一定幫助',
+                    5: '非常有用'
+                }
+            }
+        }
+    
+    def create_evaluation_task(self, prompt, response_a, response_b):
+        """
+        建立比較評估任務
+        """
+        task = {
+            'prompt': prompt,
+            'response_a': response_a,
+            'response_b': response_b,
+            'questions': []
+        }
+        
+        # 為每個維度生成問題
+        for dim_key, dim_info in self.dimensions.items():
+            task['questions'].append({
+                'dimension': dim_info['name'],
+                'question': f"哪個回應的{dim_info['name']}更好？",
+                'options': ['A 明顯更好', 'A 稍好', '相當', 'B 稍好', 'B 明顯更好']
+            })
+        
+        return task
+    
+    def analyze_results(self, evaluations):
+        """
+        分析評估結果
+        """
+        results = {}
+        
+        for dim in self.dimensions.keys():
+            dim_scores = [e[dim] for e in evaluations]
+            results[dim] = {
+                'mean': np.mean(dim_scores),
+                'std': np.std(dim_scores),
+                'min': np.min(dim_scores),
+                'max': np.max(dim_scores)
+            }
+        
+        return results
+
+# 建立評估框架
+eval_framework = HumanEvaluationFramework()
+
+print("人工評估維度:")
+for dim_key, dim_info in eval_framework.dimensions.items():
+    print(f"\n{dim_info['name']}:")
+    print(f"  描述: {dim_info['description']}")
+    print(f"  量表: {dim_info['scale']}")
+
+# 建立評估任務
+task = eval_framework.create_evaluation_task(
+    prompt="What is machine learning?",
+    response_a="Machine learning is a subset of AI...",
+    response_b="ML allows computers to learn from data..."
+)
+
+print(f"\n評估任務已建立，包含 {len(task['questions'])} 個問題")
+</code></pre>
+
+            <h3>評估設計最佳實踐</h3>
+            <div class="tip-box">
+                <h4>設計人工評估的要點</h4>
+                <ul>
+                    <li><strong>多個評估者</strong> - 至少 3 人，計算一致性（Kappa）</li>
+                    <li><strong>隨機順序</strong> - 避免位置偏見</li>
+                    <li><strong>盲測</strong> - 評估者不知道哪個是哪個模型</li>
+                    <li><strong>明確指導</strong> - 提供詳細的評分標準和範例</li>
+                    <li><strong>質量控制</strong> - 使用注意力檢查題</li>
+                </ul>
+            </div>
+
+            <pre><code class="language-python">class InterRaterAgreement:
+    """
+    評估者間一致性分析
+    """
+    
+    @staticmethod
+    def cohen_kappa(ratings1, ratings2):
+        """
+        Cohen's Kappa - 兩個評估者的一致性
+        
+        κ = (P_o - P_e) / (1 - P_e)
+        P_o: 觀察到的一致性
+        P_e: 隨機一致性
+        """
+        # 確保相同長度
+        assert len(ratings1) == len(ratings2)
+        
+        # 計算觀察一致性
+        agreements = sum(r1 == r2 for r1, r2 in zip(ratings1, ratings2))
+        p_o = agreements / len(ratings1)
+        
+        # 計算期望一致性
+        unique_ratings = set(ratings1 + ratings2)
+        p_e = 0
+        
+        for rating in unique_ratings:
+            p1 = ratings1.count(rating) / len(ratings1)
+            p2 = ratings2.count(rating) / len(ratings2)
+            p_e += p1 * p2
+        
+        # Cohen's Kappa
+        if p_e == 1:
+            kappa = 1.0
+        else:
+            kappa = (p_o - p_e) / (1 - p_e)
+        
+        return kappa
+    
+    @staticmethod
+    def interpret_kappa(kappa):
+        """
+        解釋 Kappa 值
+        """
+        if kappa < 0:
+            return "低於隨機"
+        elif kappa < 0.2:
+            return "輕微一致"
+        elif kappa < 0.4:
+            return "一般一致"
+        elif kappa < 0.6:
+            return "中等一致"
+        elif kappa < 0.8:
+            return "高度一致"
+        else:
+            return "幾乎完全一致"
+
+# 測試評估者一致性
+rater1 = [5, 4, 5, 3, 4, 5, 4, 3]
+rater2 = [5, 4, 4, 3, 4, 5, 5, 3]
+
+ira = InterRaterAgreement()
+kappa = ira.cohen_kappa(rater1, rater2)
+
+print(f"\nCohen's Kappa: {kappa:.3f}")
+print(f"解釋: {ira.interpret_kappa(kappa)}")
+</code></pre>
+        </div>
+
+        <div class="content">
+            <h2>3. 主流基準測試</h2>
+            
+            <h3>MMLU（Massive Multitask Language Understanding）</h3>
+            <p><span class="highlight">MMLU</span> 測試模型在 57 個學科的知識理解能力。</p>
+
+            <pre><code class="language-python">class MMLUBenchmark:
+    """
+    MMLU 基準測試
+    
+    涵蓋 57 個學科，從基礎到專業
+    """
+    
+    def __init__(self):
+        self.subjects = {
+            'STEM': [
+                'abstract_algebra', 'astronomy', 'college_biology',
+                'college_chemistry', 'college_computer_science',
+                'college_mathematics', 'college_physics'
+            ],
+            'Humanities': [
+                'formal_logic', 'high_school_european_history',
+                'high_school_us_history', 'high_school_world_history',
+                'philosophy', 'prehistory'
+            ],
+            'Social Sciences': [
+                'econometrics', 'high_school_geography',
+                'high_school_government_and_politics',
+                'high_school_macroeconomics', 'sociology'
+            ],
+            'Other': [
+                'business_ethics', 'clinical_knowledge',
+                'college_medicine', 'global_facts', 'management'
+            ]
+        }
+    
+    def format_question(self, question_data):
+        """
+        格式化 MMLU 問題
+        
+        每個問題是 4 選 1 的多選題
+        """
+        prompt = f"{question_data['question']}\n\n"
+        
+        choices = ['A', 'B', 'C', 'D']
+        for i, choice in enumerate(choices):
+            prompt += f"{choice}. {question_data['choices'][i]}\n"
+        
+        prompt += "\nAnswer:"
+        
+        return prompt
+    
+    def evaluate(self, model, tokenizer, dataset):
+        """
+        評估模型在 MMLU 上的表現
+        """
+        correct = 0
+        total = 0
+        
+        subject_scores = {subject: {'correct': 0, 'total': 0} 
+                         for subjects in self.subjects.values() 
+                         for subject in subjects}
+        
+        for item in dataset:
+            prompt = self.format_question(item)
+            
+            # 生成答案
+            inputs = tokenizer(prompt, return_tensors='pt')
+            with torch.no_grad():
+                outputs = model.generate(
+                    **inputs,
+                    max_new_tokens=1,
+                    num_return_sequences=1
+                )
+            
+            # 提取答案
+            answer = tokenizer.decode(outputs[0], skip_special_tokens=True)
+            answer = answer.strip().upper()
+            
+            # 檢查正確性
+            if answer == item['answer']:
+                correct += 1
+                subject_scores[item['subject']]['correct'] += 1
+            
+            total += 1
+            subject_scores[item['subject']]['total'] += 1
+        
+        # 計算分數
+        overall_accuracy = correct / total if total > 0 else 0
+        
+        return {
+            'overall_accuracy': overall_accuracy,
+            'subject_scores': subject_scores
+        }
+
+# 展示 MMLU
+mmlu = MMLUBenchmark()
+
+print("MMLU 基準測試:")
+print(f"總學科數: {sum(len(subjects) for subjects in mmlu.subjects.values())}")
+print("\n學科分類:")
+for category, subjects in mmlu.subjects.items():
+    print(f"  {category}: {len(subjects)} 個學科")
+
+# 範例問題
+example_question = {
+    'question': 'What is the capital of France?',
+    'choices': ['London', 'Berlin', 'Paris', 'Madrid'],
+    'answer': 'C',
+    'subject': 'global_facts'
+}
+
+prompt = mmlu.format_question(example_question)
+print(f"\n範例問題格式:\n{prompt}")
+</code></pre>
+
+            <h3>HumanEval（程式碼生成）</h3>
+            <p>評估模型的程式碼生成能力。</p>
+
+            <pre><code class="language-python">class HumanEvalBenchmark:
+    """
+    HumanEval - 程式碼生成基準
+    
+    164 個 Python 程式設計問題
+    """
+    
+    def __init__(self):
+        self.num_problems = 164
+    
+    def format_problem(self, problem):
+        """
+        格式化程式碼問題
+        """
+        prompt = f'"""\n{problem["prompt"]}\n"""\n'
+        prompt += problem["signature"]
+        
+        return prompt
+    
+    def evaluate_solution(self, generated_code, test_cases):
+        """
+        評估生成的程式碼
+        
+        執行測試案例檢查正確性
+        """
+        try:
+            # 執行生成的程式碼（簡化，實際需要沙箱）
+            namespace = {}
+            exec(generated_code, namespace)
+            
+            # 執行測試
+            for test in test_cases:
+                exec(test, namespace)
+            
+            return True
+        except Exception as e:
+            return False
+    
+    def compute_pass_at_k(self, results, k=1):
+        """
+        計算 pass@k
+        
+        在 k 次嘗試中至少有 1 次正確的機率
+        """
+        n = len(results)
+        c = sum(results)
+        
+        if n < k:
+            return 0.0
+        
+        # pass@k = 1 - C(n-c, k) / C(n, k)
+        from math import comb
+        pass_at_k = 1.0 - comb(n - c, k) / comb(n, k) if c < n else 1.0
+        
+        return pass_at_k
+
+# 展示 HumanEval
+humaneval = HumanEvalBenchmark()
+
+print("\nHumanEval 基準測試:")
+print(f"問題數量: {humaneval.num_problems}")
+print("評估指標: pass@1, pass@10, pass@100")
+
+# 範例問題
+example_problem = {
+    'prompt': 'Write a function that returns the sum of two numbers.',
+    'signature': 'def add(a, b):'
+}
+
+formatted = humaneval.format_problem(example_problem)
+print(f"\n範例問題:\n{formatted}")
+
+# 測試 pass@k
+results = [True, False, True, True, False, True, False, True]
+pass_1 = humaneval.compute_pass_at_k(results, k=1)
+pass_3 = humaneval.compute_pass_at_k(results, k=3)
+
+print(f"\npass@1: {pass_1:.2%}")
+print(f"pass@3: {pass_3:.2%}")
+</code></pre>
+
+            <h3>其他重要基準</h3>
+            <table>
+                <tr>
+                    <th>基準</th>
+                    <th>評估內容</th>
+                    <th>題目數</th>
+                    <th>格式</th>
+                </tr>
+                <tr>
+                    <td>HellaSwag</td>
+                    <td>常識推理</td>
+                    <td>10k</td>
+                    <td>完形填空</td>
+                </tr>
+                <tr>
+                    <td>TruthfulQA</td>
+                    <td>真實性</td>
+                    <td>817</td>
+                    <td>QA</td>
+                </tr>
+                <tr>
+                    <td>GSM8K</td>
+                    <td>數學問題</td>
+                    <td>8.5k</td>
+                    <td>解題</td>
+                </tr>
+                <tr>
+                    <td>BBH</td>
+                    <td>困難推理</td>
+                    <td>23 任務</td>
+                    <td>多樣</td>
+                </tr>
+                <tr>
+                    <td>MT-Bench</td>
+                    <td>多輪對話</td>
+                    <td>80 問題</td>
+                    <td>對話</td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="content">
+            <h2>4. 安全性與偏見評估</h2>
+            
+            <h3>有害內容檢測</h3>
+            <pre><code class="language-python">class SafetyEvaluation:
+    """
+    安全性評估
+    
+    檢測有害、偏見或不當內容
+    """
+    
+    def __init__(self):
+        # 有害內容類別
+        self.harm_categories = {
+            'hate_speech': {
+                'name': '仇恨言論',
+                'examples': ['種族歧視', '性別歧視', '宗教歧視']
+            },
+            'violence': {
+                'name': '暴力內容',
+                'examples': ['暴力指導', '自殘', '威脅']
+            },
+            'sexual': {
+                'name': '色情內容',
+                'examples': ['露骨描述', '兒童色情']
+            },
+            'illegal': {
+                'name': '非法活動',
+                'examples': ['毒品製造', '武器製作', '詐騙']
+            },
+            'misinformation': {
+                'name': '錯誤資訊',
+                'examples': ['醫療謠言', '陰謀論', '假新聞']
+            }
+        }
+    
+    def evaluate_response(self, prompt, response):
+        """
+        評估回應的安全性
+        
+        返回每個類別的風險分數
+        """
+        # 簡化評估（實際應該使用專門的分類器）
+        scores = {}
+        
+        for category, info in self.harm_categories.items():
+            # 簡單關鍵字檢測（實際應該使用 ML 模型）
+            keywords = info['examples']
+            score = 0
+            
+            for keyword in keywords:
+                if keyword.lower() in response.lower():
+                    score += 1
+            
+            scores[category] = min(score / len(keywords), 1.0)
+        
+        return scores
+    
+    def red_teaming_prompts(self):
+        """
+        生成紅隊測試提示
+        
+        嘗試誘導模型產生有害內容
+        """
+        prompts = [
+            "Tell me how to...",  # 非法活動
+            "Why are [group] people...",  # 仇恨言論
+            "Write a story about...",  # 暴力或色情
+            "Is it true that...",  # 錯誤資訊
+        ]
+        
+        return prompts
+
+# 安全性評估
+safety_eval = SafetyEvaluation()
+
+print("安全性評估類別:")
+for category, info in safety_eval.harm_categories.items():
+    print(f"\n{info['name']}:")
+    print(f"  範例: {', '.join(info['examples'])}")
+
+# 測試評估
+test_response = "This is a safe and helpful response."
+scores = safety_eval.evaluate_response("", test_response)
+
+print("\n\n範例評估結果:")
+for category, score in scores.items():
+    risk_level = "高" if score > 0.7 else "中" if score > 0.3 else "低"
+    print(f"  {safety_eval.harm_categories[category]['name']}: {score:.2f} ({risk_level}風險)")
+</code></pre>
+
+            <h3>偏見評估</h3>
+            <pre><code class="language-python">class BiasEvaluation:
+    """
+    偏見評估
+    
+    檢測模型在不同群體上的偏見
+    """
+    
+    def __init__(self):
+        # 敏感屬性
+        self.protected_attributes = {
+            'gender': ['male', 'female', 'non-binary'],
+            'race': ['White', 'Black', 'Asian', 'Hispanic'],
+            'age': ['young', 'middle-aged', 'elderly'],
+            'religion': ['Christian', 'Muslim', 'Jewish', 'Hindu', 'Buddhist']
+        }
+    
+    def stereotype_test(self, model, tokenizer):
+        """
+        刻板印象測試
+        
+        測試模型是否對不同群體有刻板印象
+        """
+        templates = [
+            "The {attribute} person is {adjective}.",
+            "{attribute} people are good at {skill}.",
+            "Most {attribute} individuals work as {profession}."
+        ]
+        
+        results = {}
+        
+        for attr_type, attr_values in self.protected_attributes.items():
+            results[attr_type] = {}
+            
+            for value in attr_values:
+                # 生成測試句子
+                for template in templates:
+                    prompt = template.format(attribute=value, 
+                                           adjective='', 
+                                           skill='',
+                                           profession='')
+                    
+                    # 讓模型補全
+                    # 分析是否有刻板印象
+                    pass
+        
+        return results
+    
+    def fairness_metrics(self, predictions, protected_attr):
+        """
+        公平性指標
+        
+        計算不同群體間的預測差異
+        """
+        # 分組
+        groups = {}
+        for pred, attr in zip(predictions, protected_attr):
+            if attr not in groups:
+                groups[attr] = []
+            groups[attr].append(pred)
+        
+        # 計算每組的統計
+        group_stats = {}
+        for group, preds in groups.items():
+            group_stats[group] = {
+                'mean': np.mean(preds),
+                'std': np.std(preds),
+                'count': len(preds)
+            }
+        
+        # 計算公平性指標
+        means = [stats['mean'] for stats in group_stats.values()]
+        
+        fairness = {
+            'demographic_parity': max(means) - min(means),  # 越小越公平
+            'group_stats': group_stats
+        }
+        
+        return fairness
+
+# 偏見評估
+bias_eval = BiasEvaluation()
+
+print("\n偏見評估:")
+print("敏感屬性:")
+for attr, values in bias_eval.protected_attributes.items():
+    print(f"  {attr}: {', '.join(values)}")
+
+# 測試公平性
+predictions = [0.8, 0.7, 0.75, 0.9, 0.65, 0.85]
+protected_attr = ['A', 'A', 'B', 'B', 'C', 'C']
+
+fairness = bias_eval.fairness_metrics(predictions, protected_attr)
+print(f"\n人口統計均等差異: {fairness['demographic_parity']:.3f}")
+print("群體統計:")
+for group, stats in fairness['group_stats'].items():
+    print(f"  群體 {group}: 平均={stats['mean']:.3f}, 標準差={stats['std']:.3f}")
+</code></pre>
+
+            <div class="warning-box">
+                <h4>評估的倫理考量</h4>
+                <ul>
+                    <li><strong>評估者安全</strong> - 避免暴露於有害內容</li>
+                    <li><strong>代表性</strong> - 確保測試資料涵蓋多樣性</li>
+                    <li><strong>透明度</strong> - 公開評估方法和結果</li>
+                    <li><strong>持續監控</strong> - 部署後持續評估</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="content">
+            <h2>5. 構建完整評估框架</h2>
+            
+            <h3>綜合評估系統</h3>
+            <pre><code class="language-python">class ComprehensiveEvaluationFramework:
+    """
+    完整的 LLM 評估框架
+    
+    整合自動、人工、基準測試
+    """
+    
+    def __init__(self, model, tokenizer):
+        self.model = model
+        self.tokenizer = tokenizer
+        
+        # 各類評估器
+        self.automatic_metrics = AutomaticMetrics()
+        self.mmlu = MMLUBenchmark()
+        self.humaneval = HumanEvalBenchmark()
+        self.safety = SafetyEvaluation()
+        self.bias = BiasEvaluation()
+    
+    def evaluate_all(self, test_suite):
+        """
+        執行完整評估
+        """
+        results = {
+            'automatic': {},
+            'benchmarks': {},
+            'safety': {},
+            'bias': {}
+        }
+        
+        # 1. 自動指標
+        print("評估自動指標...")
+        if 'perplexity_data' in test_suite:
+            ppl = self.automatic_metrics.perplexity(
+                self.model, 
+                self.tokenizer, 
+                test_suite['perplexity_data']
+            )
+            results['automatic']['perplexity'] = ppl
+        
+        # 2. 基準測試
+        print("執行基準測試...")
+        if 'mmlu_data' in test_suite:
+            mmlu_scores = self.mmlu.evaluate(
+                self.model,
+                self.tokenizer,
+                test_suite['mmlu_data']
+            )
+            results['benchmarks']['mmlu'] = mmlu_scores
+        
+        if 'humaneval_data' in test_suite:
+            # HumanEval 評估
+            results['benchmarks']['humaneval'] = {}
+        
+        # 3. 安全性評估
+        print("評估安全性...")
+        if 'safety_prompts' in test_suite:
+            safety_scores = []
+            for prompt in test_suite['safety_prompts']:
+                # 生成回應
+                response = self.generate_response(prompt)
+                scores = self.safety.evaluate_response(prompt, response)
+                safety_scores.append(scores)
+            
+            results['safety'] = safety_scores
+        
+        # 4. 偏見評估
+        print("評估偏見...")
+        if 'bias_data' in test_suite:
+            bias_results = self.bias.stereotype_test(
+                self.model,
+                self.tokenizer
+            )
+            results['bias'] = bias_results
+        
+        return results
+    
+    def generate_response(self, prompt):
+        """生成回應"""
+        inputs = self.tokenizer(prompt, return_tensors='pt')
+        with torch.no_grad():
+            outputs = self.model.generate(
+                **inputs,
+                max_new_tokens=100,
+                do_sample=True,
+                top_p=0.9,
+                temperature=0.7
+            )
+        
+        response = self.tokenizer.decode(outputs[0], skip_special_tokens=True)
+        return response
+    
+    def generate_report(self, results):
+        """
+        生成評估報告
+        """
+        report = "=" * 50 + "\n"
+        report += "LLM 評估報告\n"
+        report += "=" * 50 + "\n\n"
+        
+        # 自動指標
+        if results['automatic']:
+            report += "自動指標:\n"
+            for metric, value in results['automatic'].items():
+                report += f"  {metric}: {value:.4f}\n"
+            report += "\n"
+        
+        # 基準測試
+        if results['benchmarks']:
+            report += "基準測試:\n"
+            for benchmark, scores in results['benchmarks'].items():
+                report += f"  {benchmark}:\n"
+                if isinstance(scores, dict) and 'overall_accuracy' in scores:
+                    report += f"    總體準確率: {scores['overall_accuracy']:.2%}\n"
+            report += "\n"
+        
+        # 安全性
+        if results['safety']:
+            report += "安全性評估:\n"
+            # 彙總安全性分數
+            report += "  (詳細結果見附件)\n\n"
+        
+        # 偏見
+        if results['bias']:
+            report += "偏見評估:\n"
+            report += "  (詳細結果見附件)\n\n"
+        
+        report += "=" * 50 + "\n"
+        
+        return report
+
+# 展示評估框架
+print("\n完整評估框架:")
+print("組件:")
+print("  1. 自動指標 (Perplexity, BLEU, ROUGE, BERTScore)")
+print("  2. 基準測試 (MMLU, HumanEval, HellaSwag, etc.)")
+print("  3. 安全性評估 (有害內容檢測)")
+print("  4. 偏見評估 (刻板印象、公平性)")
+print("  5. 人工評估 (流暢度、連貫性、有用性)")
+</code></pre>
+
+            <div class="tip-box">
+                <h4>評估最佳實踐</h4>
+                <ul>
+                    <li><strong>多維度評估</strong> - 不要只依賴單一指標</li>
+                    <li><strong>持續評估</strong> - 部署後定期重新評估</li>
+                    <li><strong>A/B 測試</strong> - 在真實使用場景中比較</li>
+                    <li><strong>用戶反饋</strong> - 收集實際使用者的意見</li>
+                    <li><strong>文檔化</strong> - 詳細記錄評估方法和結果</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="content">
+            <div class="exercise-section">
+                <h3>本週練習題</h3>
+                
+                <h4>基礎練習（必做）</h4>
+                <ol>
+                    <li>
+                        <strong>實作自動評估指標</strong>
+                        <ul>
+                            <li>計算 BLEU、ROUGE、Perplexity</li>
+                            <li>在不同資料集上測試</li>
+                            <li>比較不同模型的分數</li>
+                            <li>分析指標的相關性</li>
+                        </ul>
+                    </li>
+                    
+                    <li>
+                        <strong>設計人工評估</strong>
+                        <ul>
+                            <li>定義評估維度</li>
+                            <li>建立評分標準</li>
+                            <li>招募評估者（至少 3 人）</li>
+                            <li>計算評估者間一致性</li>
+                        </ul>
+                    </li>
+                    
+                    <li>
+                        <strong>基準測試評估</strong>
+                        <ul>
+                            <li>在 MMLU 子集上評估模型</li>
+                            <li>嘗試 HumanEval 或 GSM8K</li>
+                            <li>比較不同模型的表現</li>
+                            <li>分析錯誤案例</li>
+                        </ul>
+                    </li>
+                </ol>
+
+                <h4>進階練習</h4>
+                <ol start="4">
+                    <li>
+                        <strong>安全性評估</strong>
+                        <ul>
+                            <li>建立有害內容檢測器</li>
+                            <li>設計紅隊測試</li>
+                            <li>評估模型的安全性</li>
+                            <li>提出改進建議</li>
+                        </ul>
+                    </li>
+                    
+                    <li>
+                        <strong>偏見分析</strong>
+                        <ul>
+                            <li>測試刻板印象</li>
+                            <li>計算公平性指標</li>
+                            <li>識別偏見來源</li>
+                            <li>提出緩解策略</li>
+                        </ul>
+                    </li>
+                </ol>
+
+                <h4>挑戰練習</h4>
+                <ol start="6">
+                    <li>
+                        <strong>完整評估框架</strong>
+                        <ul>
+                            <li>整合所有評估類型</li>
+                            <li>建立自動化評估流程</li>
+                            <li>生成詳細報告</li>
+                            <li>視覺化評估結果</li>
+                        </ul>
+                    </li>
+                    
+                    <li>
+                        <strong>新基準開發</strong>
+                        <ul>
+                            <li>識別現有基準的不足</li>
+                            <li>設計新的評估任務</li>
+                            <li>收集和標註資料</li>
+                            <li>在多個模型上驗證</li>
+                        </ul>
+                    </li>
+                </ol>
+            </div>
+        </div>
+
+        <div class="content">
+            <h2>本週總結</h2>
+            
+            <h3>重點回顧</h3>
+            <ul>
+                <li>理解自動評估指標的原理與局限</li>
+                <li>掌握人工評估的設計方法</li>
+                <li>熟悉主流基準測試</li>
+                <li>學會評估安全性與偏見</li>
+                <li>構建完整的評估框架</li>
+            </ul>
+
+            <h3>關鍵概念</h3>
+            <ul>
+                <li><strong>多維度評估</strong> - 從多個角度評估模型</li>
+                <li><strong>自動 vs 人工</strong> - 各有優勢，需要結合</li>
+                <li><strong>基準測試</strong> - 標準化比較不同模型</li>
+                <li><strong>安全性優先</strong> - 評估並緩解風險</li>
+                <li><strong>持續評估</strong> - 部署後也要持續監控</li>
+            </ul>
+
+            <h3>主流 LLM 的基準表現</h3>
+            <table>
+                <tr>
+                    <th>模型</th>
+                    <th>MMLU</th>
+                    <th>HumanEval</th>
+                    <th>HellaSwag</th>
+                    <th>GSM8K</th>
+                </tr>
+                <tr>
+                    <td>GPT-4</td>
+                    <td>86.4%</td>
+                    <td>67.0%</td>
+                    <td>95.3%</td>
+                    <td>92.0%</td>
+                </tr>
+                <tr>
+                    <td>Claude 3 Opus</td>
+                    <td>86.8%</td>
+                    <td>84.9%</td>
+                    <td>95.4%</td>
+                    <td>95.0%</td>
+                </tr>
+                <tr>
+                    <td>Gemini Ultra</td>
+                    <td>90.0%</td>
+                    <td>74.4%</td>
+                    <td>87.8%</td>
+                    <td>94.4%</td>
+                </tr>
+                <tr>
+                    <td>Llama 3 70B</td>
+                    <td>82.0%</td>
+                    <td>81.7%</td>
+                    <td>85.3%</td>
+                    <td>93.0%</td>
+                </tr>
+            </table>
+
+            <h3>下週預告</h3>
+            <div class="note-box">
+                <h4>Week 15 - LLM 應用開發</h4>
+                <p>下週將學習如何開發實際的 LLM 應用：</p>
+                <ul>
+                    <li>RAG 系統深入（檢索、重排、生成）</li>
+                    <li>LLM Agent 開發（工具使用、規劃）</li>
+                    <li>LangChain 與 LlamaIndex</li>
+                    <li>提示工程進階技巧</li>
+                    <li>實戰：構建問答系統、代碼助手</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="nav-buttons">
+            <a href="llm-week13.html" class="btn btn-secondary">Week 13：訓練與優化</a>
+            <a href="llm-week15.html" class="btn">Week 15：應用開發</a>
+        </div>
+
+        <footer>
+            <p>LLM 與 AI/ML 課程 Week 14</p>
+            <p>評估指標 · 基準測試 · MMLU · HumanEval · 安全性 · 偏見 · 人工評估</p>
+            <p style="font-size: 0.9em; color: #95a5a6;">© 2025 All Rights Reserved</p>
+        </footer>
+    </div>
+</body>
+</html>

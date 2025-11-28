@@ -1,0 +1,1113 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Week 16 - 未來趨勢與課程總結 | LLM 與 AI/ML 課程</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft JhengHei', Arial, sans-serif;
+            background: #f8f9fa;
+            color: #1a1a1a;
+            line-height: 1.7;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .nav {
+            background: white;
+            padding: 16px 28px;
+            border-radius: 8px;
+            margin-bottom: 32px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            border: 1px solid #e0e0e0;
+        }
+
+        .nav a {
+            color: #3498db;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 8px 16px;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+        }
+
+        .nav a:hover {
+            background: #ecf0f1;
+            color: #2980b9;
+        }
+
+        .nav span {
+            color: #6c757d;
+            font-weight: 500;
+        }
+
+        header {
+            background: linear-gradient(to right, #2c3e50, #34495e);
+            color: white;
+            padding: 56px 40px;
+            border-radius: 8px;
+            margin-bottom: 32px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            border-bottom: 3px solid #3498db;
+        }
+
+        header h1 {
+            font-size: 2.2em;
+            margin-bottom: 12px;
+            font-weight: 700;
+        }
+
+        header .subtitle {
+            font-size: 1.05em;
+            opacity: 0.9;
+            font-weight: 400;
+        }
+
+        .content {
+            background: white;
+            border-radius: 8px;
+            padding: 48px;
+            margin-bottom: 32px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            border: 1px solid #e0e0e0;
+        }
+
+        .content h2 {
+            color: #1a1a1a;
+            font-size: 1.9em;
+            margin-bottom: 24px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #3498db;
+            font-weight: 700;
+        }
+
+        .content h3 {
+            color: #2c3e50;
+            font-size: 1.5em;
+            margin: 36px 0 16px 0;
+            font-weight: 600;
+        }
+
+        .content h4 {
+            color: #34495e;
+            font-size: 1.2em;
+            margin: 24px 0 12px 0;
+            font-weight: 600;
+        }
+
+        .content p {
+            margin-bottom: 16px;
+            line-height: 1.8;
+            color: #4a4a4a;
+        }
+
+        pre[class*="language-"] {
+            margin: 24px 0;
+            border-radius: 6px;
+            border: 1px solid #d0d7de;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+        }
+
+        code[class*="language-"] {
+            font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
+            font-size: 0.92em;
+            line-height: 1.6;
+        }
+
+        .note-box {
+            background: #e3f2fd;
+            border-left: 4px solid #2196f3;
+            padding: 20px 24px;
+            margin: 24px 0;
+            border-radius: 4px;
+        }
+
+        .note-box h4 {
+            color: #1565c0;
+            margin-top: 0;
+            margin-bottom: 12px;
+            font-size: 1.1em;
+        }
+
+        .warning-box {
+            background: #fff3e0;
+            border-left: 4px solid #ff9800;
+            padding: 20px 24px;
+            margin: 24px 0;
+            border-radius: 4px;
+        }
+
+        .warning-box h4 {
+            color: #e65100;
+            margin-top: 0;
+            margin-bottom: 12px;
+            font-size: 1.1em;
+        }
+
+        .tip-box {
+            background: #f1f8e9;
+            border-left: 4px solid #8bc34a;
+            padding: 20px 24px;
+            margin: 24px 0;
+            border-radius: 4px;
+        }
+
+        .tip-box h4 {
+            color: #558b2f;
+            margin-top: 0;
+            margin-bottom: 12px;
+            font-size: 1.1em;
+        }
+
+        .concept-box {
+            background: #f3e5f5;
+            border-left: 4px solid #9c27b0;
+            padding: 20px 24px;
+            margin: 24px 0;
+            border-radius: 4px;
+        }
+
+        .concept-box h4 {
+            color: #6a1b9a;
+            margin-top: 0;
+            margin-bottom: 12px;
+            font-size: 1.1em;
+        }
+
+        .timeline {
+            position: relative;
+            padding-left: 30px;
+            margin: 30px 0;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: #3498db;
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 30px;
+            padding-left: 20px;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -36px;
+            top: 5px;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #3498db;
+            border: 3px solid white;
+            box-shadow: 0 0 0 2px #3498db;
+        }
+
+        .timeline-item h4 {
+            margin-top: 0;
+            color: #2c3e50;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 24px 0;
+            background: white;
+        }
+
+        table th,
+        table td {
+            padding: 14px 16px;
+            text-align: left;
+            border: 1px solid #dee2e6;
+        }
+
+        table th {
+            background: #2c3e50;
+            color: white;
+            font-weight: 600;
+        }
+
+        table tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+
+        ul, ol {
+            margin-left: 28px;
+            margin-top: 12px;
+            margin-bottom: 16px;
+        }
+
+        li {
+            margin: 10px 0;
+            line-height: 1.7;
+            color: #4a4a4a;
+        }
+
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 48px;
+            gap: 16px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 28px;
+            background: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            border: none;
+        }
+
+        .btn:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
+        }
+
+        .btn-secondary {
+            background: #95a5a6;
+        }
+
+        .btn-secondary:hover {
+            background: #7f8c8d;
+            box-shadow: 0 4px 12px rgba(149, 165, 166, 0.3);
+        }
+
+        .highlight {
+            background: #fff9c4;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-weight: 500;
+        }
+
+        .completion-badge {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 12px;
+            text-align: center;
+            margin: 40px 0;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+        }
+
+        .completion-badge h3 {
+            margin: 0;
+            font-size: 2em;
+            color: white;
+        }
+
+        .completion-badge p {
+            margin: 10px 0 0 0;
+            font-size: 1.1em;
+            opacity: 0.95;
+            color: white;
+        }
+
+        footer {
+            text-align: center;
+            padding: 32px 0;
+            color: #6c757d;
+            margin-top: 48px;
+            border-top: 1px solid #dee2e6;
+        }
+
+        footer p {
+            margin: 8px 0;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 12px;
+            }
+
+            .content {
+                padding: 24px 20px;
+            }
+
+            header {
+                padding: 32px 24px;
+            }
+
+            header h1 {
+                font-size: 1.8em;
+            }
+
+            .nav-buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="nav">
+            <a href="llm-week15.html">Week 15</a>
+            <span>Week 16 / 16</span>
+            <a href="llm-index.html">回到首頁</a>
+        </div>
+
+        <header>
+            <h1>Week 16 - 未來趨勢與課程總結</h1>
+            <div class="subtitle">展望 LLM 未來 · 完整學習路徑 · 課程回顧</div>
+        </header>
+
+        <div class="content">
+            <h2>本週學習內容</h2>
+            <ul>
+                <li>多模態大模型（GPT-4V、Gemini、Claude 3）</li>
+                <li>長文本處理（100K+ tokens 上下文）</li>
+                <li>模型小型化與端側部署</li>
+                <li>新興應用領域</li>
+                <li>課程完整回顧與學習路徑</li>
+            </ul>
+
+            <div class="concept-box">
+                <h4>LLM 發展的三個階段</h4>
+                <ul>
+                    <li><strong>第一階段（2017-2020）</strong> - Transformer、BERT、GPT-2</li>
+                    <li><strong>第二階段（2020-2022）</strong> - 規模化、GPT-3、指令微調</li>
+                    <li><strong>第三階段（2023-現在）</strong> - 多模態、長文本、對齊</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="content">
+            <h2>1. 多模態大模型</h2>
+            
+            <h3>視覺語言模型（VLM）</h3>
+            <p><span class="highlight">多模態模型</span>可以同時理解和生成文本、圖像、音頻等多種模態。</p>
+
+            <div class="timeline">
+                <div class="timeline-item">
+                    <h4>2023 年 3 月 - GPT-4V</h4>
+                    <p>OpenAI 發布 GPT-4 with Vision，能夠理解圖像並回答相關問題。支援圖表分析、OCR、視覺推理等任務。</p>
+                </div>
+                
+                <div class="timeline-item">
+                    <h4>2023 年 12 月 - Gemini</h4>
+                    <p>Google 發布 Gemini，原生多模態架構，在多項基準測試中超越 GPT-4。支援文本、圖像、音頻、視頻的統一處理。</p>
+                </div>
+                
+                <div class="timeline-item">
+                    <h4>2024 年 3 月 - Claude 3</h4>
+                    <p>Anthropic 發布 Claude 3 系列（Haiku、Sonnet、Opus），具備視覺能力，在多項任務上表現優異。</p>
+                </div>
+                
+                <div class="timeline-item">
+                    <h4>2024 年 - GPT-4o</h4>
+                    <p>OpenAI 發布 GPT-4o（"omni"），實現文本、視覺、音頻的真正實時交互，延遲大幅降低。</p>
+                </div>
+            </div>
+
+            <pre><code class="language-python">class MultiModalModel:
+    """
+    多模態模型架構
+    
+    統一處理多種模態
+    """
+    
+    def __init__(self):
+        # 各模態編碼器
+        self.vision_encoder = VisionTransformer()  # ViT
+        self.audio_encoder = AudioEncoder()        # Whisper-like
+        self.text_encoder = TextEncoder()          # Transformer
+        
+        # 模態融合
+        self.modality_fusion = CrossModalAttention()
+        
+        # 統一解碼器
+        self.decoder = UnifiedDecoder()
+    
+    def forward(self, inputs):
+        """
+        前向傳播
+        
+        inputs 可以包含多種模態
+        """
+        encoded_modalities = []
+        
+        # 編碼各模態
+        if 'image' in inputs:
+            image_embeds = self.vision_encoder(inputs['image'])
+            encoded_modalities.append(image_embeds)
+        
+        if 'audio' in inputs:
+            audio_embeds = self.audio_encoder(inputs['audio'])
+            encoded_modalities.append(audio_embeds)
+        
+        if 'text' in inputs:
+            text_embeds = self.text_encoder(inputs['text'])
+            encoded_modalities.append(text_embeds)
+        
+        # 模態融合
+        fused = self.modality_fusion(encoded_modalities)
+        
+        # 解碼
+        output = self.decoder(fused)
+        
+        return output
+
+print("多模態模型架構")
+print("\n關鍵技術:")
+print("1. 模態特定編碼器 - ViT、Whisper、BERT")
+print("2. 模態對齊 - CLIP-style 對比學習")
+print("3. 跨模態注意力 - 不同模態間的交互")
+print("4. 統一解碼器 - 生成多種模態輸出")
+</code></pre>
+
+            <h3>多模態應用場景</h3>
+            <table>
+                <tr>
+                    <th>應用</th>
+                    <th>輸入</th>
+                    <th>輸出</th>
+                    <th>範例</th>
+                </tr>
+                <tr>
+                    <td>視覺問答</td>
+                    <td>圖像 + 文本</td>
+                    <td>文本</td>
+                    <td>圖表分析、場景理解</td>
+                </tr>
+                <tr>
+                    <td>圖像生成</td>
+                    <td>文本</td>
+                    <td>圖像</td>
+                    <td>DALL-E、Midjourney</td>
+                </tr>
+                <tr>
+                    <td>視頻理解</td>
+                    <td>視頻</td>
+                    <td>文本</td>
+                    <td>視頻摘要、行為識別</td>
+                </tr>
+                <tr>
+                    <td>語音助手</td>
+                    <td>音頻</td>
+                    <td>音頻 + 文本</td>
+                    <td>實時對話、翻譯</td>
+                </tr>
+                <tr>
+                    <td>文檔理解</td>
+                    <td>PDF/掃描件</td>
+                    <td>結構化數據</td>
+                    <td>表格提取、OCR</td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="content">
+            <h2>2. 長文本處理</h2>
+            
+            <h3>上下文窗口的演進</h3>
+            <p>上下文窗口從最初的 512 tokens 增長到現在的 100K+ tokens。</p>
+
+            <table>
+                <tr>
+                    <th>模型</th>
+                    <th>年份</th>
+                    <th>上下文長度</th>
+                    <th>相當於</th>
+                </tr>
+                <tr>
+                    <td>GPT-2</td>
+                    <td>2019</td>
+                    <td>1,024</td>
+                    <td>~3 頁</td>
+                </tr>
+                <tr>
+                    <td>GPT-3</td>
+                    <td>2020</td>
+                    <td>2,048</td>
+                    <td>~6 頁</td>
+                </tr>
+                <tr>
+                    <td>GPT-3.5</td>
+                    <td>2022</td>
+                    <td>4,096</td>
+                    <td>~12 頁</td>
+                </tr>
+                <tr>
+                    <td>GPT-4</td>
+                    <td>2023</td>
+                    <td>8,192 / 32,768</td>
+                    <td>~100 頁</td>
+                </tr>
+                <tr>
+                    <td>Claude 2</td>
+                    <td>2023</td>
+                    <td>100,000</td>
+                    <td>~300 頁</td>
+                </tr>
+                <tr>
+                    <td>GPT-4 Turbo</td>
+                    <td>2023</td>
+                    <td>128,000</td>
+                    <td>~400 頁</td>
+                </tr>
+                <tr>
+                    <td>Gemini 1.5</td>
+                    <td>2024</td>
+                    <td>1,000,000+</td>
+                    <td>~3,000 頁</td>
+                </tr>
+            </table>
+
+            <h3>長文本技術</h3>
+            <pre><code class="language-python">class LongContextTechniques:
+    """
+    長文本處理技術
+    """
+    
+    @staticmethod
+    def sparse_attention():
+        """
+        稀疏注意力
+        
+        不計算所有 token 對，只計算重要的
+        """
+        print("稀疏注意力技術:")
+        print("\n1. Local Attention - 只關注附近的 token")
+        print("2. Strided Attention - 固定步長採樣")
+        print("3. Global Attention - 少數全局 token")
+        print("4. Random Attention - 隨機採樣")
+        print("\n複雜度: O(n²) -> O(n√n) 或 O(n log n)")
+    
+    @staticmethod
+    def sliding_window():
+        """
+        滑動窗口
+        
+        固定大小的注意力窗口
+        """
+        print("\n滑動窗口:")
+        print("- 每個 token 只關注前後 w 個 token")
+        print("- 窗口大小: 通常 2048-4096")
+        print("- 複雜度: O(n × w)")
+        print("- 例子: Mistral 7B 使用 4096 窗口")
+    
+    @staticmethod
+    def retrieval_augmentation():
+        """
+        檢索增強
+        
+        動態檢索相關上下文
+        """
+        print("\n檢索增強:")
+        print("- 不把所有內容放入上下文")
+        print("- 根據查詢動態檢索")
+        print("- 只加載相關片段")
+        print("- 突破固定窗口限制")
+    
+    @staticmethod
+    def memory_mechanisms():
+        """
+        記憶機制
+        
+        外部記憶存儲
+        """
+        print("\n記憶機制:")
+        print("- 長期記憶: 持久化存儲")
+        print("- 短期記憶: 當前上下文")
+        print("- 工作記憶: 中間結果")
+        print("- 例子: MemGPT")
+
+# 展示長文本技術
+long_context = LongContextTechniques()
+long_context.sparse_attention()
+long_context.sliding_window()
+long_context.retrieval_augmentation()
+long_context.memory_mechanisms()
+</code></pre>
+
+            <div class="note-box">
+                <h4>長文本的應用</h4>
+                <ul>
+                    <li><strong>文檔分析</strong> - 處理完整的法律文件、研究論文</li>
+                    <li><strong>代碼庫理解</strong> - 分析大型代碼庫</li>
+                    <li><strong>對話歷史</strong> - 維護長期對話記憶</li>
+                    <li><strong>書籍摘要</strong> - 總結整本書</li>
+                    <li><strong>視頻分析</strong> - 處理長視頻內容</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="content">
+            <h2>3. 模型小型化與端側部署</h2>
+            
+            <h3>小型語言模型（SLM）</h3>
+            <p>高效的小型模型適合端側部署和資源受限場景。</p>
+
+            <table>
+                <tr>
+                    <th>模型</th>
+                    <th>參數量</th>
+                    <th>特點</th>
+                    <th>應用</th>
+                </tr>
+                <tr>
+                    <td>Phi-2</td>
+                    <td>2.7B</td>
+                    <td>高質量訓練數據</td>
+                    <td>邊緣設備</td>
+                </tr>
+                <tr>
+                    <td>Gemma</td>
+                    <td>2B / 7B</td>
+                    <td>Google 開源</td>
+                    <td>研究、應用</td>
+                </tr>
+                <tr>
+                    <td>Mistral 7B</td>
+                    <td>7B</td>
+                    <td>高性能、開源</td>
+                    <td>通用</td>
+                </tr>
+                <tr>
+                    <td>Llama 3 8B</td>
+                    <td>8B</td>
+                    <td>Meta 最新</td>
+                    <td>通用</td>
+                </tr>
+                <tr>
+                    <td>Qwen 1.8B</td>
+                    <td>1.8B</td>
+                    <td>多語言</td>
+                    <td>移動設備</td>
+                </tr>
+            </table>
+
+            <h3>端側部署技術</h3>
+            <pre><code class="language-python">class EdgeDeployment:
+    """
+    端側部署策略
+    """
+    
+    @staticmethod
+    def quantization_strategies():
+        """
+        量化策略
+        """
+        strategies = {
+            'INT8': {
+                'compression': '4x',
+                'accuracy_loss': '<1%',
+                'speed': '2-3x',
+                'use_case': 'CPU 推理'
+            },
+            'INT4': {
+                'compression': '8x',
+                'accuracy_loss': '1-3%',
+                'speed': '3-4x',
+                'use_case': '移動設備'
+            },
+            'GGUF': {
+                'compression': '可變',
+                'accuracy_loss': '可控',
+                'speed': '優化',
+                'use_case': 'llama.cpp'
+            }
+        }
+        
+        return strategies
+    
+    @staticmethod
+    def model_pruning():
+        """
+        模型剪枝
+        """
+        print("模型剪枝技術:")
+        print("\n1. 結構化剪枝 - 移除整個神經元或層")
+        print("2. 非結構化剪枝 - 移除個別權重")
+        print("3. 知識蒸餾 - 訓練小模型模仿大模型")
+        print("\n效果: 可減少 30-50% 參數，性能損失 <5%")
+    
+    @staticmethod
+    def inference_optimization():
+        """
+        推理優化
+        """
+        print("\n推理優化:")
+        print("- KV Cache - 避免重複計算")
+        print("- Flash Attention - 減少記憶體訪問")
+        print("- Speculative Decoding - 加速生成")
+        print("- Batch Processing - 提高吞吐量")
+
+# 展示端側部署
+edge = EdgeDeployment()
+
+print("端側部署策略:")
+print("\n量化策略:")
+for method, info in edge.quantization_strategies().items():
+    print(f"\n{method}:")
+    for key, value in info.items():
+        print(f"  {key}: {value}")
+
+edge.model_pruning()
+edge.inference_optimization()
+</code></pre>
+
+            <h3>端側 LLM 框架</h3>
+            <pre><code class="language-python"># 端側 LLM 運行框架
+"""
+# 1. llama.cpp - C++ 實現，支援多平台
+# 安裝和使用
+git clone https://github.com/ggerganov/llama.cpp
+cd llama.cpp
+make
+
+# 運行量化模型
+./main -m models/llama-7b-q4_0.gguf -p "Hello, my name is"
+
+# 2. ONNX Runtime - 跨平台推理
+from optimum.onnxruntime import ORTModelForCausalLM
+from transformers import AutoTokenizer
+
+model = ORTModelForCausalLM.from_pretrained("model_name")
+tokenizer = AutoTokenizer.from_pretrained("model_name")
+
+# 3. MLC LLM - 編譯優化
+# 支援 iPhone、Android、Web
+import mlc_llm
+
+model = mlc_llm.create("Llama-2-7b", model_lib="cuda")
+output = model.generate("Hello", max_length=50)
+
+# 4. ExLlama - 高性能推理
+from exllama import ExLlama, ExLlamaConfig
+
+config = ExLlamaConfig("model_path")
+model = ExLlama(config)
+"""
+
+print("\n端側 LLM 框架:")
+print("1. llama.cpp - 純 C++，高效能")
+print("2. ONNX Runtime - 跨平台")
+print("3. MLC LLM - 移動端優化")
+print("4. ExLlama - GPU 加速")
+</code></pre>
+        </div>
+
+        <div class="content">
+            <h2>4. 新興應用領域</h2>
+            
+            <h3>科學研究</h3>
+            <div class="tip-box">
+                <h4>LLM 在科學領域的應用</h4>
+                <ul>
+                    <li><strong>蛋白質設計</strong> - AlphaFold、ESM、ProtGPT</li>
+                    <li><strong>藥物發現</strong> - 分子生成、性質預測</li>
+                    <li><strong>材料科學</strong> - 新材料設計和預測</li>
+                    <li><strong>數學證明</strong> - 輔助定理證明</li>
+                    <li><strong>科學寫作</strong> - 論文生成、文獻綜述</li>
+                </ul>
+            </div>
+
+            <h3>教育</h3>
+            <ul>
+                <li><strong>個性化教學</strong> - 根據學生水平調整</li>
+                <li><strong>作業批改</strong> - 自動評分和反饋</li>
+                <li><strong>虛擬導師</strong> - 24/7 答疑解惑</li>
+                <li><strong>課程生成</strong> - 自動生成教學材料</li>
+                <li><strong>語言學習</strong> - 對話練習、發音糾正</li>
+            </ul>
+
+            <h3>創意產業</h3>
+            <ul>
+                <li><strong>內容創作</strong> - 文章、劇本、詩歌</li>
+                <li><strong>遊戲開發</strong> - NPC 對話、劇情生成</li>
+                <li><strong>音樂創作</strong> - 作詞作曲</li>
+                <li><strong>設計輔助</strong> - UI/UX 設計建議</li>
+                <li><strong>廣告文案</strong> - 創意文案生成</li>
+            </ul>
+
+            <h3>醫療健康</h3>
+            <ul>
+                <li><strong>診斷輔助</strong> - 分析症狀、建議檢查</li>
+                <li><strong>醫學文獻</strong> - 快速檢索和總結</li>
+                <li><strong>患者溝通</strong> - 健康諮詢、用藥指導</li>
+                <li><strong>臨床筆記</strong> - 自動生成病歷</li>
+                <li><strong>心理健康</strong> - 心理諮詢機器人</li>
+            </ul>
+
+            <h3>法律與金融</h3>
+            <ul>
+                <li><strong>合同審查</strong> - 分析法律文件</li>
+                <li><strong>法律研究</strong> - 案例檢索</li>
+                <li><strong>財務分析</strong> - 報表解讀</li>
+                <li><strong>風險評估</strong> - 信用評分</li>
+                <li><strong>投資建議</strong> - 市場分析</li>
+            </ul>
+        </div>
+
+        <div class="content">
+            <h2>5. 課程完整回顧</h2>
+            
+            <h3>16 週學習旅程</h3>
+            <div class="timeline">
+                <div class="timeline-item">
+                    <h4>Week 1 - Python 與數據處理</h4>
+                    <p>NumPy、Pandas、數據視覺化、基礎統計</p>
+                </div>
+                
+                <div class="timeline-item">
+                    <h4>Week 2 - 機器學習數學基礎</h4>
+                    <p>線性代數、微積分、機率論、最優化</p>
+                </div>
+                
+                <div class="timeline-item">
+                    <h4>Week 3 - 機器學習入門</h4>
+                    <p>監督學習、非監督學習、模型評估、特徵工程</p>
+                </div>
+                
+                <div class="timeline-item">
+                    <h4>Week 4 - 深度學習基礎</h4>
+                    <p>神經網路、反向傳播、激活函數、優化器</p>
+                </div>
+                
+                <div class="timeline-item">
+                    <h4>Week 5 - 卷積神經網路</h4>
+                    <p>CNN 架構、影像分類、目標檢測、遷移學習</p>
+                </div>
+                
+                <div class="timeline-item">
+                    <h4>Week 6 - 循環神經網路</h4>
+                    <p>RNN、LSTM、GRU、Seq2Seq、注意力機制</p>
+                </div>
+                
+                <div class="timeline-item">
+                    <h4>Week 7 - Transformer 架構</h4>
+                    <p>Self-Attention、位置編碼、Multi-Head Attention</p>
+                </div>
+                
+                <div class="timeline-item">
+                    <h4>Week 8 - BERT 與 GPT</h4>
+                    <p>預訓練語言模型、MLM、NSP、因果語言建模</p>
+                </div>
+                
+                <div class="timeline-item">
+                    <h4>Week 9 - 進階 NLP 技術</h4>
+                    <p>Prompt Engineering、Few-Shot、LoRA、知識蒸餾</p>
+                </div>
+                
+                <div class="timeline-item">
+                    <h4>Week 10 - 多模態學習</h4>
+                    <p>ViT、CLIP、影像描述、視覺問答</p>
+                </div>
+                
+                <div class="timeline-item">
+                    <h4>Week 11 - 強化學習基礎</h4>
+                    <p>MDP、Q-Learning、DQN、Policy Gradient、PPO</p>
+                </div>
+                
+                <div class="timeline-item">
+                    <h4>Week 12 - RLHF 與對齊</h4>
+                    <p>獎勵模型、PPO 微調、DPO、安全性評估</p>
+                </div>
+                
+                <div class="timeline-item">
+                    <h4>Week 13 - LLM 訓練與優化</h4>
+                    <p>分散式訓練、混合精度、量化、推理優化</p>
+                </div>
+                
+                <div class="timeline-item">
+                    <h4>Week 14 - 評估與基準測試</h4>
+                    <p>自動評估、人工評估、MMLU、HumanEval</p>
+                </div>
+                
+                <div class="timeline-item">
+                    <h4>Week 15 - LLM 應用開發</h4>
+                    <p>RAG 系統、LLM Agent、LangChain、實戰項目</p>
+                </div>
+                
+                <div class="timeline-item">
+                    <h4>Week 16 - 未來趨勢與總結</h4>
+                    <p>多模態、長文本、端側部署、課程回顧</p>
+                </div>
+            </div>
+
+            <h3>核心技能樹</h3>
+            <table>
+                <tr>
+                    <th>領域</th>
+                    <th>核心概念</th>
+                    <th>實戰技能</th>
+                </tr>
+                <tr>
+                    <td>基礎</td>
+                    <td>Python、NumPy、數學基礎</td>
+                    <td>數據處理、視覺化</td>
+                </tr>
+                <tr>
+                    <td>機器學習</td>
+                    <td>監督/非監督學習、評估</td>
+                    <td>sklearn、特徵工程</td>
+                </tr>
+                <tr>
+                    <td>深度學習</td>
+                    <td>神經網路、BP、優化</td>
+                    <td>PyTorch、模型訓練</td>
+                </tr>
+                <tr>
+                    <td>計算機視覺</td>
+                    <td>CNN、目標檢測、ViT</td>
+                    <td>影像分類、遷移學習</td>
+                </tr>
+                <tr>
+                    <td>NLP</td>
+                    <td>Transformer、BERT、GPT</td>
+                    <td>文本分類、生成</td>
+                </tr>
+                <tr>
+                    <td>LLM</td>
+                    <td>預訓練、微調、提示工程</td>
+                    <td>RAG、Agent、應用開發</td>
+                </tr>
+                <tr>
+                    <td>強化學習</td>
+                    <td>MDP、Q-Learning、PPO</td>
+                    <td>RLHF、模型對齊</td>
+                </tr>
+                <tr>
+                    <td>工程實踐</td>
+                    <td>分散式訓練、優化、部署</td>
+                    <td>量化、推理加速</td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="content">
+            <h2>6. 繼續學習的路徑</h2>
+            
+            <h3>深入研究方向</h3>
+            
+            <h4>1. 理論研究</h4>
+            <ul>
+                <li>閱讀最新論文（arXiv、ACL、NeurIPS）</li>
+                <li>理解前沿模型架構</li>
+                <li>參與開源項目（Hugging Face、LangChain）</li>
+                <li>複現經典論文</li>
+            </ul>
+
+            <h4>2. 工程實踐</h4>
+            <ul>
+                <li>構建完整的 LLM 應用</li>
+                <li>學習生產級部署（FastAPI、Docker、K8s）</li>
+                <li>優化模型性能</li>
+                <li>處理真實業務場景</li>
+            </ul>
+
+            <h4>3. 專業領域</h4>
+            <ul>
+                <li><strong>多模態</strong> - 圖像、音頻、視頻</li>
+                <li><strong>具身智能</strong> - 機器人、自動駕駛</li>
+                <li><strong>科學 AI</strong> - 蛋白質、材料、藥物</li>
+                <li><strong>安全對齊</strong> - RLHF、Constitutional AI</li>
+            </ul>
+
+            <h3>推薦資源</h3>
+            
+            <h4>論文</h4>
+            <ul>
+                <li>Attention Is All You Need (Transformer)</li>
+                <li>BERT: Pre-training of Deep Bidirectional Transformers</li>
+                <li>Language Models are Few-Shot Learners (GPT-3)</li>
+                <li>Training language models to follow instructions (InstructGPT)</li>
+                <li>Constitutional AI: Harmlessness from AI Feedback</li>
+            </ul>
+
+            <h4>課程</h4>
+            <ul>
+                <li>Stanford CS224N - NLP with Deep Learning</li>
+                <li>Stanford CS25 - Transformers United</li>
+                <li>DeepLearning.AI - ChatGPT Prompt Engineering</li>
+                <li>Fast.ai - Practical Deep Learning</li>
+            </ul>
+
+            <h4>工具和庫</h4>
+            <ul>
+                <li>Hugging Face Transformers</li>
+                <li>LangChain / LlamaIndex</li>
+                <li>vLLM / TGI（推理服務）</li>
+                <li>Weights & Biases（實驗追蹤）</li>
+            </ul>
+
+            <h4>社群</h4>
+            <ul>
+                <li>Hugging Face 論壇</li>
+                <li>Reddit r/MachineLearning</li>
+                <li>Discord 社群（LangChain、Hugging Face）</li>
+                <li>Twitter/X AI 研究者</li>
+            </ul>
+        </div>
+
+        <div class="completion-badge">
+            <h3>🎓 恭喜完成課程！</h3>
+            <p>你已經完成了 16 週的 LLM 與 AI/ML 完整課程</p>
+            <p>從基礎到進階，從理論到實踐，你已掌握核心知識</p>
+        </div>
+
+        <div class="content">
+            <h2>結語</h2>
+            
+            <p>經過 16 週的學習，你已經掌握了從基礎數學到前沿 LLM 的完整知識體系。這個領域發展迅速，保持學習和實踐是持續成長的關鍵。</p>
+
+            <div class="concept-box">
+                <h4>給學習者的建議</h4>
+                <ul>
+                    <li><strong>動手實作</strong> - 理論要結合實踐，多寫代碼</li>
+                    <li><strong>持續學習</strong> - 關注最新論文和技術動態</li>
+                    <li><strong>參與社群</strong> - 加入開源項目，與他人交流</li>
+                    <li><strong>解決問題</strong> - 從實際問題中學習</li>
+                    <li><strong>建立作品集</strong> - 展示你的項目和成果</li>
+                    <li><strong>保持好奇</strong> - AI 領域充滿機遇，勇於探索</li>
+                </ul>
+            </div>
+
+            <p>感謝你完成這個課程。無論你是準備投身 AI 研究，還是將 LLM 應用到實際業務，希望這個課程為你打下了堅實的基礎。</p>
+
+            <p>AI 的未來由你們這樣的學習者和建設者塑造。祝你在 AI 之路上一帆風順！</p>
+        </div>
+
+        <div class="nav-buttons">
+            <a href="llm-week15.html" class="btn btn-secondary">Week 15：應用開發</a>
+            <a href="llm-index.html" class="btn">回到課程首頁</a>
+        </div>
+
+        <footer>
+            <p>LLM 與 AI/ML 課程 Week 16</p>
+            <p>多模態 · 長文本 · 端側部署 · 課程總結 · 學習路徑</p>
+            <p style="font-size: 0.9em; color: #95a5a6;">© 2025 All Rights Reserved</p>
+            <p style="margin-top: 20px; font-size: 1.1em; color: #2c3e50;">✨ 感謝你的學習，祝 AI 之路順利！ ✨</p>
+        </footer>
+    </div>
+</body>
+</html>
