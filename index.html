@@ -13,7 +13,7 @@
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft JhengHei', Arial, sans-serif;
-            background: #f8f9fa;
+            background: #f5f7fa;
             color: #1a1a1a;
             line-height: 1.6;
             min-height: 100vh;
@@ -27,62 +27,109 @@
         }
 
         header {
-            background: linear-gradient(to right, #2c3e50, #34495e);
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
             color: white;
-            padding: 80px 20px;
+            padding: 100px 20px;
             margin-bottom: 60px;
-            border-bottom: 4px solid #3498db;
+            border-bottom: 5px solid #4facfe;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><defs><pattern id="grid" width="100" height="100" patternUnits="userSpaceOnUse"><path d="M 100 0 L 0 0 0 100" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="1"/></pattern></defs><rect width="100%" height="100%" fill="url(%23grid)"/></svg>');
+            opacity: 0.3;
+        }
+
+        header .content {
+            position: relative;
+            z-index: 1;
         }
 
         header h1 {
-            font-size: 2.8em;
-            margin-bottom: 16px;
+            font-size: 3.5em;
+            margin-bottom: 20px;
             font-weight: 700;
-            letter-spacing: -0.5px;
+            letter-spacing: -1px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            animation: fadeInDown 1s ease;
         }
 
         header .subtitle {
-            font-size: 1.2em;
+            font-size: 1.4em;
             opacity: 0.95;
-            margin-bottom: 12px;
+            margin-bottom: 15px;
             font-weight: 400;
+            animation: fadeInDown 1s ease 0.2s both;
         }
 
         header .tagline {
-            font-size: 1.05em;
+            font-size: 1.15em;
             opacity: 0.85;
             font-weight: 300;
+            animation: fadeInDown 1s ease 0.4s both;
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .info-section {
             background: white;
-            border-radius: 8px;
-            padding: 48px;
-            margin-bottom: 32px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-            border: 1px solid #e0e0e0;
+            border-radius: 16px;
+            padding: 50px;
+            margin-bottom: 40px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+            border: 1px solid rgba(200, 200, 200, 0.3);
+            animation: fadeIn 0.8s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .info-section h2 {
-            color: #1a1a1a;
-            margin-bottom: 24px;
-            font-size: 1.8em;
+            color: #1e3c72;
+            margin-bottom: 30px;
+            font-size: 2em;
             font-weight: 700;
-            border-bottom: 2px solid #3498db;
-            padding-bottom: 12px;
+            border-bottom: 3px solid #4facfe;
+            padding-bottom: 15px;
+            display: inline-block;
         }
 
         .info-section h3 {
-            color: #2c3e50;
-            margin: 32px 0 16px 0;
-            font-size: 1.4em;
+            color: #2a5298;
+            margin: 40px 0 20px 0;
+            font-size: 1.5em;
             font-weight: 600;
         }
 
         .info-section p {
-            line-height: 1.8;
+            line-height: 1.9;
             color: #4a4a4a;
-            margin-bottom: 16px;
+            margin-bottom: 20px;
             font-size: 1.05em;
         }
 
@@ -92,113 +139,146 @@
         }
 
         .info-section li {
-            margin: 12px 0;
-            padding-left: 24px;
+            margin: 15px 0;
+            padding-left: 30px;
             position: relative;
             color: #4a4a4a;
-            line-height: 1.6;
+            line-height: 1.7;
         }
 
         .info-section li:before {
-            content: "•";
+            content: "✓";
             position: absolute;
-            left: 8px;
-            color: #3498db;
+            left: 0;
+            color: #4facfe;
             font-weight: bold;
-            font-size: 1.2em;
+            font-size: 1.3em;
         }
 
         .weeks-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 24px;
-            margin-bottom: 48px;
+            gap: 30px;
+            margin-bottom: 50px;
         }
 
         .week-card {
             background: white;
-            border-radius: 8px;
-            padding: 28px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-            transition: all 0.3s ease;
+            border-radius: 16px;
+            padding: 32px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             text-decoration: none;
             color: inherit;
             display: block;
-            border: 1px solid #e0e0e0;
-            border-left: 4px solid #3498db;
+            border: 2px solid transparent;
+            border-left: 5px solid #4facfe;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .week-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(79, 172, 254, 0.1) 0%, rgba(103, 126, 234, 0.1) 100%);
+            opacity: 0;
+            transition: opacity 0.4s ease;
         }
 
         .week-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 8px 16px rgba(0,0,0,0.12);
-            border-left-color: #2980b9;
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(79, 172, 254, 0.3);
+            border-color: #4facfe;
+        }
+
+        .week-card:hover::before {
+            opacity: 1;
         }
 
         .week-number {
-            font-size: 1.1em;
+            font-size: 1.2em;
             font-weight: 700;
-            color: #3498db;
-            margin-bottom: 12px;
-            letter-spacing: 0.5px;
+            color: #4facfe;
+            margin-bottom: 15px;
+            letter-spacing: 1px;
+            position: relative;
+            z-index: 1;
         }
 
         .week-title {
-            font-size: 1.25em;
+            font-size: 1.35em;
             font-weight: 600;
             color: #1a1a1a;
-            margin-bottom: 12px;
+            margin-bottom: 15px;
             line-height: 1.4;
+            position: relative;
+            z-index: 1;
         }
 
         .week-topics {
             color: #6c757d;
             font-size: 0.95em;
-            line-height: 1.6;
+            line-height: 1.7;
+            position: relative;
+            z-index: 1;
         }
 
         .status {
             display: inline-block;
-            padding: 4px 12px;
-            border-radius: 4px;
+            padding: 6px 14px;
+            border-radius: 20px;
             font-size: 0.85em;
             font-weight: 600;
-            margin-top: 12px;
+            margin-top: 15px;
+            position: relative;
+            z-index: 1;
         }
 
         .status.completed {
-            background: #d4edda;
+            background: linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%);
             color: #155724;
         }
 
         .status.progress {
-            background: #fff3cd;
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
             color: #856404;
         }
 
         .status.upcoming {
-            background: #e2e3e5;
+            background: linear-gradient(135deg, #e0e0e0 0%, #c9c9c9 100%);
             color: #383d41;
         }
 
         .feature-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 24px;
-            margin: 32px 0;
+            gap: 30px;
+            margin: 35px 0;
         }
 
         .feature-card {
-            background: #f8f9fa;
-            padding: 28px;
-            border-radius: 8px;
-            border: 1px solid #e0e0e0;
-            border-left: 3px solid #3498db;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e8eef5 100%);
+            padding: 32px;
+            border-radius: 16px;
+            border: 2px solid transparent;
+            border-left: 4px solid #4facfe;
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(79, 172, 254, 0.2);
+            border-color: #4facfe;
         }
 
         .feature-card h4 {
-            color: #2c3e50;
-            margin-bottom: 16px;
-            font-size: 1.15em;
+            color: #2a5298;
+            margin-bottom: 20px;
+            font-size: 1.2em;
             font-weight: 600;
         }
 
@@ -208,62 +288,73 @@
         }
 
         .feature-card li {
-            padding: 8px 0;
-            padding-left: 20px;
+            padding: 10px 0;
+            padding-left: 25px;
             position: relative;
             color: #4a4a4a;
         }
 
         .feature-card li::before {
-            content: "›";
+            content: "→";
             position: absolute;
             left: 0;
-            color: #3498db;
+            color: #4facfe;
             font-weight: bold;
-            font-size: 1.3em;
+            font-size: 1.4em;
         }
 
         .tech-stack {
             display: flex;
             flex-wrap: wrap;
-            gap: 12px;
-            margin: 24px 0;
+            gap: 15px;
+            margin: 30px 0;
         }
 
         .tech-badge {
-            background: #2c3e50;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
             color: white;
-            padding: 8px 16px;
-            border-radius: 4px;
+            padding: 10px 20px;
+            border-radius: 25px;
             font-size: 0.9em;
             font-weight: 500;
-            letter-spacing: 0.3px;
+            letter-spacing: 0.5px;
+            box-shadow: 0 4px 15px rgba(30, 60, 114, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .tech-badge:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(30, 60, 114, 0.5);
         }
 
         footer {
             text-align: center;
-            color: #6c757d;
-            padding: 48px 20px;
-            margin-top: 64px;
-            border-top: 1px solid #dee2e6;
-            background: white;
+            color: white;
+            padding: 60px 20px;
+            margin-top: 80px;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            border-radius: 16px 16px 0 0;
+            box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.2);
         }
 
         footer p:first-child {
-            font-size: 1.1em;
-            color: #2c3e50;
-            margin-bottom: 8px;
+            font-size: 1.3em;
+            margin-bottom: 10px;
             font-weight: 600;
         }
 
         footer p:last-child {
-            font-size: 0.95em;
-            color: #6c757d;
+            font-size: 1em;
+            opacity: 0.9;
         }
 
         @media (max-width: 768px) {
             header h1 {
-                font-size: 2em;
+                font-size: 2.5em;
+            }
+
+            header {
+                padding: 60px 20px;
             }
             
             .weeks-grid {
@@ -271,23 +362,54 @@
             }
 
             .info-section {
-                padding: 32px 24px;
+                padding: 35px 25px;
             }
+
+            .feature-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .highlight {
+            background: linear-gradient(120deg, #4facfe 0%, #00f2fe 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .info-section strong {
+            color: #2a5298;
+            font-weight: 600;
+        }
+
+        @media (prefers-reduced-motion: no-preference) {
+            .week-card,
+            .feature-card,
+            .info-section {
+                animation: fadeIn 0.8s ease both;
+            }
+
+            .week-card:nth-child(1) { animation-delay: 0.1s; }
+            .week-card:nth-child(2) { animation-delay: 0.2s; }
+            .week-card:nth-child(3) { animation-delay: 0.3s; }
+            .week-card:nth-child(4) { animation-delay: 0.4s; }
         }
     </style>
 </head>
 <body>
     <div class="container">
         <header>
-            <h1>LLM 與 AI/ML 課程</h1>
-            <div class="subtitle">16 週系統化學習路徑｜從基礎到進階完整教學</div>
-            <div class="tagline">打造 AI 時代的核心競爭力</div>
+            <div class="content">
+                <h1>LLM 與 AI/ML 課程</h1>
+                <div class="subtitle">16 週系統化學習路徑｜從基礎到進階完整教學</div>
+                <div class="tagline">打造 AI 時代的核心競爭力</div>
+            </div>
         </header>
 
         <div class="info-section">
             <h2>關於本課程</h2>
-            <p style="font-size: 1.1em;">
-                本課程專為想要深入學習大型語言模型（LLM）和人工智慧/機器學習的學習者設計。
+            <p style="font-size: 1.15em;">
+                本課程專為想要深入學習<span class="highlight">大型語言模型（LLM）</span>和<span class="highlight">人工智慧/機器學習</span>的學習者設計。
                 從基礎數學和 Python 開始，逐步進階到 LLM 應用開發、微調和部署。
                 通過系統化的學習路徑，你將掌握從理論到實踐的完整 AI/ML 技能。
             </p>
@@ -375,7 +497,7 @@
                     <div class="week-topics">
                         線性代數、微積分、機率統計、最佳化、梯度下降
                     </div>
-                    <span class="status upcoming">準備中</span>
+                    <span class="status completed">已完成</span>
                 </a>
 
                 <a href="llm-week3.html" class="week-card">
@@ -384,7 +506,7 @@
                     <div class="week-topics">
                         監督式學習、非監督式學習、Scikit-learn、模型評估
                     </div>
-                    <span class="status upcoming">準備中</span>
+                    <span class="status completed">已完成</span>
                 </a>
 
                 <a href="llm-week4.html" class="week-card">
@@ -393,7 +515,7 @@
                     <div class="week-topics">
                         神經網路、反向傳播、PyTorch 基礎、MNIST 實戰
                     </div>
-                    <span class="status upcoming">準備中</span>
+                    <span class="status completed">已完成</span>
                 </a>
             </div>
 
@@ -407,7 +529,7 @@
                     <div class="week-topics">
                         CNN 架構、ResNet、遷移學習、影像分類實戰
                     </div>
-                    <span class="status upcoming">準備中</span>
+                    <span class="status completed">已完成</span>
                 </a>
 
                 <a href="llm-week6.html" class="week-card">
@@ -416,7 +538,7 @@
                     <div class="week-topics">
                         RNN、LSTM、GRU、Seq2Seq、注意力機制
                     </div>
-                    <span class="status upcoming">準備中</span>
+                    <span class="status completed">已完成</span>
                 </a>
 
                 <a href="llm-week7.html" class="week-card">
@@ -425,7 +547,7 @@
                     <div class="week-topics">
                         Self-Attention、Multi-Head Attention、從零實現 Transformer
                     </div>
-                    <span class="status upcoming">準備中</span>
+                    <span class="status completed">已完成</span>
                 </a>
 
                 <a href="llm-week8.html" class="week-card">
@@ -434,7 +556,7 @@
                     <div class="week-topics">
                         Word2Vec、GloVe、BERT、文本分類、情感分析
                     </div>
-                    <span class="status upcoming">準備中</span>
+                    <span class="status completed">已完成</span>
                 </a>
             </div>
 
@@ -448,7 +570,7 @@
                     <div class="week-topics">
                         GPT 系列、自回歸語言模型、預訓練與微調、Tokenization
                     </div>
-                    <span class="status upcoming">準備中</span>
+                    <span class="status completed">已完成</span>
                 </a>
 
                 <a href="llm-week10.html" class="week-card">
@@ -457,7 +579,7 @@
                     <div class="week-topics">
                         Few-shot Learning、Chain-of-Thought、ReAct、提示優化
                     </div>
-                    <span class="status upcoming">準備中</span>
+                    <span class="status completed">已完成</span>
                 </a>
 
                 <a href="llm-week11.html" class="week-card">
@@ -466,7 +588,7 @@
                     <div class="week-topics">
                         OpenAI API、LangChain、RAG、智能問答系統
                     </div>
-                    <span class="status upcoming">準備中</span>
+                    <span class="status completed">已完成</span>
                 </a>
 
                 <a href="llm-week12.html" class="week-card">
@@ -475,7 +597,7 @@
                     <div class="week-topics">
                         LoRA、QLoRA、PEFT、指令微調、領域適配
                     </div>
-                    <span class="status upcoming">準備中</span>
+                    <span class="status completed">已完成</span>
                 </a>
             </div>
 
@@ -489,7 +611,7 @@
                     <div class="week-topics">
                         Agent 架構、Tool Use、ReAct、AutoGPT、記憶系統
                     </div>
-                    <span class="status upcoming">準備中</span>
+                    <span class="status completed">已完成</span>
                 </a>
 
                 <a href="llm-week14.html" class="week-card">
@@ -498,7 +620,7 @@
                     <div class="week-topics">
                         CLIP、Stable Diffusion、GPT-4V、Whisper、影像描述生成
                     </div>
-                    <span class="status upcoming">準備中</span>
+                    <span class="status completed">已完成</span>
                 </a>
 
                 <a href="llm-week15.html" class="week-card">
@@ -507,7 +629,7 @@
                     <div class="week-topics">
                         評估指標、幻覺問題、模型對齊、RLHF、安全防護
                     </div>
-                    <span class="status upcoming">準備中</span>
+                    <span class="status completed">已完成</span>
                 </a>
 
                 <a href="llm-week16.html" class="week-card">
@@ -516,7 +638,7 @@
                     <div class="week-topics">
                         模型量化、推理優化、API 服務、監控與日誌、成本優化
                     </div>
-                    <span class="status upcoming">準備中</span>
+                    <span class="status completed">已完成</span>
                 </a>
             </div>
         </div>
